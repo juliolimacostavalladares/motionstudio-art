@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Easing,
   interpolate,
   spring,
   Sequence,
@@ -7,144 +8,320 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { VideoConfig } from "./content/configs";
-import { Background } from "./components/Background";
-import { Logo } from "./components/Logo";
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-function useEntrance(delayFrames: number) {
+const LIME = "#d4e157";
+const DARK = "#0a0a0a";
+const SCENE1 = 120; // 4s — Hook
+const SCENE2 = 195; // 6.5s — Content
+const SCENE3 = 105; // 3.5s — Outro
+export const TOTAL = SCENE1 + SCENE2 + SCENE3; // 420 frames = 14s @ 30fps
+
+// ─── Camera drift hook ────────────────────────────────────────────────────────
+
+function useCamera() {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const s = spring({
-    frame: frame - delayFrames,
-    fps,
-    config: { damping: 14, stiffness: 110, mass: 0.7 },
-  });
-  return {
-    opacity: Math.max(0, s),
-    translateY: (1 - Math.max(0, s)) * 30,
-    scale: Math.max(0, s),
-  };
-}
-
-function useExit(startFrame: number, durationFrames: number) {
-  const frame = useCurrentFrame();
-  const exitStart = durationFrames - 18;
-  const exitVal = interpolate(frame - startFrame, [exitStart, durationFrames], [0, 1], {
-    extrapolateLeft: "clamp",
+  // Very slow zoom-in over entire video
+  const scale = interpolate(frame, [0, TOTAL], [1.0, 1.09], {
     extrapolateRight: "clamp",
   });
-  return { opacity: 1 - exitVal, translateY: exitVal * -30 };
+  // Gentle sinusoidal drift
+  const tx = interpolate(Math.sin(frame * 0.006), [-1, 1], [-14, 14]);
+  const ty = interpolate(Math.cos(frame * 0.008), [-1, 1], [-10, 10]);
+  return { scale, tx, ty };
 }
 
-// ─── Scene 1: Hook ──────────────────────────────────────────────────────────
+// ─── Background with parallax ─────────────────────────────────────────────────
+
+const CinematicBackground: React.FC = () => {
+  const frame = useCurrentFrame();
+  const cam = useCamera();
+
+  // Background moves at 40% of camera speed = parallax
+  const bgTx = cam.tx * 0.4;
+  const bgTy = cam.ty * 0.4;
+
+  // Gentle orb pulse
+  const pulse = 0.85 + 0.15 * Math.sin(frame * 0.04);
+  const pulse2 = 0.9 + 0.1 * Math.cos(frame * 0.035);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: DARK,
+        overflow: "hidden",
+      }}
+    >
+      {/* Animated gradient orbs */}
+      <div
+        style={{
+          position: "absolute",
+          width: "900px",
+          height: "900px",
+          borderRadius: "50%",
+          background: `radial-gradient(circle, rgba(212,225,87,${0.07 * pulse}) 0%, transparent 65%)`,
+          left: `calc(15% + ${bgTx}px)`,
+          top: `calc(15% + ${bgTy}px)`,
+          transform: "translate(-50%, -50%)",
+          filter: "blur(60px)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: "700px",
+          height: "700px",
+          borderRadius: "50%",
+          background: `radial-gradient(circle, rgba(212,225,87,${0.05 * pulse2}) 0%, transparent 60%)`,
+          right: `calc(10% + ${-bgTx}px)`,
+          bottom: `calc(8% + ${-bgTy}px)`,
+          transform: "translate(50%, 50%)",
+          filter: "blur(50px)",
+        }}
+      />
+      {/* Grid */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)
+          `,
+          backgroundSize: "72px 72px",
+          maskImage: "radial-gradient(ellipse at center, black 30%, transparent 85%)",
+          WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 85%)",
+        }}
+      />
+      {/* Subtle vignette */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%)",
+        }}
+      />
+    </div>
+  );
+};
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+
+const ProgressBar: React.FC = () => {
+  const frame = useCurrentFrame();
+  const progress = interpolate(frame, [0, TOTAL], [0, 100], {
+    extrapolateRight: "clamp",
+  });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "3px",
+        background: "rgba(255,255,255,0.06)",
+        zIndex: 20,
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          width: `${progress}%`,
+          background: `linear-gradient(90deg, ${LIME}aa, ${LIME})`,
+          boxShadow: `0 0 12px ${LIME}66`,
+        }}
+      />
+    </div>
+  );
+};
+
+// ─── Kinetic word reveal ──────────────────────────────────────────────────────
+
+interface WordRevealProps {
+  text: string;
+  startFrame: number;
+  wordDelay?: number;
+  style?: React.CSSProperties;
+  wordStyle?: React.CSSProperties;
+  accentWords?: string[];
+}
+
+const WordReveal: React.FC<WordRevealProps> = ({
+  text,
+  startFrame,
+  wordDelay = 5,
+  style,
+  wordStyle,
+  accentWords = [],
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const words = text.split(" ");
+
+  return (
+    <span style={{ display: "inline", ...style }}>
+      {words.map((word, i) => {
+        const s = spring({
+          frame: frame - startFrame - i * wordDelay,
+          fps,
+          config: { damping: 14, stiffness: 180, mass: 0.5 },
+        });
+        const opacity = Math.max(0, s);
+        const ty = (1 - Math.max(0, s)) * 28;
+        const isAccent = accentWords.includes(word.replace(/[.,!?]/g, ""));
+        return (
+          <span
+            key={i}
+            style={{
+              display: "inline-block",
+              opacity,
+              transform: `translateY(${ty}px)`,
+              color: isAccent ? LIME : undefined,
+              marginRight: "0.25em",
+              ...wordStyle,
+            }}
+          >
+            {word}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
+// ─── Line accent ─────────────────────────────────────────────────────────────
+
+const AccentLine: React.FC<{ startFrame: number; width?: string }> = ({
+  startFrame,
+  width = "48px",
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const s = spring({ frame: frame - startFrame, fps, config: { damping: 18, stiffness: 160 } });
+  return (
+    <div
+      style={{
+        height: "2px",
+        width,
+        background: `linear-gradient(90deg, ${LIME}, transparent)`,
+        borderRadius: "2px",
+        boxShadow: `0 0 10px ${LIME}44`,
+        opacity: Math.max(0, s),
+        transform: `scaleX(${Math.max(0, s)})`,
+        transformOrigin: "left",
+        margin: "10px 0 10px",
+      }}
+    />
+  );
+};
+
+// ─── Scene 1: Hook ────────────────────────────────────────────────────────────
 
 const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   config,
   isVertical,
 }) => {
-  const badge = useEntrance(0);
-  const logo = useEntrance(8);
-  const line0 = useEntrance(18);
-  const line1 = useEntrance(26);
-  const sub = useEntrance(36);
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const cam = useCamera();
+
+  const badgeS = spring({ frame, fps, config: { damping: 14, stiffness: 140 } });
 
   return (
     <div
       style={{
+        position: "absolute",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        textAlign: "center",
-        padding: isVertical ? "0 48px" : "0 60px",
-        height: "100%",
-        maxWidth: isVertical ? "460px" : "700px",
-        margin: "0 auto",
+        transform: `scale(${cam.scale}) translate(${cam.tx * 0.6}px, ${cam.ty * 0.6}px)`,
+        padding: isVertical ? "0 52px" : "0 72px",
       }}
     >
       {/* Badge */}
       <div
         style={{
-          opacity: badge.opacity,
-          transform: `scale(${badge.scale})`,
           display: "inline-flex",
           alignItems: "center",
           gap: "8px",
-          background: "rgba(212,225,87,0.10)",
-          border: "1px solid rgba(212,225,87,0.22)",
+          background: "rgba(212,225,87,0.08)",
+          border: `1px solid ${LIME}28`,
           borderRadius: "100px",
-          padding: "7px 16px",
-          fontSize: "12px",
+          padding: "7px 18px",
+          fontSize: "11px",
           fontWeight: 700,
-          color: "#d4e157",
-          letterSpacing: "0.12em",
+          color: LIME,
+          letterSpacing: "0.14em",
           textTransform: "uppercase",
-          marginBottom: "28px",
+          marginBottom: "32px",
           fontFamily: "'Sora', sans-serif",
+          opacity: Math.max(0, badgeS),
+          transform: `translateY(${(1 - Math.max(0, badgeS)) * -20}px)`,
         }}
       >
-        <span
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: "50%",
-            background: "#d4e157",
-            display: "inline-block",
-          }}
-        />
-        {config.badge}
+        <span style={{ width: 5, height: 5, borderRadius: "50%", background: LIME }} />
+        {config.typeLabel}
       </div>
 
-      {/* Logo */}
-      <div style={{ opacity: logo.opacity, transform: `scale(${logo.scale})`, marginBottom: "24px" }}>
-        <Logo size={isVertical ? 110 : 90} />
-      </div>
-
-      {/* Headline */}
-      {config.headlineLines.map((line, i) => {
-        const anim = i === 0 ? line0 : line1;
-        const isAccent = i === config.accentLineIndex;
-        return (
-          <div
-            key={i}
-            style={{
-              opacity: anim.opacity,
-              transform: `translateY(${anim.translateY}px)`,
-              fontFamily: "'Bricolage Grotesque', sans-serif",
-              fontWeight: 800,
-              fontSize: isVertical ? "38px" : "52px",
-              lineHeight: 1.05,
-              letterSpacing: "-0.03em",
-              color: isAccent ? "#d4e157" : "#f5f5f5",
-              marginBottom: "6px",
-            }}
-          >
-            {line}
+      {/* Kinetic headline */}
+      <div
+        style={{
+          textAlign: "center",
+          fontFamily: "'Bricolage Grotesque', sans-serif",
+          fontWeight: 800,
+          fontSize: isVertical ? "42px" : "58px",
+          lineHeight: 1.05,
+          letterSpacing: "-0.035em",
+          color: "#f0f0f0",
+        }}
+      >
+        {config.headlineLines.map((line, i) => (
+          <div key={i} style={{ display: "block" }}>
+            <WordReveal
+              text={line}
+              startFrame={10 + i * 18}
+              wordDelay={6}
+              accentWords={i === config.accentLineIndex ? line.split(" ") : []}
+              wordStyle={{
+                color: i === config.accentLineIndex ? LIME : "#f0f0f0",
+              }}
+            />
           </div>
-        );
-      })}
+        ))}
+      </div>
+
+      <AccentLine startFrame={30} width="60px" />
 
       {/* Sub copy */}
-      <p
+      <div
         style={{
-          opacity: sub.opacity,
-          transform: `translateY(${sub.translateY}px)`,
-          fontFamily: "'Sora', sans-serif",
-          fontSize: isVertical ? "14px" : "16px",
-          color: "#a3a3a3",
-          lineHeight: 1.65,
-          marginTop: "20px",
-          maxWidth: "420px",
+          textAlign: "center",
+          maxWidth: isVertical ? "360px" : "560px",
         }}
       >
-        {config.subCopy}
-      </p>
+        <WordReveal
+          text={config.subCopy}
+          startFrame={38}
+          wordDelay={3}
+          style={{
+            fontFamily: "'Sora', sans-serif",
+            fontSize: isVertical ? "15px" : "17px",
+            color: "#8a8a8a",
+            lineHeight: 1.7,
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-// ─── Scene 2: Content Items ──────────────────────────────────────────────────
+// ─── Scene 2: Content items ────────────────────────────────────────────────────
 
 const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   config,
@@ -152,108 +329,103 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const cam = useCamera();
+  // Camera pans slightly down on this scene for depth
+  const camOffset = interpolate(frame, [0, SCENE2], [0, 18], { extrapolateRight: "clamp" });
 
-  const titleSpring = spring({ frame, fps, config: { damping: 14 } });
+  const titleS = spring({ frame, fps, config: { damping: 16, stiffness: 120 } });
 
   return (
     <div
       style={{
+        position: "absolute",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: isVertical ? "0 36px" : "0 60px",
-        height: "100%",
-        width: "100%",
-        maxWidth: isVertical ? "480px" : "860px",
-        margin: "0 auto",
+        transform: `scale(${cam.scale}) translate(${cam.tx * 0.5}px, ${cam.ty * 0.5 + camOffset}px)`,
+        padding: isVertical ? "0 40px" : "0 60px",
       }}
     >
       {/* Section title */}
       <h2
         style={{
           fontFamily: "'Bricolage Grotesque', sans-serif",
-          fontSize: isVertical ? "26px" : "34px",
           fontWeight: 700,
-          color: "#f5f5f5",
-          textAlign: "center",
-          marginBottom: isVertical ? "24px" : "28px",
-          letterSpacing: "-0.02em",
-          opacity: titleSpring,
-          transform: `translateY(${(1 - titleSpring) * 20}px)`,
+          fontSize: isVertical ? "22px" : "28px",
+          color: LIME,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          marginBottom: "6px",
+          opacity: Math.max(0, titleS),
+          transform: `translateY(${(1 - Math.max(0, titleS)) * 16}px)`,
         }}
       >
         {config.scene2Title}
       </h2>
+      <AccentLine startFrame={4} width="100%" />
 
-      {/* Items grid — 2 cols on square, 1 col on vertical */}
+      {/* Items — single column always for cinematic feel */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: isVertical ? "1fr" : "1fr 1fr",
-          gap: isVertical ? "12px" : "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: isVertical ? "12px" : "14px",
           width: "100%",
+          maxWidth: isVertical ? "480px" : "720px",
         }}
       >
         {config.items.map((item, idx) => {
+          const delay = 14 + idx * 14;
           const s = spring({
-            frame: frame - (10 + idx * 8),
+            frame: frame - delay,
             fps,
-            config: { damping: 13, stiffness: 110 },
+            config: { damping: 14, stiffness: 130, mass: 0.6 },
           });
+          const opacity = Math.max(0, s);
+          const tx = (1 - Math.max(0, s)) * -40;
 
           return (
             <div
               key={idx}
               style={{
-                opacity: Math.max(0, s),
-                transform: `scale(${Math.max(0, s)}) translateY(${(1 - Math.max(0, s)) * 20}px)`,
+                opacity,
+                transform: `translateX(${tx}px)`,
                 display: "flex",
-                gap: "14px",
                 alignItems: "flex-start",
+                gap: "16px",
                 background: item.highlight
-                  ? "rgba(212,225,87,0.07)"
-                  : "rgba(255,255,255,0.03)",
-                border: item.highlight
-                  ? "1px solid rgba(212,225,87,0.25)"
-                  : "1px solid rgba(255,255,255,0.06)",
-                borderRadius: "14px",
-                padding: isVertical ? "14px 16px" : "18px 20px",
+                  ? "rgba(212,225,87,0.05)"
+                  : "rgba(255,255,255,0.025)",
+                borderLeft: `2.5px solid ${item.highlight ? LIME : "rgba(255,255,255,0.1)"}`,
+                borderRadius: "0 12px 12px 0",
+                padding: isVertical ? "14px 18px" : "16px 22px",
               }}
             >
-              {/* Icon / number */}
+              {/* Icon */}
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  minWidth: 40,
-                  borderRadius: "10px",
-                  background: item.highlight
-                    ? "rgba(212,225,87,0.15)"
-                    : "rgba(255,255,255,0.06)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "16px",
-                  fontWeight: 800,
-                  color: item.highlight ? "#d4e157" : "#f5f5f5",
                   fontFamily: "'Bricolage Grotesque', sans-serif",
-                  border: item.highlight ? "1px solid rgba(212,225,87,0.2)" : "none",
+                  fontWeight: 800,
+                  fontSize: isVertical ? "22px" : "26px",
+                  color: item.highlight ? LIME : "rgba(255,255,255,0.5)",
+                  minWidth: "32px",
+                  lineHeight: 1,
+                  marginTop: "2px",
                 }}
               >
                 {item.icon}
               </div>
-
-              {/* Text */}
-              <div style={{ flex: 1, textAlign: "left" }}>
+              <div>
                 <div
                   style={{
                     fontFamily: "'Bricolage Grotesque', sans-serif",
-                    fontSize: isVertical ? "13px" : "15px",
                     fontWeight: 700,
-                    color: item.highlight ? "#d4e157" : "#f5f5f5",
-                    marginBottom: "3px",
+                    fontSize: isVertical ? "14px" : "16px",
+                    color: item.highlight ? LIME : "#e8e8e8",
                     lineHeight: 1.3,
+                    marginBottom: item.sub ? "4px" : 0,
                   }}
                 >
                   {item.text}
@@ -263,7 +435,7 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
                     style={{
                       fontFamily: "'Sora', sans-serif",
                       fontSize: isVertical ? "11px" : "12px",
-                      color: "#737373",
+                      color: "#5a5a5a",
                       lineHeight: 1.5,
                     }}
                   >
@@ -279,181 +451,201 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   );
 };
 
-// ─── Scene 3: CTA ───────────────────────────────────────────────────────────
+// ─── Scene 3: Outro ──────────────────────────────────────────────────────────
 
-const SceneCta: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
+const SceneOutro: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   config,
   isVertical,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const cam = useCamera();
 
-  const logo = useEntrance(0);
-  const title = useEntrance(12);
-  const btn = spring({ frame: frame - 24, fps, config: { damping: 10, stiffness: 130, mass: 0.6 } });
-  const foot = useEntrance(38);
+  // Camera zooms back out slightly for outro reveal
+  const zoomOut = spring({ frame, fps, config: { damping: 20, stiffness: 80 } });
+  const outroScale = interpolate(Math.max(0, zoomOut), [0, 1], [0.96, 1]);
 
-  // Gentle pulse on button
-  const pulse = Math.sin(frame * 0.12) * 0.02 + 1;
+  const logoS = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
+  const metricS = spring({ frame: frame - 16, fps, config: { damping: 12, stiffness: 140 } });
+  const ctaS = spring({ frame: frame - 28, fps, config: { damping: 14, stiffness: 130 } });
+  const urlS = spring({ frame: frame - 42, fps, config: { damping: 16, stiffness: 110 } });
+
+  // Pulsing glow on metric
+  const glow = 0.5 + 0.5 * Math.sin(frame * 0.14);
 
   return (
     <div
       style={{
+        position: "absolute",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: isVertical ? "0 48px" : "0 60px",
-        height: "100%",
-        maxWidth: isVertical ? "460px" : "680px",
-        margin: "0 auto",
+        transform: `scale(${cam.scale * outroScale}) translate(${cam.tx * 0.4}px, ${cam.ty * 0.4}px)`,
+        padding: isVertical ? "0 52px" : "0 72px",
       }}
     >
-      {/* Logo */}
-      <div
+      {/* Logo mark */}
+      <svg
+        width={isVertical ? "64" : "54"}
+        height={isVertical ? "64" : "54"}
+        viewBox="0 0 200 200"
         style={{
-          opacity: logo.opacity,
-          transform: `scale(${logo.scale})`,
-          marginBottom: "16px",
+          opacity: Math.max(0, logoS),
+          transform: `scale(${Math.max(0, logoS)})`,
+          marginBottom: "12px",
         }}
       >
-        <Logo size={isVertical ? 100 : 80} />
-      </div>
+        <rect width="200" height="200" rx="44" fill="#111" stroke="#222" strokeWidth="2" />
+        <path
+          d="M100 40C66.86 40 40 66.86 40 100C40 133.14 66.86 160 100 160H160V100C160 66.86 133.14 40 100 40Z"
+          fill={LIME}
+        />
+        <circle cx="100" cy="100" r="25" fill="#111" />
+      </svg>
 
-      {/* Brand name */}
+      {/* Brand */}
       <div
         style={{
-          opacity: logo.opacity,
-          fontFamily: "'Bricolage Grotesque', sans-serif",
-          fontWeight: 800,
-          fontSize: "24px",
-          color: "#f5f5f5",
-          letterSpacing: "-0.02em",
-          marginBottom: "24px",
-        }}
-      >
-        Motion <span style={{ color: "#d4e157" }}>Studio</span>
-      </div>
-
-      {/* CTA Headline */}
-      <h2
-        style={{
-          opacity: title.opacity,
-          transform: `translateY(${title.translateY}px)`,
           fontFamily: "'Bricolage Grotesque', sans-serif",
           fontWeight: 800,
           fontSize: isVertical ? "28px" : "36px",
           letterSpacing: "-0.03em",
-          lineHeight: 1.1,
-          color: "#f5f5f5",
-          marginBottom: "28px",
-          maxWidth: "400px",
+          color: "#f0f0f0",
+          marginBottom: "24px",
+          opacity: Math.max(0, logoS),
         }}
       >
-        {config.ctaHeadline}
-      </h2>
+        Motion <span style={{ color: LIME }}>Studio</span>
+      </div>
 
-      {/* Metric badge */}
+      {/* Metric */}
       {config.metric && (
         <div
           style={{
-            opacity: Math.max(0, btn),
-            fontFamily: "'Sora', sans-serif",
-            fontSize: "12px",
-            fontWeight: 700,
-            color: "#d4e157",
-            background: "rgba(212,225,87,0.08)",
-            border: "1px solid rgba(212,225,87,0.2)",
-            borderRadius: "100px",
-            padding: "6px 16px",
-            marginBottom: "16px",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+            opacity: Math.max(0, metricS),
+            transform: `scale(${Math.max(0, metricS)})`,
+            fontFamily: "'Bricolage Grotesque', sans-serif",
+            fontWeight: 800,
+            fontSize: isVertical ? "42px" : "52px",
+            color: LIME,
+            letterSpacing: "-0.04em",
+            textShadow: `0 0 ${40 * glow}px ${LIME}55`,
+            marginBottom: "8px",
           }}
         >
           {config.metric}
         </div>
       )}
 
-      {/* CTA Button */}
-      <button
+      {/* CTA headline */}
+      <div
         style={{
-          opacity: Math.max(0, btn),
-          transform: `scale(${Math.max(0, btn) * pulse})`,
-          background: "#d4e157",
-          color: "#111111",
-          border: "none",
-          borderRadius: "12px",
-          padding: "16px 36px",
-          fontSize: "15px",
-          fontWeight: 700,
+          maxWidth: isVertical ? "360px" : "480px",
+          marginBottom: "18px",
+        }}
+      >
+        <WordReveal
+          text={config.ctaHeadline}
+          startFrame={28}
+          wordDelay={4}
+          style={{
+            fontFamily: "'Bricolage Grotesque', sans-serif",
+            fontWeight: 700,
+            fontSize: isVertical ? "22px" : "28px",
+            color: "#e8e8e8",
+            lineHeight: 1.2,
+          }}
+        />
+      </div>
+
+      {/* CTA label — text only, no button */}
+      <div
+        style={{
+          opacity: Math.max(0, ctaS),
+          transform: `translateY(${(1 - Math.max(0, ctaS)) * 20}px)`,
           fontFamily: "'Sora', sans-serif",
-          cursor: "pointer",
-          boxShadow: "0 8px 32px rgba(212,225,87,0.25)",
+          fontWeight: 700,
+          fontSize: isVertical ? "16px" : "18px",
+          color: LIME,
+          letterSpacing: "0.02em",
+          marginBottom: "20px",
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          marginBottom: "20px",
+          gap: "8px",
         }}
       >
         {config.ctaLabel}
-        <span style={{ fontSize: "18px" }}>→</span>
-      </button>
+        <span
+          style={{
+            display: "inline-block",
+            transform: `translateX(${4 * Math.sin(frame * 0.18)}px)`,
+          }}
+        >
+          →
+        </span>
+      </div>
 
       {/* Footer note */}
       {config.footerNote && (
-        <p
+        <div
           style={{
-            opacity: foot.opacity,
+            opacity: Math.max(0, urlS) * 0.5,
             fontFamily: "'Sora', sans-serif",
-            fontSize: "12px",
-            color: "#525252",
-            marginBottom: "4px",
+            fontSize: "11px",
+            color: "#555",
+            marginBottom: "6px",
           }}
         >
           {config.footerNote}
-        </p>
+        </div>
       )}
 
       {/* URL */}
-      <span
+      <div
         style={{
-          opacity: foot.opacity,
+          opacity: Math.max(0, urlS),
           fontFamily: "'Sora', sans-serif",
           fontSize: "13px",
-          color: "#404040",
+          color: "#3a3a3a",
           fontWeight: 600,
-          letterSpacing: "0.06em",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
         }}
       >
         motionstudio.art
-      </span>
+      </div>
     </div>
   );
 };
 
-// ─── Scene Wrapper with fade transition ──────────────────────────────────────
+// ─── Scene transition fade ────────────────────────────────────────────────────
 
-interface WrappedSceneProps {
+const FadeScene: React.FC<{
   from: number;
   duration: number;
   children: React.ReactNode;
-}
+}> = ({ from, duration, children }) => {
+  const frame = useCurrentFrame();
 
-const WrappedScene: React.FC<WrappedSceneProps> = ({ from, duration, children }) => {
-  const exit = useExit(from, duration);
+  // Fade in first 10 frames, fade out last 14 frames
+  const localFrame = frame - from;
+  const fadeIn = interpolate(localFrame, [0, 10], [0, 1], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
+  const fadeOut = interpolate(localFrame, [duration - 14, duration], [1, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
+  const opacity = Math.min(fadeIn, fadeOut);
+
   return (
     <Sequence from={from} durationInFrames={duration}>
       <div
         style={{
           position: "absolute",
           inset: 0,
+          opacity,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          opacity: exit.opacity,
-          transform: `translateY(${exit.translateY}px)`,
         }}
       >
         {children}
@@ -462,82 +654,109 @@ const WrappedScene: React.FC<WrappedSceneProps> = ({ from, duration, children })
   );
 };
 
-// ─── Day label chip ───────────────────────────────────────────────────────────
+// ─── Top bar ─────────────────────────────────────────────────────────────────
 
-const DayChip: React.FC<{ config: VideoConfig }> = ({ config }) => {
+const TopBar: React.FC<{ config: VideoConfig }> = ({ config }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const s = spring({ frame, fps, config: { damping: 15 } });
+  const s = spring({ frame, fps, config: { damping: 16 } });
 
   return (
     <div
       style={{
         position: "absolute",
         top: 28,
+        left: 28,
         right: 28,
-        opacity: Math.max(0, s),
-        transform: `scale(${Math.max(0, s)})`,
-        background: "rgba(10,10,10,0.7)",
-        border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: "100px",
-        padding: "6px 14px",
-        fontSize: "11px",
-        fontWeight: 600,
-        color: "#a3a3a3",
-        fontFamily: "'Sora', sans-serif",
-        backdropFilter: "blur(8px)",
-        zIndex: 10,
         display: "flex",
+        justifyContent: "space-between",
         alignItems: "center",
-        gap: "6px",
+        zIndex: 15,
+        opacity: Math.max(0, s),
+        transform: `translateY(${(1 - Math.max(0, s)) * -16}px)`,
       }}
     >
-      <span style={{ color: "#d4e157", fontWeight: 800 }}>Dia {config.day}</span>
-      · {config.dayLabel}
+      {/* Day label */}
+      <div
+        style={{
+          fontFamily: "'Sora', sans-serif",
+          fontSize: "11px",
+          fontWeight: 700,
+          color: "#3a3a3a",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+        }}
+      >
+        Dia {config.day} · {config.dayLabel}
+      </div>
+
+      {/* Badge */}
+      <div
+        style={{
+          background: "rgba(212,225,87,0.06)",
+          border: `1px solid ${LIME}22`,
+          borderRadius: "100px",
+          padding: "4px 12px",
+          fontFamily: "'Sora', sans-serif",
+          fontSize: "10px",
+          fontWeight: 700,
+          color: `${LIME}cc`,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+        }}
+      >
+        {config.badge}
+      </div>
     </div>
   );
 };
 
-// ─── Main Composition ────────────────────────────────────────────────────────
-
-const SCENE1 = 105; // 3.5s
-const SCENE2 = 135; // 4.5s
-const SCENE3 = 90;  // 3s
-const TOTAL = SCENE1 + SCENE2 + SCENE3; // 330 frames = 11s
+// ─── Main export ─────────────────────────────────────────────────────────────
 
 export const ContentVideo: React.FC<{ config: VideoConfig }> = ({ config }) => {
   const { width, height } = useVideoConfig();
   const isVertical = width < height;
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", color: "#f5f5f5" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
+        fontFamily: "'Sora', sans-serif",
+        color: "#f0f0f0",
+      }}
+    >
       {/* Fonts */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Sora:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
       `}</style>
 
-      {/* Background always on */}
-      <Background />
+      {/* Background always visible */}
+      <CinematicBackground />
 
-      {/* Day chip */}
-      <DayChip config={config} />
+      {/* Top bar */}
+      <TopBar config={config} />
 
-      {/* Scene 1: Hook */}
-      <WrappedScene from={0} duration={SCENE1}>
+      {/* Scene 1 — Hook */}
+      <FadeScene from={0} duration={SCENE1}>
         <SceneHook config={config} isVertical={isVertical} />
-      </WrappedScene>
+      </FadeScene>
 
-      {/* Scene 2: Items */}
-      <WrappedScene from={SCENE1} duration={SCENE2}>
+      {/* Scene 2 — Items */}
+      <FadeScene from={SCENE1} duration={SCENE2}>
         <SceneItems config={config} isVertical={isVertical} />
-      </WrappedScene>
+      </FadeScene>
 
-      {/* Scene 3: CTA */}
-      <WrappedScene from={SCENE1 + SCENE2} duration={SCENE3}>
-        <SceneCta config={config} isVertical={isVertical} />
-      </WrappedScene>
+      {/* Scene 3 — Outro */}
+      <FadeScene from={SCENE1 + SCENE2} duration={SCENE3}>
+        <SceneOutro config={config} isVertical={isVertical} />
+      </FadeScene>
+
+      {/* Progress bar */}
+      <ProgressBar />
     </div>
   );
 };
-
-export { TOTAL };
