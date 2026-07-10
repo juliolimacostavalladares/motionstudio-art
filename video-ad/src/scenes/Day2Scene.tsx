@@ -1,99 +1,119 @@
 /**
  * Day 2 — Organic / Educational
- * Visual: 3 sonar-ping signals pulse outward from 3 alert nodes,
- * each revealing a warning sign text as the ring expands.
+ * 3 sonar-ping signals — lime palette only with opacity variations.
+ * No off-brand hues. Larger nodes, thicker strokes.
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Bookmark } from "lucide-react";
+import {
+  BRAND, LIME, LIME_20, LIME_40,
+  BORDER_LIME, STROKE,
+} from "../shared/brand";
 
-const LIME = "#d4e157";
-const SIGNS = [
-  { num: "01", text: "3+ planilhas para o\nmesmo processo", color: "#e53e3e" },
-  { num: "02", text: "Dados perdidos entre\nWhatsApp e e-mail", color: "#dd6b20" },
-  { num: "03", text: "Escalar = contratar,\nnunca automatizar", color: "#805ad5" },
+// All lime-family — no foreign hues
+const SIGNALS = [
+  { num: "01", text: "3 ou mais planilhas\npara o mesmo processo" },
+  { num: "02", text: "Dados perdidos entre\nWhatsApp e e-mail"    },
+  { num: "03", text: "Escalar = contratar,\nnunca automatizar"     },
 ];
 
-const Sonar: React.FC<{
-  cx: number; cy: number; color: string;
-  startFrame: number; label: string; num: string;
+const SonarNode: React.FC<{
+  cx: number; cy: number;
+  startFrame: number;
+  label: string; num: string;
   isV: boolean;
-}> = ({ cx, cy, color, startFrame, label, num, isV }) => {
+  /** 1.0, 0.7 or 0.45 — opacity tiers within lime palette */
+  tier: number;
+}> = ({ cx, cy, startFrame, label, num, isV, tier }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const S = spring({ frame: frame - startFrame, fps, config: { damping: 14, stiffness: 100 } });
   const appear = Math.max(0, S);
 
-  // 3 ripple rings at different phases
-  const rings = [0, 18, 36];
+  const rings = [0, 20, 40];
+  const nodeR = isV ? 32 : 38;
+  const cardW = isV ? 150 : 172;
+  const cardH = isV ? 44 : 50;
+  const strokeC = `rgba(212,225,87,${tier})`;
+  const glowC   = `rgba(212,225,87,${tier * 0.15})`;
 
   return (
     <g>
-      {/* Ripple rings */}
+      {/* Sonar rings */}
       {rings.map((offset, i) => {
-        const ringFrame = frame - startFrame - offset;
-        if (ringFrame < 0) return null;
-        const rippleProgress = interpolate(ringFrame % 80, [0, 80], [0, 1], { extrapolateRight: "clamp" });
-        const rippleR = interpolate(rippleProgress, [0, 1], [20, 90]);
-        const rippleOpacity = interpolate(rippleProgress, [0, 0.5, 1], [0.5, 0.2, 0]);
+        const rf = frame - startFrame - offset;
+        if (rf < 0) return null;
+        const rp = (rf % 90) / 90;
         return (
-          <circle
-            key={i}
+          <circle key={i}
             cx={cx} cy={cy}
-            r={rippleR}
+            r={interpolate(rp, [0, 1], [nodeR, nodeR * 2.8])}
             fill="none"
-            stroke={color}
-            strokeWidth={1.5}
-            opacity={rippleOpacity * appear}
+            stroke={strokeC}
+            strokeWidth={STROKE.thin}
+            opacity={interpolate(rp, [0, 0.45, 1], [0.55, 0.18, 0])}
           />
         );
       })}
 
-      {/* Core node */}
+      {/* Glow halo */}
+      <circle cx={cx} cy={cy} r={nodeR * 1.6} fill={glowC} opacity={appear} />
+
+      {/* Main node */}
       <circle
-        cx={cx} cy={cy} r={20}
-        fill={color + "22"}
-        stroke={color}
-        strokeWidth={1.5}
+        cx={cx} cy={cy} r={nodeR}
+        fill={BRAND.black2}
+        stroke={strokeC}
+        strokeWidth={STROKE.strong}
         opacity={appear}
       />
+
+      {/* Number */}
       <text
         x={cx} y={cy + 1}
         textAnchor="middle" dominantBaseline="middle"
         fontFamily="'Bricolage Grotesque', sans-serif"
         fontWeight="800"
-        fontSize={isV ? 10 : 11}
-        fill={color}
+        fontSize={isV ? 14 : 16}
+        fill={`rgba(212,225,87,${tier})`}
         opacity={appear}
       >
         {num}
       </text>
 
-      {/* Label box */}
-      <g opacity={interpolate(frame - startFrame - 30, [0, 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}>
-        <rect
-          x={cx - (isV ? 68 : 76)} y={cy + 30}
-          width={isV ? 136 : 152} height={isV ? 36 : 40}
-          rx={8}
-          fill="rgba(10,10,10,0.85)"
-          stroke={color + "44"}
-          strokeWidth={1}
-        />
-        {label.split("\n").map((line, li) => (
-          <text
-            key={li}
-            x={cx} y={cy + 30 + (isV ? 12 : 14) + li * (isV ? 13 : 14)}
-            textAnchor="middle"
-            fontFamily="'Sora', sans-serif"
-            fontWeight="600"
-            fontSize={isV ? 9 : 10}
-            fill="#cccccc"
-          >
-            {line}
-          </text>
-        ))}
-      </g>
+      {/* Label card */}
+      {(() => {
+        const labelOp = interpolate(frame - startFrame - 28, [0, 22], [0, 1], {
+          extrapolateLeft: "clamp", extrapolateRight: "clamp",
+        });
+        return (
+          <g opacity={labelOp}>
+            <rect
+              x={cx - cardW / 2} y={cy + nodeR + 12}
+              width={cardW} height={cardH}
+              rx={8}
+              fill={BRAND.black2}
+              stroke={BORDER_LIME}
+              strokeWidth={STROKE.normal}
+            />
+            {label.split("\n").map((line, li) => (
+              <text key={li}
+                x={cx}
+                y={cy + nodeR + 12 + (isV ? 14 : 16) + li * (isV ? 14 : 16)}
+                textAnchor="middle"
+                fontFamily="'Sora', sans-serif"
+                fontWeight="600"
+                fontSize={isV ? 10 : 11}
+                fill={BRAND.gray300}
+              >
+                {line}
+              </text>
+            ))}
+          </g>
+        );
+      })()}
     </g>
   );
 };
@@ -107,13 +127,18 @@ export const Day2Scene: React.FC = () => {
 
   const camScale = interpolate(frame, [0, 270], [1.0, 1.06], { extrapolateRight: "clamp" });
 
-  // Layout: triangle formation
+  // Triangle formation
   const positions = isV
-    ? [{ cx: W * 0.5, cy: H * 0.28 }, { cx: W * 0.25, cy: H * 0.58 }, { cx: W * 0.75, cy: H * 0.58 }]
-    : [{ cx: W * 0.2, cy: H * 0.45 }, { cx: W * 0.5, cy: H * 0.3 }, { cx: W * 0.8, cy: H * 0.45 }];
+    ? [{ cx: W * 0.5, cy: H * 0.27 }, { cx: W * 0.22, cy: H * 0.57 }, { cx: W * 0.78, cy: H * 0.57 }]
+    : [{ cx: W * 0.18, cy: H * 0.48 }, { cx: W * 0.5,  cy: H * 0.30 }, { cx: W * 0.82, cy: H * 0.48 }];
 
-  const headlineS = spring({ frame: frame - 10, fps, config: { damping: 16, stiffness: 110 } });
-  const outroS = spring({ frame: frame - 200, fps, config: { damping: 14, stiffness: 100 } });
+  // Opacity tiers — all lime, different intensities
+  const tiers = [1.0, 0.65, 0.38];
+
+  const headlineS = spring({ frame, fps, config: { damping: 16, stiffness: 110 } });
+  const footerS   = spring({ frame: frame - 205, fps, config: { damping: 14 } });
+
+  const headlineFs = isV ? "19px" : "22px";
 
   return (
     <div style={{
@@ -122,73 +147,64 @@ export const Day2Scene: React.FC = () => {
     }}>
       {/* Headline */}
       <div style={{
-        position: "absolute",
-        top: isV ? 36 : 28, left: 0, right: 0,
+        position: "absolute", top: isV ? 38 : 30, left: 0, right: 0,
         textAlign: "center",
         fontFamily: "'Bricolage Grotesque', sans-serif",
-        fontWeight: 800,
-        fontSize: isV ? "20px" : "24px",
-        color: "#f0f0f0",
-        letterSpacing: "-0.02em",
+        fontWeight: 800, fontSize: headlineFs,
+        color: BRAND.white, letterSpacing: "-0.025em",
         opacity: Math.max(0, headlineS),
-        transform: `translateY(${(1 - Math.max(0, headlineS)) * -16}px)`,
-        padding: "0 40px",
+        transform: `translateY(${(1 - Math.max(0, headlineS)) * -14}px)`,
+        padding: "0 44px",
       }}>
         3 sinais que seu negócio precisa de um{" "}
         <span style={{ color: LIME }}>sistema</span>
       </div>
 
-      {/* SVG scene */}
-      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
-        {/* Connecting lines between nodes */}
+      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        {/* Connecting lines */}
         {positions.map((pa, i) =>
           positions.slice(i + 1).map((pb, j) => {
-            const lineIn = interpolate(frame - (40 + (i + j) * 20), [0, 25], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+            const lp = interpolate(frame - (35 + (i + j) * 18), [0, 22], [0, 1], {
+              extrapolateLeft: "clamp", extrapolateRight: "clamp",
+            });
             return (
               <line key={`${i}-${j}`}
                 x1={pa.cx} y1={pa.cy}
-                x2={pa.cx + (pb.cx - pa.cx) * lineIn}
-                y2={pa.cy + (pb.cy - pa.cy) * lineIn}
-                stroke={LIME + "18"}
-                strokeWidth={1}
-                strokeDasharray="6 6"
+                x2={pa.cx + (pb.cx - pa.cx) * lp}
+                y2={pa.cy + (pb.cy - pa.cy) * lp}
+                stroke={LIME_20} strokeWidth={STROKE.normal}
+                strokeDasharray="6 8"
               />
             );
           })
         )}
 
-        {SIGNS.map((sign, i) => (
-          <Sonar
+        {SIGNALS.map((sig, i) => (
+          <SonarNode
             key={i}
-            cx={positions[i].cx}
-            cy={positions[i].cy}
-            color={sign.color}
-            startFrame={20 + i * 45}
-            label={sign.text}
-            num={sign.num}
+            cx={positions[i].cx} cy={positions[i].cy}
+            startFrame={18 + i * 42}
+            label={sig.text} num={sig.num}
             isV={isV}
+            tier={tiers[i]}
           />
         ))}
       </svg>
 
-      {/* Bottom CTA */}
+      {/* Footer */}
       <div style={{
-        position: "absolute",
-        bottom: isV ? "8%" : "7%",
+        position: "absolute", bottom: isV ? "7%" : "6%",
         left: 0, right: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 8,
-        opacity: Math.max(0, outroS),
-        transform: `translateY(${(1 - Math.max(0, outroS)) * 20}px)`,
+        display: "flex", justifyContent: "center", alignItems: "center", gap: 8,
+        opacity: Math.max(0, footerS),
+        transform: `translateY(${(1 - Math.max(0, footerS)) * 16}px)`,
       }}>
-        <Bookmark size={isV ? 14 : 15} color="#555" strokeWidth={2} />
+        <Bookmark size={isV ? 14 : 15} color={BRAND.gray700} strokeWidth={2} />
         <div style={{
           fontFamily: "'Sora', sans-serif",
           fontSize: isV ? "12px" : "13px",
-          color: "#444",
-          letterSpacing: "0.06em",
+          color: BRAND.gray700,
+          letterSpacing: "0.04em",
         }}>
           Salva esse vídeo para compartilhar
         </div>

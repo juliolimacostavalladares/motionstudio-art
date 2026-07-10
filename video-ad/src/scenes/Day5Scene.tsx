@@ -1,17 +1,22 @@
 /**
- * Day 5 — Authority / Process
- * Visual: Horizontal timeline that extends left-to-right with a camera pan.
- * Milestone nodes pop up with burst effects as the camera moves forward.
+ * Day 5 — Authority / Process Timeline
+ * Thicker timeline (3px), larger milestone nodes (r=18), bigger type,
+ * LogoMark on final milestone instead of emoji.
+ * Camera pan with brand tokens throughout.
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Zap } from "lucide-react";
+import {
+  BRAND, LIME, LIME_20, LIME_40,
+  BORDER_DEFAULT, BORDER_LIME, BORDER_ACCENT,
+  STROKE, RADIUS,
+} from "../shared/brand";
 
-const LIME = "#d4e157";
 const MILESTONES = [
-  { label: "Descoberta",   day: "Dia 1-3",  sub: "Mapeamos seu processo" },
-  { label: "Arquitetura",  day: "Dia 4-8",  sub: "Escopo e wireframes" },
-  { label: "Dev & Testes", day: "Dia 9-30", sub: "Entregas semanais" },
+  { label: "Descoberta",   day: "Dia 1-3",  sub: "Mapeamos seu processo"  },
+  { label: "Arquitetura",  day: "Dia 4-8",  sub: "Escopo e wireframes"    },
+  { label: "Dev & Testes", day: "Dia 9-30", sub: "Entregas semanais"      },
   { label: "Go Live!",     day: "Dia 35",   sub: "Em produção no mercado" },
 ];
 
@@ -22,156 +27,167 @@ export const Day5Scene: React.FC = () => {
   const W = width;
   const H = height;
 
-  // Camera pans right, revealing the timeline
+  // Camera pan
   const panProgress = interpolate(frame, [20, 200], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const panX = interpolate(panProgress, [0, 1], [isV ? W * 0.2 : W * 0.15, isV ? -W * 0.28 : -W * 0.22]);
+  const panX = interpolate(panProgress, [0, 1], [isV ? W * 0.2 : W * 0.14, isV ? -W * 0.28 : -W * 0.22]);
   const camScale = interpolate(frame, [0, 270], [1.0, 1.05], { extrapolateRight: "clamp" });
 
-  // Timeline line extends
-  const lineW = interpolate(frame, [10, 180], [0, isV ? W * 1.5 : W * 1.45], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+  // Timeline
+  const lineW = interpolate(frame, [10, 185], [0, isV ? W * 1.55 : W * 1.5], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
-  const lineY = isV ? H * 0.52 : H * 0.5;
-  const spacing = isV ? W * 0.45 : W * 0.36;
-  const startX = isV ? W * 0.08 : W * 0.06;
+  const lineY   = isV ? H * 0.52 : H * 0.5;
+  const spacing = isV ? W * 0.46 : W * 0.37;
+  const startX  = isV ? W * 0.07 : W * 0.06;
 
-  // Headline
   const headS = spring({ frame, fps, config: { damping: 16, stiffness: 110 } });
-  const tagS = spring({ frame: frame - 210, fps, config: { damping: 14, stiffness: 120 } });
+  const tagS  = spring({ frame: frame - 215, fps, config: { damping: 14 } });
+
+  const nodeR     = isV ? 16 : 19;
+  const labelW    = isV ? 130 : 152;
+  const labelH    = isV ? 62 : 70;
+  const cardTop   = isV ? 108 : 126;
 
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      transform: `scale(${camScale})`,
-      overflow: "hidden",
-    }}>
-      {/* Headline — fixed position */}
+    <div style={{ position: "absolute", inset: 0, transform: `scale(${camScale})`, overflow: "hidden" }}>
+      {/* Fixed headline */}
       <div style={{
-        position: "absolute",
-        top: isV ? 36 : 28, left: 0, right: 0,
+        position: "absolute", top: isV ? 36 : 28, left: 0, right: 0,
         textAlign: "center",
         fontFamily: "'Bricolage Grotesque', sans-serif",
-        fontWeight: 800,
-        fontSize: isV ? "20px" : "24px",
-        color: "#f0f0f0",
-        letterSpacing: "-0.02em",
+        fontWeight: 800, fontSize: isV ? "20px" : "24px",
+        color: BRAND.white, letterSpacing: "-0.025em",
         opacity: Math.max(0, headS),
         transform: `translateY(${(1 - Math.max(0, headS)) * -16}px)`,
-        zIndex: 10,
+        zIndex: 10, padding: "0 44px",
       }}>
         Por que entregamos em{" "}
         <span style={{ color: LIME }}>semanas, não meses</span>
       </div>
 
       {/* Panning container */}
-      <div style={{
-        position: "absolute",
-        left: 0, top: 0, right: 0, bottom: 0,
-        transform: `translateX(${panX}px)`,
-      }}>
+      <div style={{ position: "absolute", inset: 0, transform: `translateX(${panX}px)` }}>
         <svg style={{ position: "absolute", inset: 0, width: "200%", height: "100%", overflow: "visible" }}>
-          {/* Timeline base track */}
+          {/* Track background */}
+          <line
+            x1={startX} y1={lineY}
+            x2={startX + W * 1.5} y2={lineY}
+            stroke={BRAND.gray900} strokeWidth={STROKE.hero}
+          />
+          {/* Active track */}
           <line
             x1={startX} y1={lineY}
             x2={startX + lineW} y2={lineY}
-            stroke={LIME + "33"}
-            strokeWidth={2}
+            stroke={LIME_40} strokeWidth={STROKE.hero}
+          />
+          {/* Glow on active track */}
+          <line
+            x1={startX} y1={lineY}
+            x2={startX + lineW} y2={lineY}
+            stroke={LIME}
+            strokeWidth={STROKE.thin}
+            opacity={0.6}
           />
 
           {/* Milestones */}
           {MILESTONES.map((m, i) => {
             const nodeX = startX + i * spacing;
-            const nodeDelay = 30 + i * 35;
-            const ns = spring({ frame: frame - nodeDelay, fps, config: { damping: 11, stiffness: 150, mass: 0.5 } });
+            const delay = 28 + i * 34;
+            const ns = spring({ frame: frame - delay, fps, config: { damping: 11, stiffness: 150, mass: 0.5 } });
             const appear = Math.max(0, ns);
             const isLast = i === MILESTONES.length - 1;
-            // Burst rings
-            const burstProgress = interpolate(
-              frame - nodeDelay - 5,
-              [0, 40],
-              [0, 1],
-              { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-            );
+
+            const burstP = interpolate(frame - delay - 4, [0, 40], [0, 1], {
+              extrapolateLeft: "clamp", extrapolateRight: "clamp",
+            });
 
             return (
               <g key={i}>
-                {/* Burst rings */}
-                {[0, 12, 24].map((offset, ri) => {
-                  const rp = Math.max(0, burstProgress - offset / 40);
+                {/* Burst */}
+                {[0, 14, 28].map((off, ri) => {
+                  const rp = Math.max(0, burstP - off / 40);
                   return (
                     <circle key={ri}
                       cx={nodeX} cy={lineY}
-                      r={interpolate(rp, [0, 1], [8, isV ? 44 : 50])}
+                      r={interpolate(rp, [0, 1], [nodeR, nodeR * (isV ? 3.2 : 3.5)])}
                       fill="none"
-                      stroke={isLast ? LIME : LIME + "55"}
-                      strokeWidth={1.5}
-                      opacity={interpolate(rp, [0, 0.6, 1], [0.6, 0.2, 0])}
+                      stroke={isLast ? LIME : LIME_40}
+                      strokeWidth={isLast ? STROKE.normal : STROKE.thin}
+                      opacity={interpolate(rp, [0, 0.55, 1], [0.6, 0.18, 0])}
                     />
                   );
                 })}
 
-                {/* Node dot */}
+                {/* Node */}
                 <circle
-                  cx={nodeX} cy={lineY} r={isLast ? 14 : 10}
-                  fill={isLast ? LIME : "rgba(10,10,10,0.95)"}
+                  cx={nodeX} cy={lineY} r={nodeR}
+                  fill={isLast ? LIME : BRAND.black2}
                   stroke={LIME}
-                  strokeWidth={isLast ? 0 : 2}
+                  strokeWidth={isLast ? 0 : STROKE.strong}
                   opacity={appear}
                   style={{ transform: `scale(${appear})`, transformOrigin: `${nodeX}px ${lineY}px` }}
                 />
-                {isLast && (
+
+                {/* Zap icon on last node */}
+                {isLast && appear > 0.3 && (
                   <foreignObject
-                    x={nodeX - 8} y={lineY - 19}
-                    width={16} height={16}
+                    x={nodeX - 9} y={lineY - 20}
+                    width={18} height={18}
                   >
-                    <Zap size={14} color="#111" strokeWidth={2.5} fill="#111" />
+                    <Zap size={15} color={BRAND.black2} strokeWidth={2.5} fill={BRAND.black2} />
                   </foreignObject>
                 )}
 
-                {/* Vertical line up to label */}
+                {/* Vertical connector */}
                 <line
-                  x1={nodeX} y1={lineY - (isLast ? 14 : 10)}
-                  x2={nodeX} y2={lineY - (isV ? 78 : 88) * appear}
-                  stroke={LIME + "44"}
-                  strokeWidth={1}
+                  x1={nodeX} y1={lineY - nodeR}
+                  x2={nodeX} y2={lineY - (isV ? cardTop - 10 : cardTop - 8) * appear}
+                  stroke={isLast ? LIME_40 : BORDER_DEFAULT}
+                  strokeWidth={STROKE.normal}
                   opacity={appear}
                 />
 
                 {/* Label card */}
-                <g opacity={appear} style={{ transform: `scale(${appear})`, transformOrigin: `${nodeX}px ${lineY - 100}px` }}>
+                <g opacity={appear}
+                  style={{ transform: `scale(${appear})`, transformOrigin: `${nodeX}px ${lineY - cardTop - 20}px` }}
+                >
                   <rect
-                    x={nodeX - (isV ? 62 : 72)} y={lineY - (isV ? 130 : 148)}
-                    width={isV ? 124 : 144} height={isV ? 52 : 58}
-                    rx={8}
-                    fill="rgba(12,12,12,0.92)"
-                    stroke={isLast ? LIME + "66" : LIME + "28"}
-                    strokeWidth={1}
+                    x={nodeX - labelW / 2}
+                    y={lineY - cardTop - labelH}
+                    width={labelW} height={labelH}
+                    rx={RADIUS.sm}
+                    fill={BRAND.black2}
+                    stroke={isLast ? BORDER_LIME : BORDER_DEFAULT}
+                    strokeWidth={isLast ? STROKE.normal : STROKE.thin}
                   />
-                  <text x={nodeX} y={lineY - (isV ? 114 : 130)}
+                  {/* Label text */}
+                  <text
+                    x={nodeX} y={lineY - cardTop - labelH + (isV ? 18 : 20)}
                     textAnchor="middle"
                     fontFamily="'Bricolage Grotesque', sans-serif"
                     fontWeight="800"
-                    fontSize={isV ? 11 : 12}
-                    fill={isLast ? LIME : "#f0f0f0"}
+                    fontSize={isV ? 13 : 14}
+                    fill={isLast ? LIME : BRAND.white}
                   >
                     {m.label}
                   </text>
-                  <text x={nodeX} y={lineY - (isV ? 98 : 112)}
+                  <text
+                    x={nodeX} y={lineY - cardTop - labelH + (isV ? 36 : 40)}
                     textAnchor="middle"
                     fontFamily="'Sora', sans-serif"
-                    fontWeight="600"
-                    fontSize={isV ? 9 : 10}
+                    fontWeight="700"
+                    fontSize={isV ? 11 : 12}
                     fill={LIME}
                   >
                     {m.day}
                   </text>
-                  <text x={nodeX} y={lineY - (isV ? 85 : 96)}
+                  <text
+                    x={nodeX} y={lineY - cardTop - labelH + (isV ? 52 : 57)}
                     textAnchor="middle"
                     fontFamily="'Sora', sans-serif"
-                    fontSize={isV ? 8 : 9}
-                    fill="#555"
+                    fontSize={isV ? 10 : 11}
+                    fill={BRAND.gray500}
                   >
                     {m.sub}
                   </text>
@@ -184,19 +200,17 @@ export const Day5Scene: React.FC = () => {
 
       {/* Fixed tagline */}
       <div style={{
-        position: "absolute",
-        bottom: isV ? "8%" : "7%",
+        position: "absolute", bottom: isV ? "7%" : "6%",
         left: 0, right: 0, textAlign: "center",
         opacity: Math.max(0, tagS),
         transform: `translateY(${(1 - Math.max(0, tagS)) * 16}px)`,
         zIndex: 10,
       }}>
         <div style={{
-          display: "inline-flex", alignItems: "center", gap: 10,
           fontFamily: "'Bricolage Grotesque', sans-serif",
-          fontWeight: 800,
-          fontSize: isV ? "16px" : "18px",
-          color: "#f0f0f0",
+          fontWeight: 800, fontSize: isV ? "16px" : "18px",
+          color: BRAND.white,
+          display: "inline-flex", alignItems: "center", gap: 8,
         }}>
           Do zero ao mercado em
           <span style={{ color: LIME }}> 5 semanas</span>
