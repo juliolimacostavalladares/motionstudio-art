@@ -9,3 +9,4 @@ out
 # Rendered video outputs (binary, too heavy for git)
 public/*.mp4
 public/*.webm
+.vercel
