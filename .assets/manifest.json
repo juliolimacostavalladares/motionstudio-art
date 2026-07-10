@@ -1,0 +1,64 @@
+{
+  "assets": [
+    {
+      "id": "c7b4b4c0-3959-4164-883a-129dcc6d2723",
+      "name": "Motion Studio LinkedIn Launch Banner — Typographic Hero",
+      "type": "banner",
+      "path": "assets/banners/motion-studio-launch/banner_motion-studio-launch_hero-linkedin_20260709_typographic-hero.png",
+      "dimensions": { "width": 1200, "height": 627 },
+      "fileSize": 67209,
+      "mimeType": "image/png",
+      "tags": ["archived", "linkedin", "promotional", "landscape", "chrome-headless"],
+      "status": "archived",
+      "source": {
+        "model": "html-css-render",
+        "prompt": "Bold Typography banner for Motion Studio LinkedIn launch: 1200x627, #111111/#d4e157 palette, typographic hero layout",
+        "createdAt": "2026-07-09T23:23:00Z"
+      },
+      "version": 1,
+      "createdBy": "agent:content-creator",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "01a683f9-0e1f-4685-b5d6-0247d5c55c58",
+      "name": "Motion Studio LinkedIn Launch Banner — Split Contrast",
+      "type": "banner",
+      "path": "assets/banners/motion-studio-launch/banner_motion-studio-launch_hero-linkedin_20260709_split-contrast.png",
+      "dimensions": { "width": 1200, "height": 627 },
+      "fileSize": 60143,
+      "mimeType": "image/png",
+      "tags": ["archived", "linkedin", "promotional", "landscape", "chrome-headless"],
+      "status": "archived",
+      "source": {
+        "model": "html-css-render",
+        "prompt": "Bold Typography banner for Motion Studio LinkedIn launch: 1200x627, #111111/#d4e157 palette, split contrast diagonal layout",
+        "createdAt": "2026-07-09T23:23:00Z"
+      },
+      "version": 1,
+      "createdBy": "agent:content-creator",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "37258dd7-1ee1-4112-bb17-0c9c099de5d7",
+      "name": "Motion Studio LinkedIn Launch Banner — Geometric Type",
+      "type": "banner",
+      "path": "assets/banners/motion-studio-launch/banner_motion-studio-launch_hero-linkedin_20260709_geometric-type.png",
+      "dimensions": { "width": 1200, "height": 627 },
+      "fileSize": 72752,
+      "mimeType": "image/png",
+      "tags": ["approved", "linkedin", "promotional", "landscape", "chrome-headless"],
+      "status": "approved",
+      "source": {
+        "model": "html-css-render",
+        "prompt": "Bold Typography banner for Motion Studio LinkedIn launch: 1200x627, #111111/#d4e157 palette, geometric shapes layout",
+        "createdAt": "2026-07-09T23:23:00Z"
+      },
+      "version": 1,
+      "createdBy": "agent:content-creator",
+      "approvedBy": "user",
+      "approvedAt": "2026-07-09T23:30:00Z"
+    }
+  ]
+}

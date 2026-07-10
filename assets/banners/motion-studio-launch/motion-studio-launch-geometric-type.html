@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motion Studio — Geometric Type</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #111111;
+      --lime: #d4e157;
+      --white: #f5f5f5;
+      --gray: #a0a0a0;
+    }
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .banner {
+      width: 1200px;
+      height: 627px;
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .geo {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--lime);
+      opacity: 0.12;
+    }
+    .geo-1 { width: 420px; height: 420px; top: -140px; right: -80px; }
+    .geo-2 { width: 260px; height: 260px; bottom: -70px; left: -60px; opacity: 0.18; }
+    .geo-3 {
+      width: 180px;
+      height: 180px;
+      top: 50%;
+      right: 120px;
+      transform: translateY(-50%) rotate(45deg);
+      border-radius: 24px;
+      background: transparent;
+      border: 3px solid var(--lime);
+      opacity: 0.25;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 2;
+    }
+    .logo svg { width: 52px; height: 52px; }
+    .brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+    .tagline {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-top: 3px;
+    }
+    .main {
+      z-index: 2;
+      max-width: 760px;
+    }
+    .headline {
+      font-size: 88px;
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+    }
+    .headline .highlight { color: var(--lime); }
+    .subtext {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--gray);
+      margin-bottom: 28px;
+      max-width: 520px;
+    }
+    .differentials {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 40px;
+      max-width: 640px;
+    }
+    .differentials li {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .differentials li::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: var(--lime);
+      border-radius: 4px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+    .cta {
+      background: var(--lime);
+      color: var(--black);
+      font-size: 16px;
+      font-weight: 800;
+      padding: 16px 34px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .url {
+      font-size: 14px;
+      color: var(--gray);
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="geo geo-1"></div>
+    <div class="geo geo-2"></div>
+    <div class="geo geo-3"></div>
+
+    <div class="logo">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" rx="40" fill="#111111" />
+        <path d="M100 40C66.86 40 40 66.86 40 100C40 133.14 66.86 160 100 160H160V100C160 66.86 133.14 40 100 40Z" fill="#d4e157" />
+        <circle cx="100" cy="100" r="25" fill="#111111" />
+      </svg>
+      <div>
+        <div class="brand-name">Motion Studio</div>
+        <div class="tagline">Movimentamos negócios com tecnologia sob medida.</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <h1 class="headline">Transformamos desafios em <span class="highlight">código</span></h1>
+      <p class="subtext">Software house que une estratégia, design e engenharia para acelerar negócios digitais.</p>
+      <ul class="differentials">
+        <li>Foco em resultado, não apenas código</li>
+        <li>Processo transparente do dia 1</li>
+        <li>Entregas ágeis com qualidade</li>
+        <li>Suporte contínuo pós-lançamento</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <span class="url">motionstudio.art</span>
+      <a class="cta" href="#">Visite nosso site</a>
+    </div>
+  </div>
+</body>
+</html>

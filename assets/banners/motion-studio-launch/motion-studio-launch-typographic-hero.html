@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motion Studio — Typographic Hero</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #111111;
+      --lime: #d4e157;
+      --white: #f5f5f5;
+      --gray: #a0a0a0;
+    }
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .banner {
+      width: 1200px;
+      height: 627px;
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      padding: 64px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .accent-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 100%;
+      background: var(--lime);
+    }
+    .accent-box {
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 320px;
+      height: 320px;
+      border: 2px solid rgba(212, 225, 87, 0.25);
+      border-radius: 50%;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      z-index: 2;
+    }
+    .logo svg { width: 56px; height: 56px; }
+    .brand-name {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+    .tagline {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-top: 4px;
+    }
+    .main {
+      z-index: 2;
+      max-width: 900px;
+    }
+    .headline {
+      font-size: 86px;
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 28px;
+    }
+    .headline .highlight { color: var(--lime); }
+    .subtext {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--gray);
+      margin-bottom: 32px;
+      max-width: 560px;
+    }
+    .differentials {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 40px;
+      max-width: 700px;
+      margin-bottom: 36px;
+    }
+    .differentials li {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .differentials li::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: var(--lime);
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+    .cta {
+      background: var(--lime);
+      color: var(--black);
+      font-size: 16px;
+      font-weight: 800;
+      padding: 16px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      letter-spacing: 0.02em;
+    }
+    .url {
+      font-size: 14px;
+      color: var(--gray);
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="accent-line"></div>
+    <div class="accent-box"></div>
+
+    <div class="logo">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" rx="40" fill="#111111" />
+        <path d="M100 40C66.86 40 40 66.86 40 100C40 133.14 66.86 160 100 160H160V100C160 66.86 133.14 40 100 40Z" fill="#d4e157" />
+        <circle cx="100" cy="100" r="25" fill="#111111" />
+      </svg>
+      <div>
+        <div class="brand-name">Motion Studio</div>
+        <div class="tagline">Movimentamos negócios com tecnologia sob medida.</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <h1 class="headline">Transformamos desafios em <span class="highlight">código</span></h1>
+      <p class="subtext">Software house especializada em entregar soluções digitais com foco em resultado, transparência e agilidade.</p>
+      <ul class="differentials">
+        <li>Foco em resultado, não apenas código</li>
+        <li>Processo transparente do dia 1</li>
+        <li>Entregas ágeis com qualidade</li>
+        <li>Suporte contínuo pós-lançamento</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <span class="url">motionstudio.art</span>
+      <a class="cta" href="#">Visite nosso site</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1128px;
+    height: 191px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .banner {
+    width: 1128px;
+    height: 191px;
+    background: #111111;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mesh-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(212, 225, 87, 0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(212, 225, 87, 0.06) 0%, transparent 50%);
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212, 225, 87, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 225, 87, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .shape-1 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    height: 220px;
+    border: 2px solid rgba(212, 225, 87, 0.12);
+    border-radius: 50%;
+  }
+
+  .shape-2 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border: 2px solid rgba(212, 225, 87, 0.08);
+    border-radius: 50%;
+  }
+
+  .shape-3 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border: 1px solid rgba(212, 225, 87, 0.05);
+    border-radius: 50%;
+  }
+
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .text-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #d4e157;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background: #d4e157;
+  }
+
+  .headline {
+    font-size: 42px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -1px;
+    line-height: 1.05;
+  }
+
+  .headline .highlight {
+    color: #d4e157;
+  }
+
+  .divider {
+    width: 2px;
+    height: 60px;
+    background: linear-gradient(180deg, transparent, rgba(212, 225, 87, 0.4), transparent);
+  }
+
+  .slogan {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.3px;
+    max-width: 280px;
+    line-height: 1.4;
+  }
+
+  .dots-left {
+    position: absolute;
+    left: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    opacity: 0.4;
+  }
+
+  .dots-right {
+    position: absolute;
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    opacity: 0.4;
+  }
+
+  .dot {
+    width: 3px;
+    height: 3px;
+    background: rgba(212, 225, 87, 0.3);
+    border-radius: 50%;
+  }
+
+  .accent-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #d4e157 50%, transparent 100%);
+  }
+
+  .accent-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, rgba(212, 225, 87, 0.3) 50%, transparent 100%);
+  }
+</style>
+</head>
+<body>
+  <div class="banner">
+    <div class="mesh-bg"></div>
+    <div class="grid-overlay"></div>
+    <div class="accent-top"></div>
+    <div class="accent-bottom"></div>
+
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+    <div class="shape-3"></div>
+
+    <div class="dots-left">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="dots-right">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="content">
+      <div class="text-block">
+        <div class="tag">Software House</div>
+        <h1 class="headline">Mova o seu <span class="highlight">negócio</span></h1>
+      </div>
+      <div class="divider"></div>
+      <p class="slogan">Movimente o seu negócio com tecnologia sob medida</p>
+    </div>
+  </div>
+</body>
+</html>

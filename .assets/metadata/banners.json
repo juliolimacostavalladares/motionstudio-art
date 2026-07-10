@@ -1,0 +1,40 @@
+{
+  "banners": [
+    {
+      "id": "c7b4b4c0-3959-4164-883a-129dcc6d2723",
+      "campaign": "motion-studio-launch",
+      "description": "hero-linkedin",
+      "variant": "typographic-hero",
+      "platform": "linkedin",
+      "format": "landscape",
+      "contentType": "promotional",
+      "dimensions": { "width": 1200, "height": 627 },
+      "createdAt": "2026-07-09T23:23:00Z",
+      "status": "draft"
+    },
+    {
+      "id": "01a683f9-0e1f-4685-b5d6-0247d5c55c58",
+      "campaign": "motion-studio-launch",
+      "description": "hero-linkedin",
+      "variant": "split-contrast",
+      "platform": "linkedin",
+      "format": "landscape",
+      "contentType": "promotional",
+      "dimensions": { "width": 1200, "height": 627 },
+      "createdAt": "2026-07-09T23:23:00Z",
+      "status": "draft"
+    },
+    {
+      "id": "37258dd7-1ee1-4112-bb17-0c9c099de5d7",
+      "campaign": "motion-studio-launch",
+      "description": "hero-linkedin",
+      "variant": "geometric-type",
+      "platform": "linkedin",
+      "format": "landscape",
+      "contentType": "promotional",
+      "dimensions": { "width": 1200, "height": 627 },
+      "createdAt": "2026-07-09T23:23:00Z",
+      "status": "draft"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 4752px;
+    height: 1188px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .banner {
+    width: 4752px;
+    height: 1188px;
+    background: #111111;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mesh-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(212, 225, 87, 0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(212, 225, 87, 0.06) 0%, transparent 50%);
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212, 225, 87, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 225, 87, 0.03) 1px, transparent 1px);
+    background-size: 144px 144px;
+  }
+
+  .shape-1 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    border: 6px solid rgba(212, 225, 87, 0.12);
+    border-radius: 50%;
+  }
+
+  .shape-2 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border: 6px solid rgba(212, 225, 87, 0.08);
+    border-radius: 50%;
+  }
+
+  .shape-3 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px;
+    height: 1200px;
+    border: 3px solid rgba(212, 225, 87, 0.05);
+    border-radius: 50%;
+  }
+
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 36px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 36px;
+    font-weight: 700;
+    color: #d4e157;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 60px;
+    height: 5px;
+    background: #d4e157;
+  }
+
+  .tag::after {
+    content: '';
+    width: 60px;
+    height: 5px;
+    background: #d4e157;
+  }
+
+  .headline {
+    font-size: 168px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -5px;
+    line-height: 1.05;
+  }
+
+  .headline .highlight {
+    color: #d4e157;
+  }
+
+  .slogan {
+    font-size: 54px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 2px;
+  }
+
+  .dots {
+    position: absolute;
+    left: 15%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 48px;
+    opacity: 0.4;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(212, 225, 87, 0.3);
+    border-radius: 50%;
+  }
+
+  .dots-right {
+    position: absolute;
+    right: 15%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 48px;
+    opacity: 0.4;
+  }
+
+  .dots-right .dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(212, 225, 87, 0.3);
+    border-radius: 50%;
+  }
+
+  .accent-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, transparent 0%, #d4e157 50%, transparent 100%);
+  }
+
+  .accent-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, transparent 0%, rgba(212, 225, 87, 0.3) 50%, transparent 100%);
+  }
+</style>
+</head>
+<body>
+  <div class="banner">
+    <div class="mesh-bg"></div>
+    <div class="grid-overlay"></div>
+    <div class="accent-top"></div>
+    <div class="accent-bottom"></div>
+
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+    <div class="shape-3"></div>
+
+    <div class="dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="dots-right">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="content">
+      <div class="tag">Software House</div>
+      <h1 class="headline">
+        Mova o seu<br><span class="highlight">negócio</span>
+      </h1>
+      <p class="slogan">Movimente o seu negócio com tecnologia sob medida</p>
+    </div>
+  </div>
+</body>
+</html>
