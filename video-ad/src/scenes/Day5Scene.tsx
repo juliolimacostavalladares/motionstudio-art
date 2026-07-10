@@ -5,13 +5,14 @@
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { Zap } from "lucide-react";
 
 const LIME = "#d4e157";
 const MILESTONES = [
-  { label: "Descoberta",    day: "Dia 1–3",  sub: "Mapeamos seu processo" },
-  { label: "Arquitetura",   day: "Dia 4–8",  sub: "Escopo e wireframes" },
-  { label: "Dev & Testes",  day: "Dia 9–30", sub: "Entregas semanais" },
-  { label: "Go Live! 🚀",   day: "Dia 35",   sub: "Em produção no mercado" },
+  { label: "Descoberta",   day: "Dia 1-3",  sub: "Mapeamos seu processo" },
+  { label: "Arquitetura",  day: "Dia 4-8",  sub: "Escopo e wireframes" },
+  { label: "Dev & Testes", day: "Dia 9-30", sub: "Entregas semanais" },
+  { label: "Go Live!",     day: "Dia 35",   sub: "Em produção no mercado" },
 ];
 
 export const Day5Scene: React.FC = () => {
@@ -121,11 +122,12 @@ export const Day5Scene: React.FC = () => {
                   style={{ transform: `scale(${appear})`, transformOrigin: `${nodeX}px ${lineY}px` }}
                 />
                 {isLast && (
-                  <text x={nodeX} y={lineY + 1}
-                    textAnchor="middle" dominantBaseline="middle"
-                    fontSize={isV ? 10 : 12}
-                    fill="#111"
-                  >🚀</text>
+                  <foreignObject
+                    x={nodeX - 8} y={lineY - 19}
+                    width={16} height={16}
+                  >
+                    <Zap size={14} color="#111" strokeWidth={2.5} fill="#111" />
+                  </foreignObject>
                 )}
 
                 {/* Vertical line up to label */}

@@ -5,6 +5,7 @@
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { MessageSquare, ChevronDown } from "lucide-react";
 
 const LIME = "#d4e157";
 
@@ -44,15 +45,18 @@ export const Day3Scene: React.FC = () => {
         position: "absolute",
         top: 28, left: 0, right: 0,
         display: "flex", justifyContent: "center",
+        alignItems: "center",
+        gap: 6,
         opacity: Math.max(0, badgeS),
       }}>
+        <MessageSquare size={12} color={LIME + "88"} strokeWidth={2} />
         <div style={{
           fontFamily: "'Sora', sans-serif",
           fontSize: "11px", fontWeight: 700,
           color: LIME + "88", letterSpacing: "0.14em",
           textTransform: "uppercase",
         }}>
-          💬 Pergunta do dia
+          Pergunta do dia
         </div>
       </div>
 
@@ -138,12 +142,15 @@ export const Day3Scene: React.FC = () => {
         gap: 10,
       }}>
         <span>Comenta</span>
-        <span style={{
-          display: "inline-block",
-          transform: `translateX(${Math.sin(frame * 0.18) * 6}px)`,
-        }}>
-          👇
-        </span>
+        <ChevronDown
+          size={isV ? 22 : 26}
+          color={LIME}
+          strokeWidth={2.5}
+          style={{
+            display: "inline-block",
+            transform: `translateY(${Math.sin(frame * 0.18) * 6}px)`,
+          }}
+        />
       </div>
     </div>
   );

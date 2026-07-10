@@ -6,6 +6,7 @@
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { MessageSquare } from "lucide-react";
 
 const LIME = "#d4e157";
 
@@ -172,8 +173,13 @@ export const Day7Scene: React.FC = () => {
           fontFamily: "'Sora', sans-serif",
           fontSize: isV ? "13px" : "14px",
           color: "#444",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
         }}>
-          O que você vai construir essa semana? 💬
+          O que você vai construir essa semana?
+          <MessageSquare size={isV ? 13 : 14} color="#444" strokeWidth={1.5} />
         </div>
       </div>
     </div>

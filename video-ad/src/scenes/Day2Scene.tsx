@@ -5,6 +5,7 @@
  */
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { Bookmark } from "lucide-react";
 
 const LIME = "#d4e157";
 const SIGNS = [
@@ -175,17 +176,21 @@ export const Day2Scene: React.FC = () => {
         position: "absolute",
         bottom: isV ? "8%" : "7%",
         left: 0, right: 0,
-        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 8,
         opacity: Math.max(0, outroS),
         transform: `translateY(${(1 - Math.max(0, outroS)) * 20}px)`,
       }}>
+        <Bookmark size={isV ? 14 : 15} color="#555" strokeWidth={2} />
         <div style={{
           fontFamily: "'Sora', sans-serif",
           fontSize: isV ? "12px" : "13px",
           color: "#444",
           letterSpacing: "0.06em",
         }}>
-          💾 Salva esse vídeo para compartilhar
+          Salva esse vídeo para compartilhar
         </div>
       </div>
     </div>
