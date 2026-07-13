@@ -5,6 +5,7 @@ import {
   useVideoConfig,
   interpolate,
   spring,
+  Easing,
 } from "remotion";
 import { Background } from "./components/Background";
 import { Logo } from "./components/Logo";
@@ -167,46 +168,98 @@ export const EcommerceVideo: React.FC = () => {
             <div className="relative w-full h-full flex flex-col justify-between items-center py-20 px-6 text-center">
               
               {/* Textos da Cena 2 */}
-              {frame >= scene2Start && frame < scene3Start && (
-                <div 
-                  style={{
-                    opacity: interpolate(frame - scene2Start, [0, 15, scene2Duration - 15, scene2Duration], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-                    transform: `translateY(${interpolate(frame - scene2Start, [0, 15], [20, 0])}px)`,
-                  }}
-                  className="flex flex-col gap-2 z-10"
-                >
-                  <span className="text-[#d4e157] text-[11px] font-extrabold tracking-widest uppercase">
-                    Desenvolvimento Sob Medida
-                  </span>
-                  <h2
-                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-                    className="text-[30px] font-bold text-white tracking-tight leading-none"
-                  >
-                    Sua loja pronta de verdade
-                  </h2>
-                </div>
-              )}
+              {frame >= scene2Start && frame < scene3Start && (() => {
+                const localFrame = frame - scene2Start;
+                // Staggered exit: title exits first, then subtitle
+                const exitProgress = interpolate(localFrame, [scene2Duration - 20, scene2Duration], [0, 1], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                  easing: Easing.bezier(0.25, 1, 0.5, 1),
+                });
+                const titleOpacity = interpolate(exitProgress, [0, 0.6], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                const subtitleOpacity = interpolate(exitProgress, [0.3, 1], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                const titleY = exitProgress * -25;
+                const subtitleY = exitProgress * -18;
+                // Entrance
+                const enterProgress = interpolate(localFrame, [0, 18], [0, 1], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                  easing: Easing.bezier(0.25, 1, 0.5, 1),
+                });
+                const enterTitleY = (1 - enterProgress) * 20;
+                const enterSubY = (1 - interpolate(localFrame, [5, 22], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) })) * 15;
+
+                return (
+                  <div className="flex flex-col gap-2 z-10">
+                    <span
+                      style={{
+                        opacity: subtitleOpacity * enterProgress,
+                        transform: `translateY(${subtitleY + enterSubY}px)`,
+                      }}
+                      className="text-[#d4e157] text-[11px] font-extrabold tracking-widest uppercase"
+                    >
+                      Desenvolvimento Sob Medida
+                    </span>
+                    <h2
+                      style={{
+                        fontFamily: "'Bricolage Grotesque', sans-serif",
+                        opacity: titleOpacity * enterProgress,
+                        transform: `translateY(${titleY + enterTitleY}px)`,
+                      }}
+                      className="text-[30px] font-bold text-white tracking-tight leading-none"
+                    >
+                      Sua loja pronta de verdade
+                    </h2>
+                  </div>
+                );
+              })()}
 
               {/* Textos da Cena 3 */}
-              {frame >= scene3Start && frame < scene4Start && (
-                <div 
-                  style={{
-                    opacity: interpolate(frame - scene3Start, [0, 15, scene3Duration - 15, scene3Duration], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-                    transform: `translateY(${interpolate(frame - scene3Start, [0, 15], [20, 0])}px)`,
-                  }}
-                  className="flex flex-col gap-2 z-10"
-                >
-                  <span className="text-[#d4e157] text-[11px] font-extrabold tracking-widest uppercase">
-                    Funcionalidades Inclusas
-                  </span>
-                  <h2
-                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-                    className="text-[30px] font-bold text-white tracking-tight leading-none"
-                  >
-                    Lojas rápidas e integradas
-                  </h2>
-                </div>
-              )}
+              {frame >= scene3Start && frame < scene4Start && (() => {
+                const localFrame = frame - scene3Start;
+                // Staggered exit
+                const exitProgress = interpolate(localFrame, [scene3Duration - 20, scene3Duration], [0, 1], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                  easing: Easing.bezier(0.25, 1, 0.5, 1),
+                });
+                const titleOpacity = interpolate(exitProgress, [0, 0.6], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                const subtitleOpacity = interpolate(exitProgress, [0.3, 1], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                const titleY = exitProgress * -25;
+                const subtitleY = exitProgress * -18;
+                // Entrance with stagger
+                const enterProgress = interpolate(localFrame, [0, 18], [0, 1], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                  easing: Easing.bezier(0.25, 1, 0.5, 1),
+                });
+                const enterTitleY = (1 - enterProgress) * 20;
+                const enterSubY = (1 - interpolate(localFrame, [5, 22], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) })) * 15;
+
+                return (
+                  <div className="flex flex-col gap-2 z-10">
+                    <span
+                      style={{
+                        opacity: subtitleOpacity * enterProgress,
+                        transform: `translateY(${subtitleY + enterSubY}px)`,
+                      }}
+                      className="text-[#d4e157] text-[11px] font-extrabold tracking-widest uppercase"
+                    >
+                      Funcionalidades Inclusas
+                    </span>
+                    <h2
+                      style={{
+                        fontFamily: "'Bricolage Grotesque', sans-serif",
+                        opacity: titleOpacity * enterProgress,
+                        transform: `translateY(${titleY + enterTitleY}px)`,
+                      }}
+                      className="text-[30px] font-bold text-white tracking-tight leading-none"
+                    >
+                      Lojas rápidas e integradas
+                    </h2>
+                  </div>
+                );
+              })()}
 
               {/* Elemento Visual Central: Showcase Contínuo */}
               <div className="w-full flex-grow flex justify-center items-center my-6">
@@ -223,52 +276,84 @@ export const EcommerceVideo: React.FC = () => {
               <div className="w-[42%] flex flex-col justify-center h-full">
                 
                 {/* Texto da Cena 2 */}
-                {frame >= scene2Start && frame < scene3Start && (
-                  <div
-                    style={{
-                      opacity: interpolate(frame - scene2Start, [0, 15, scene2Duration - 15, scene2Duration], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-                      transform: `translateX(${interpolate(frame - scene2Start, [0, 15], [-20, 0])}px)`,
-                    }}
-                    className="flex flex-col gap-4"
-                  >
-                    <span className="text-[#d4e157] text-[12px] font-extrabold tracking-widest uppercase">
-                      Desenvolvimento Sob Medida
-                    </span>
-                    <h2
-                      style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-                      className="text-[42px] font-bold text-white tracking-tight leading-none"
-                    >
-                      Sua loja pronta de verdade
-                    </h2>
-                    <p className="text-neutral-400 text-[14px] leading-relaxed">
-                      Criação de e-commerce completo com tecnologia de ponta, checkout seguro e otimização para vendas em semanas.
-                    </p>
-                  </div>
-                )}
+                {frame >= scene2Start && frame < scene3Start && (() => {
+                  const localFrame = frame - scene2Start;
+                  const exitProgress = interpolate(localFrame, [scene2Duration - 20, scene2Duration], [0, 1], {
+                    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+                    easing: Easing.bezier(0.25, 1, 0.5, 1),
+                  });
+                  const tagOpacity = interpolate(exitProgress, [0, 0.5], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const titleOpacity = interpolate(exitProgress, [0, 0.6], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const descOpacity = interpolate(exitProgress, [0.15, 0.75], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const exitX = exitProgress * -20;
+                  // Entrance with stagger
+                  const enterTag = interpolate(localFrame, [0, 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+                  const enterTitle = interpolate(localFrame, [3, 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+                  const enterDesc = interpolate(localFrame, [8, 25], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+
+                  return (
+                    <div className="flex flex-col gap-4">
+                      <span
+                        style={{ opacity: tagOpacity * enterTag, transform: `translateX(${exitX + (1 - enterTag) * -15}px)` }}
+                        className="text-[#d4e157] text-[12px] font-extrabold tracking-widest uppercase"
+                      >
+                        Desenvolvimento Sob Medida
+                      </span>
+                      <h2
+                        style={{ fontFamily: "'Bricolage Grotesque', sans-serif", opacity: titleOpacity * enterTitle, transform: `translateX(${exitX + (1 - enterTitle) * -12}px)` }}
+                        className="text-[42px] font-bold text-white tracking-tight leading-none"
+                      >
+                        Sua loja pronta de verdade
+                      </h2>
+                      <p
+                        style={{ opacity: descOpacity * enterDesc, transform: `translateX(${exitX + (1 - enterDesc) * -10}px)` }}
+                        className="text-neutral-400 text-[14px] leading-relaxed"
+                      >
+                        Criação de e-commerce completo com tecnologia de ponta, checkout seguro e otimização para vendas em semanas.
+                      </p>
+                    </div>
+                  );
+                })()}
 
                 {/* Texto da Cena 3 */}
-                {frame >= scene3Start && frame < scene4Start && (
-                  <div
-                    style={{
-                      opacity: interpolate(frame - scene3Start, [0, 15, scene3Duration - 15, scene3Duration], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-                      transform: `translateX(${interpolate(frame - scene3Start, [0, 15], [-20, 0])}px)`,
-                    }}
-                    className="flex flex-col gap-4"
-                  >
-                    <span className="text-[#d4e157] text-[12px] font-extrabold tracking-widest uppercase">
-                      Tecnologia de Alta Conversão
-                    </span>
-                    <h2
-                      style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-                      className="text-[42px] font-bold text-white tracking-tight leading-none"
-                    >
-                      Completo e integrado
-                    </h2>
-                    <p className="text-neutral-400 text-[14px] leading-relaxed">
-                      Lojas virtuais extremamente rápidas, integradas com meios de pagamento e preparadas para faturar alto.
-                    </p>
-                  </div>
-                )}
+                {frame >= scene3Start && frame < scene4Start && (() => {
+                  const localFrame = frame - scene3Start;
+                  const exitProgress = interpolate(localFrame, [scene3Duration - 20, scene3Duration], [0, 1], {
+                    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+                    easing: Easing.bezier(0.25, 1, 0.5, 1),
+                  });
+                  const tagOpacity = interpolate(exitProgress, [0, 0.5], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const titleOpacity = interpolate(exitProgress, [0, 0.6], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const descOpacity = interpolate(exitProgress, [0.15, 0.75], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+                  const exitX = exitProgress * -20;
+                  // Entrance with stagger
+                  const enterTag = interpolate(localFrame, [0, 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+                  const enterTitle = interpolate(localFrame, [3, 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+                  const enterDesc = interpolate(localFrame, [8, 25], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.25, 1, 0.5, 1) });
+
+                  return (
+                    <div className="flex flex-col gap-4">
+                      <span
+                        style={{ opacity: tagOpacity * enterTag, transform: `translateX(${exitX + (1 - enterTag) * -15}px)` }}
+                        className="text-[#d4e157] text-[12px] font-extrabold tracking-widest uppercase"
+                      >
+                        Tecnologia de Alta Conversão
+                      </span>
+                      <h2
+                        style={{ fontFamily: "'Bricolage Grotesque', sans-serif", opacity: titleOpacity * enterTitle, transform: `translateX(${exitX + (1 - enterTitle) * -12}px)` }}
+                        className="text-[42px] font-bold text-white tracking-tight leading-none"
+                      >
+                        Completo e integrado
+                      </h2>
+                      <p
+                        style={{ opacity: descOpacity * enterDesc, transform: `translateX(${exitX + (1 - enterDesc) * -10}px)` }}
+                        className="text-neutral-400 text-[14px] leading-relaxed"
+                      >
+                        Lojas virtuais extremamente rápidas, integradas com meios de pagamento e preparadas para faturar alto.
+                      </p>
+                    </div>
+                  );
+                })()}
 
               </div>
 

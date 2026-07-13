@@ -5,6 +5,8 @@ import {
   useVideoConfig,
   interpolate,
   staticFile,
+  Easing,
+  interpolateColors,
 } from "remotion";
 
 interface EcommerceShowcaseProps {}
@@ -16,18 +18,24 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
   const localFrame = frame;
 
   // ─── 1. Câmera Cinemática (Zoom e Movimento) ──────────────────────────────
-  // Papel Quadriculado (0 a 100): Câmera aproximada (scale = 1.48) focado no centro-esquerdo.
-  // Pullback para ver o Ecommerce Inteiro: frame 230 a 290. Zoom afasta para 0.90.
+  const { width, height } = useVideoConfig();
+  const isVertical = width < height;
+
+  // Papel Quadriculado (0 a 100): Câmera aproximada focado no centro-esquerdo.
+  // Pullback para ver o Ecommerce Inteiro: frame 230 a 290.
   const zoomSpring = spring({
     frame: localFrame - 230,
     fps,
     config: { mass: 1.2, damping: 20, stiffness: 45 },
   });
 
+  const startScale = isVertical ? 1.70 : 1.48;
+  const endScale = isVertical ? 1.22 : 0.90;
+
   const cameraScale = interpolate(
     zoomSpring,
     [0, 1],
-    [1.48, 0.90]
+    [startScale, endScale]
   );
 
   const panXSpring = spring({
@@ -35,14 +43,16 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
     fps,
     config: { mass: 1.2, damping: 20, stiffness: 45 },
   });
-  const cameraPanX = interpolate(panXSpring, [0, 1], [-8, 0]);
+  const panXStart = isVertical ? -3 : -8;
+  const cameraPanX = interpolate(panXSpring, [0, 1], [panXStart, 0]);
 
   const panYSpring = spring({
     frame: localFrame - 230,
     fps,
     config: { mass: 1.2, damping: 20, stiffness: 45 },
   });
-  const cameraPanY = interpolate(panYSpring, [0, 1], [-2, 0]);
+  const panYStart = isVertical ? -4 : -2;
+  const cameraPanY = interpolate(panYSpring, [0, 1], [panYStart, 0]);
 
   // Micro-drift constante para dar vida
   const cameraDriftX = Math.sin(localFrame * 0.02) * 0.8;
@@ -56,6 +66,11 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
     config: { mass: 1.4, damping: 22, stiffness: 40 },
   });
   const flipRotationY = interpolate(flipSpring, [0, 1], [0, 180]);
+
+  // Dynamic 3D lift-off mechanics during the flip
+  const liftProgress = Math.sin(flipSpring * Math.PI); // Peaks at 1 in the middle
+  const flipScale = 1 + liftProgress * 0.12; // scales up by 12% in the middle
+  const flipTranslateZ = liftProgress * 95; // lifts 95px up in Z space
 
   // ─── 3. Rotação Cinemática de Perspectiva (Cena 3) ─────────────────────────
   // No pullback (frame 235), o mockup inclina para revelar os cards laterais.
@@ -80,27 +95,45 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
   // localFrame 475: Clique na sacola -> Transição para a tela de Checkout/Sucesso.
   // localFrame 475 a 540: Confetes explodem na tela de sucesso.
 
-  // ─── 5. Posições do Mouse ──────────────────────────────────────────────────
+  // ─── 5. Posições do Mouse (Precedidas por curva de Bézier) ─────────────────
   const mouseX = interpolate(
     localFrame,
     [0, 25, 95, 115, 215, 235, 250, 310, 330, 350, 430, 450, 475, 520],
     [-240, -220, 0, -220, -220, -120, -120, -90, -90, -90, 185, 185, 185, 320],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.bezier(0.25, 1, 0.4, 1), // custom ease-out deceleration
+    }
   );
 
   const mouseY = interpolate(
     localFrame,
     [0, 25, 95, 115, 215, 235, 250, 310, 330, 350, 430, 450, 475, 520],
     [300, 250, 10, 220, 220, -245, -245, 80, 80, 80, -170, -170, -170, 285],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.bezier(0.25, 1, 0.4, 1),
+    }
   );
 
-  // Ondas de clique
-  const click1 = interpolate(localFrame, [93, 95, 110], [0, 1.3, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const click2 = interpolate(localFrame, [248, 250, 265], [0, 1.3, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const click3 = interpolate(localFrame, [348, 350, 365], [0, 1.3, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const click4 = interpolate(localFrame, [473, 475, 490], [0, 1.3, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const activePulse = click1 > 0.01 ? click1 : (click2 > 0.01 ? click2 : (click3 > 0.01 ? click3 : click4));
+  // Click Ripples (com física de mola)
+  const click1Spring = spring({ frame: localFrame - 95, fps, config: { mass: 0.5, damping: 12, stiffness: 140 } });
+  const click1Scale = interpolate(click1Spring, [0, 1], [0.2, 1.8], { extrapolateRight: "clamp" });
+  const click1Opacity = interpolate(click1Spring, [0, 1], [1, 0], { extrapolateRight: "clamp" });
+
+  const click2Spring = spring({ frame: localFrame - 250, fps, config: { mass: 0.5, damping: 12, stiffness: 140 } });
+  const click2Scale = interpolate(click2Spring, [0, 1], [0.2, 1.8], { extrapolateRight: "clamp" });
+  const click2Opacity = interpolate(click2Spring, [0, 1], [1, 0], { extrapolateRight: "clamp" });
+
+  const click3Spring = spring({ frame: localFrame - 350, fps, config: { mass: 0.5, damping: 12, stiffness: 140 } });
+  const click3Scale = interpolate(click3Spring, [0, 1], [0.2, 1.8], { extrapolateRight: "clamp" });
+  const click3Opacity = interpolate(click3Spring, [0, 1], [1, 0], { extrapolateRight: "clamp" });
+
+  const click4Spring = spring({ frame: localFrame - 475, fps, config: { mass: 0.5, damping: 12, stiffness: 140 } });
+  const click4Scale = interpolate(click4Spring, [0, 1], [0.2, 1.8], { extrapolateRight: "clamp" });
+  const click4Opacity = interpolate(click4Spring, [0, 1], [1, 0], { extrapolateRight: "clamp" });
 
   // ─── 6. Estados e Transições do E-commerce ────────────────────────────────
   // Scroll inercial suave da listagem (frames 140 a 220)
@@ -111,13 +144,25 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
   });
   const scrollY = interpolate(scrollSpring, [0, 1], [0, -290]);
 
-  // TransTransition de tela 1: Grid -> Detalhe do Produto (Clica no 250, página entra no 260)
+  // Transição de tela 1: Grid -> Detalhe do Produto (Clica no 250, página entra no 260)
   const pageTransitionSpring = spring({
     frame: localFrame - 250,
     fps,
     config: { mass: 0.9, damping: 15, stiffness: 85 },
   });
   const pageTransition = pageTransitionSpring; // 0 = Grid, 1 = Detalhe do Produto
+
+  // Staggered springs for Detail Page panels (Scene 3 entrance)
+  const leftPanelSpring = spring({
+    frame: localFrame - 258,
+    fps,
+    config: { mass: 0.8, damping: 13, stiffness: 100 },
+  });
+  const rightPanelSpring = spring({
+    frame: localFrame - 252,
+    fps,
+    config: { mass: 0.8, damping: 13, stiffness: 100 },
+  });
 
   // Transição de tela 2: Detalhe -> Sucesso (Clica no 475, página entra no 485)
   const successTransitionSpring = spring({
@@ -127,6 +172,18 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
   });
   const successTransition = successTransitionSpring; // 0 = Detalhe, 1 = Sucesso
 
+  // Staggered springs for Success Page elements
+  const successTitleSpring = spring({
+    frame: localFrame - 485,
+    fps,
+    config: { mass: 0.8, damping: 12, stiffness: 120 },
+  });
+  const successCardSpring = spring({
+    frame: localFrame - 495,
+    fps,
+    config: { mass: 0.8, damping: 12, stiffness: 120 },
+  });
+
   // Hover do Card do Headphone no Grid (frame 220 a 250)
   const cardHoverScale = interpolate(
     localFrame,
@@ -134,15 +191,31 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
     [1, 1.06, 1.06, 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
+  // Parallax depth offset for card image during hover
+  const cardImageParallax = interpolate(
+    localFrame,
+    [215, 230, 250, 260],
+    [0, -8, -8, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
 
   // Botão "Add to Cart" (frame 350): Loading e depois Adicionado
   const isButtonLoading = localFrame >= 350 && localFrame < 370;
   const isButtonAdded = localFrame >= 370;
-  const buttonActiveScale = interpolate(
+  
+  // Spring-based button click indentation (scale drop to 0.94 and bounce back)
+  const buttonClickSpring = spring({
+    frame: localFrame - 350,
+    fps,
+    config: { mass: 0.4, damping: 8, stiffness: 160 },
+  });
+  const buttonActiveScale = interpolate(buttonClickSpring, [0, 0.3, 1], [1, 0.94, 1]);
+
+  // Smooth color interpolation for adding to cart
+  const buttonColor = interpolateColors(
     localFrame,
-    [349, 350, 356],
-    [1, 0.90, 1],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    [368, 373],
+    ["#111111", "#16a34a"]
   );
 
   // Configuração de Cores e Fone
@@ -205,6 +278,23 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
   const floatOffset = Math.sin(localFrame * 0.035) * 8;
   const floatOffsetInverse = Math.cos(localFrame * 0.035) * 6;
 
+  // Crystalline sweep light transition
+  const sweepProgress = interpolate(localFrame, [135, 175], [-120, 220], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.25, 1, 0.5, 1),
+  });
+
+  // Combined click pulse for cursor (active when any click is recent)
+  const activePulse = Math.max(click1Opacity, click2Opacity, click3Opacity, click4Opacity) > 0.01
+    ? Math.max(
+        click1Spring > 0.01 ? click1Scale : 0,
+        click2Spring > 0.01 ? click2Scale : 0,
+        click3Spring > 0.01 ? click3Scale : 0,
+        click4Spring > 0.01 ? click4Scale : 0
+      )
+    : 0;
+
   return (
     <div className="w-full h-full flex justify-center items-center relative overflow-hidden bg-transparent">
       {/* Container de Câmera 3D */}
@@ -220,10 +310,10 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
         {/* Mockup Central do E-commerce */}
         <div
           style={{
-            transform: `rotateX(${rotateX}deg) rotateY(${rotateY + flipRotationY}deg) rotateZ(${rotateZ}deg)`,
+            transform: `rotateX(${rotateX}deg) rotateY(${rotateY + flipRotationY}deg) rotateZ(${rotateZ}deg) scale(${flipScale}) translateZ(${flipTranslateZ}px)`,
             transformStyle: "preserve-3d",
             WebkitTransformStyle: "preserve-3d",
-            boxShadow: "0 45px 95px rgba(0,0,0,0.55)",
+            boxShadow: `0 ${45 + liftProgress * 50}px ${95 + liftProgress * 60}px rgba(0,0,0,${0.55 - liftProgress * 0.15})`,
           }}
           className="relative w-[85%] max-w-[620px] aspect-[4/3] rounded-[32px] bg-[#f4f5f0] border-2 border-white/50"
         >
@@ -294,6 +384,20 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
             }}
             className="absolute inset-0 w-full h-full rounded-[32px] bg-[#f4f5f0] p-5 flex flex-col justify-between overflow-hidden"
           >
+            
+            {/* Crystalline Light Sweep during flip */}
+            {localFrame >= 135 && localFrame <= 175 && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 50,
+                  background: `linear-gradient(115deg, transparent ${sweepProgress - 30}%, rgba(255,255,255,0.35) ${sweepProgress - 10}%, rgba(255,255,255,0.5) ${sweepProgress}%, rgba(255,255,255,0.35) ${sweepProgress + 10}%, transparent ${sweepProgress + 30}%)`,
+                  pointerEvents: "none",
+                  borderRadius: "32px",
+                }}
+              />
+            )}
             
             {/* ─── NAVEGAÇÃO SUPERIOR DO E-COMMERCE ─── */}
             <div className="flex justify-between items-center w-full pb-3 border-b border-neutral-300/30 shrink-0 z-20 bg-[#f4f5f0]/80 backdrop-blur-sm">
@@ -379,7 +483,7 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                     src={staticFile("product-headphone-blue.jpg")}
                     alt="Sequoia Blue Headphone"
                     style={{ mixBlendMode: "multiply" }}
-                    className="absolute right-4 top-2 w-[160px] h-[160px] object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)] pointer-events-none"
+                    className="absolute right-0 top-0 w-[220px] h-full object-cover pointer-events-none"
                   />
                 </div>
 
@@ -393,34 +497,43 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                     }}
                     className="bg-white border border-neutral-200/60 rounded-3xl p-4 flex flex-col justify-between aspect-square transition-all duration-300 cursor-pointer"
                   >
-                    <div className="h-[110px] w-full flex justify-center items-center relative overflow-hidden">
+                    <div className="w-full flex-1 relative overflow-hidden rounded-2xl bg-[#f5f5f3]">
                       <img
                         src={staticFile("product-headphone-blue.jpg")}
                         alt="Sequoia Fone"
-                        style={{ mixBlendMode: "multiply" }}
-                        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
+                        style={{
+                          mixBlendMode: "multiply",
+                          transform: `translateY(${cardImageParallax}px)`,
+                        }}
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex flex-col gap-0.5 mt-1">
+                    <div className="flex flex-col gap-0.5 mt-2">
                       <h4 className="text-xs font-bold text-neutral-900 leading-tight">Sequoia Blue Headphone</h4>
                       <div className="flex justify-between items-center mt-0.5">
                         <span className="text-[11px] font-extrabold text-[#2563eb]">$299</span>
-                        <span className="text-[8px] bg-[#d4e157]/20 text-neutral-800 font-bold px-1.5 py-0.5 rounded">Populares</span>
+                        <span
+                          style={{
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                          }}
+                          className="text-[8px] bg-[#d4e157]/15 text-neutral-800 font-bold px-2 py-0.5 rounded-full border border-[#d4e157]/25 shadow-sm"
+                        >Populares</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 2: X-Bud Earbuds Pro */}
                   <div className="bg-white border border-neutral-200/60 rounded-3xl p-4 flex flex-col justify-between aspect-square shadow-sm">
-                    <div className="h-[110px] w-full flex justify-center items-center relative overflow-hidden">
+                    <div className="w-full flex-1 relative overflow-hidden rounded-2xl bg-[#f5f5f3]">
                       <img
                         src={staticFile("product-earbuds-black.jpg")}
                         alt="X-Bud Pro"
                         style={{ mixBlendMode: "multiply" }}
-                        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex flex-col gap-0.5 mt-1">
+                    <div className="flex flex-col gap-0.5 mt-2">
                       <h4 className="text-xs font-bold text-neutral-900 leading-tight">X-Bud Air Earbuds</h4>
                       <div className="flex justify-between items-center mt-0.5">
                         <span className="text-[11px] font-extrabold text-neutral-900">$149</span>
@@ -431,38 +544,50 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
 
                   {/* Card 3: Smartwatch v4 */}
                   <div className="bg-white border border-neutral-200/60 rounded-3xl p-4 flex flex-col justify-between aspect-square shadow-sm">
-                    <div className="h-[110px] w-full flex justify-center items-center relative overflow-hidden">
+                    <div className="w-full flex-1 relative overflow-hidden rounded-2xl bg-[#f5f5f3]">
                       <img
                         src={staticFile("product-smartwatch.jpg")}
                         alt="Sequoia Smartwatch"
                         style={{ mixBlendMode: "multiply" }}
-                        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex flex-col gap-0.5 mt-1">
+                    <div className="flex flex-col gap-0.5 mt-2">
                       <h4 className="text-xs font-bold text-neutral-900 leading-tight">Sequoia Active Watch</h4>
                       <div className="flex justify-between items-center mt-0.5">
                         <span className="text-[11px] font-extrabold text-neutral-900">$199</span>
-                        <span className="text-[8px] bg-blue-100 text-blue-700 font-bold px-1.5 py-0.5 rounded">Tech</span>
+                        <span
+                          style={{
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                          }}
+                          className="text-[8px] bg-blue-500/10 text-blue-700 font-bold px-2 py-0.5 rounded-full border border-blue-500/20 shadow-sm"
+                        >Tech</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 4: Nebula VR Vision */}
                   <div className="bg-white border border-neutral-200/60 rounded-3xl p-4 flex flex-col justify-between aspect-square shadow-sm">
-                    <div className="h-[110px] w-full flex justify-center items-center relative overflow-hidden">
+                    <div className="w-full flex-1 relative overflow-hidden rounded-2xl bg-[#f5f5f3]">
                       <img
                         src={staticFile("product-vr-headset.jpg")}
                         alt="Nebula VR Headset"
                         style={{ mixBlendMode: "multiply" }}
-                        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)]"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
                     <div className="flex flex-col gap-1 mt-2">
                       <h4 className="text-xs font-bold text-neutral-900 leading-tight">Nebula VR Vision</h4>
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-[11px] font-extrabold text-neutral-900">$499</span>
-                        <span className="text-[8px] bg-[#ff2e93]/15 text-[#ff2e93] font-bold px-1.5 py-0.5 rounded">Imersivo</span>
+                        <span
+                          style={{
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                          }}
+                          className="text-[8px] bg-[#ff2e93]/10 text-[#ff2e93] font-bold px-2 py-0.5 rounded-full border border-[#ff2e93]/20 shadow-sm"
+                        >Imersivo</span>
                       </div>
                     </div>
                   </div>
@@ -473,15 +598,26 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
               <div
                 style={{
                   opacity: pageTransition * (1 - successTransition),
-                  transform: `scale(${interpolate(pageTransition, [0, 1], [0.92, 1])})`,
                   display: pageTransition < 0.01 || successTransition > 0.99 ? "none" : "flex",
                 }}
                 className="absolute inset-0 w-full h-full flex gap-5 text-left transition-all duration-300"
               >
-                {/* Detalhes do Produto */}
-                <div className="w-[52%] flex flex-col justify-between h-full bg-white border border-neutral-200/50 rounded-3xl p-6 shadow-sm">
+                {/* Detalhes do Produto (Left Panel with stagger) */}
+                <div
+                  style={{
+                    transform: `translateY(${interpolate(leftPanelSpring, [0, 1], [30, 0])}px) scale(${interpolate(leftPanelSpring, [0, 1], [0.95, 1])})`,
+                    opacity: leftPanelSpring,
+                  }}
+                  className="w-[52%] flex flex-col justify-between h-full bg-white border border-neutral-200/50 rounded-3xl p-6 shadow-sm"
+                >
                   <div>
-                    <span className="text-[8px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    <span
+                      style={{
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
+                      }}
+                      className="text-[8px] bg-blue-500/10 text-blue-700 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-blue-500/20 shadow-sm"
+                    >
                       Best Seller
                     </span>
                     <h2 className="text-[20px] font-black text-neutral-900 leading-tight mt-3">
@@ -521,7 +657,7 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                     <button
                       style={{
                         transform: `scale(${buttonActiveScale})`,
-                        backgroundColor: isButtonAdded ? "#16a34a" : "#111111",
+                        backgroundColor: buttonColor,
                       }}
                       className="w-full py-3.5 rounded-2xl font-bold text-xs text-white flex items-center justify-center gap-2.5 border-none shadow-md shadow-neutral-950/20 hover:opacity-95 transition-all duration-300 cursor-pointer"
                     >
@@ -542,13 +678,19 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                   </div>
                 </div>
 
-                {/* Imagem do Produto Expandido */}
-                <div className="w-[48%] bg-white border border-neutral-200/50 rounded-3xl p-6 flex flex-col justify-center items-center relative shadow-sm">
+                {/* Imagem do Produto Expandido (Right Panel with stagger) */}
+                <div
+                  style={{
+                    transform: `translateY(${interpolate(rightPanelSpring, [0, 1], [30, 0])}px) scale(${interpolate(rightPanelSpring, [0, 1], [0.95, 1])})`,
+                    opacity: rightPanelSpring,
+                  }}
+                  className="w-[48%] bg-[#f5f5f3] border border-neutral-200/50 rounded-3xl overflow-hidden flex flex-col justify-center items-center relative shadow-sm"
+                >
                   <div
                     style={{
                       transform: `translateY(${headphoneFloat}px)`,
                     }}
-                    className="w-full h-full flex items-center justify-center"
+                    className="absolute inset-0 w-full h-full"
                   >
                     {/* Imagem do Fone azul reativa ou renderizada */}
                     <img
@@ -556,11 +698,11 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                       alt="Sequoia Blue Headphone"
                       style={{
                         mixBlendMode: "multiply",
-                        filter: selectedColorIndex === 0 
-                          ? "hue-rotate(0deg)" // Azul padrão
-                          : "hue-rotate(120deg) saturate(1.2)", // Transiciona cor no clique
+                        filter: selectedColorIndex === 0
+                          ? "hue-rotate(0deg)"
+                          : "hue-rotate(120deg) saturate(1.2)",
                       }}
-                      className="max-h-[170px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.18)]"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
                 </div>
@@ -576,7 +718,13 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                 className="absolute inset-0 w-full h-full bg-[#f4f5f0] flex flex-col justify-center items-center text-center p-8 z-30 transition-all duration-300"
               >
                 {/* Círculo com checkmark animado */}
-                <div className="h-20 w-20 rounded-full bg-[#d4e157]/15 border-2 border-[#d4e157]/30 flex items-center justify-center relative mb-5 shadow-inner">
+                <div
+                  style={{
+                    transform: `scale(${interpolate(successTitleSpring, [0, 1], [0.5, 1])})`,
+                    opacity: successTitleSpring,
+                  }}
+                  className="h-20 w-20 rounded-full bg-[#d4e157]/15 border-2 border-[#d4e157]/30 flex items-center justify-center relative mb-5 shadow-inner"
+                >
                   <svg className="h-10 w-10 text-[#d4e157]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       style={{
@@ -592,7 +740,11 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                 </div>
 
                 <h3
-                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', sans-serif",
+                    transform: `translateY(${interpolate(successTitleSpring, [0, 1], [15, 0])}px)`,
+                    opacity: successTitleSpring,
+                  }}
                   className="text-2xl font-extrabold text-neutral-900 tracking-tight"
                 >
                   Compra Confirmada!
@@ -602,7 +754,13 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                 </p>
 
                 {/* Detalhes do Pedido Neumórficos */}
-                <div className="mt-6 bg-white border border-neutral-200/50 rounded-2xl px-6 py-4 flex flex-col gap-2 w-full max-w-[260px] text-left shadow-sm">
+                <div
+                  style={{
+                    transform: `translateY(${interpolate(successCardSpring, [0, 1], [20, 0])}px) scale(${interpolate(successCardSpring, [0, 1], [0.95, 1])})`,
+                    opacity: successCardSpring,
+                  }}
+                  className="mt-6 bg-white border border-neutral-200/50 rounded-2xl px-6 py-4 flex flex-col gap-2 w-full max-w-[260px] text-left shadow-sm"
+                >
                   <div className="flex justify-between text-[9px] font-bold text-neutral-400">
                     <span>STATUS</span>
                     <span className="text-[#16a34a]">APROVADO</span>
@@ -618,44 +776,112 @@ export const EcommerceShowcase: React.FC<EcommerceShowcaseProps> = () => {
                   </div>
                 </div>
 
-                {/* ── Confetes Animados explodindo na tela ── */}
-                {successActive && Array.from({ length: 45 }).map((_, idx) => {
-                  const delay = idx * 1.5;
+                {/* ── Confetes Premium: Explosão Multi-Wave com Física Realista ── */}
+                {successActive && Array.from({ length: 80 }).map((_, idx) => {
+                  // Multi-wave stagger: 3 ondas de explosão
+                  const wave = idx < 30 ? 0 : idx < 55 ? 1 : 2;
+                  const waveDelay = wave * 8;
+                  const delay = (idx % 30) * 0.8 + waveDelay;
+                  const fallDuration = 70 + (idx % 20) * 2;
                   const fallProgress = interpolate(
                     successTime,
-                    [delay, delay + 60],
+                    [delay, delay + fallDuration],
                     [0, 1],
                     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
                   );
 
-                  // Direções aleatórias de explosão baseadas no índice
-                  const seed = idx * 7.5;
-                  const initialAngle = (seed % 180) * (Math.PI / 180);
-                  const initialForce = 80 + (seed % 90);
-                  
-                  // Trajetória X/Y com gravidade
-                  const xOffset = Math.cos(initialAngle) * initialForce * Math.min(1, fallProgress * 1.5);
-                  const yOffset = -Math.sin(initialAngle) * initialForce * Math.min(1, fallProgress * 1.2) + (300 * Math.pow(fallProgress, 2));
+                  // Seed pseudo-aleatória por partícula
+                  const seed = idx * 13.7 + wave * 42;
+                  const seedSin = Math.sin(seed) * 0.5 + 0.5;
+                  const seedCos = Math.cos(seed * 1.3) * 0.5 + 0.5;
 
-                  const confColors = ["#2563eb", "#ea580c", "#16a34a", "#d4e157", "#dc2626", "#0891b2"];
+                  // Ângulo e força da explosão (em arco mais amplo)
+                  const spreadAngle = ((seed * 37) % 360) * (Math.PI / 180);
+                  const forceBase = 100 + (seedSin * 160);
+                  const force = forceBase * (wave === 0 ? 1 : wave === 1 ? 0.85 : 0.7);
+
+                  // Trajetória com gravidade + vento sutil
+                  const windX = Math.sin(successTime * 0.04 + seed) * 15;
+                  const xArc = Math.cos(spreadAngle) * force * Math.min(1, fallProgress * 1.8);
+                  const yUp = -Math.sin(spreadAngle) * force * 0.9 * Math.min(1, fallProgress * 1.5);
+                  const gravity = 420 * Math.pow(fallProgress, 2);
+                  const xOffset = xArc + windX;
+                  const yOffset = yUp + gravity;
+
+                  // Rotação 3D com tumble
+                  const rotX = fallProgress * (200 + seedSin * 300);
+                  const rotY = fallProgress * (180 + seedCos * 240);
+                  const rotZ = fallProgress * (90 + seedSin * 180);
+
+                  // Cores premium (brand palette + acentos)
+                  const confColors = [
+                    "#2563eb", "#3b82f6", // blues
+                    "#ea580c", "#f97316", // oranges
+                    "#16a34a", "#22c55e", // greens
+                    "#d4e157", "#c6d417", // lime/yellow-green
+                    "#dc2626", "#ef4444", // reds
+                    "#0891b2", "#06b6d4", // cyans
+                    "#8b5cf6", "#a78bfa", // purples
+                    "#ec4899", "#f472b6", // pinks
+                  ];
                   const color = confColors[idx % confColors.length];
 
-                  if (fallProgress <= 0.01 || fallProgress >= 0.99) return null;
+                  // Formas variadas
+                  const shapes = ["rect", "circle", "strip", "star"];
+                  const shape = shapes[idx % 4];
+                  const baseSize = 6 + seedSin * 10;
+
+                  if (fallProgress <= 0.01 || fallProgress >= 0.98) return null;
+
+                  // Opacidade com fade suave e brilho no início
+                  const fadeOut = interpolate(fallProgress, [0.7, 1], [1, 0], {
+                    extrapolateLeft: "clamp",
+                    extrapolateRight: "clamp",
+                  });
+                  const fadeIn = interpolate(fallProgress, [0, 0.05], [0, 1], {
+                    extrapolateLeft: "clamp",
+                    extrapolateRight: "clamp",
+                  });
+                  const opacity = fadeIn * fadeOut;
+
+                  // Escala com squash & stretch
+                  const scaleY = 1 + Math.sin(fallProgress * Math.PI * 4) * 0.3;
+                  const scaleX = 1 / scaleY;
+
+                  let borderRadius = "2px";
+                  let width = `${baseSize}px`;
+                  let height = `${baseSize * 0.6}px`;
+
+                  if (shape === "circle") {
+                    borderRadius = "50%";
+                    width = `${baseSize * 0.7}px`;
+                    height = `${baseSize * 0.7}px`;
+                  } else if (shape === "strip") {
+                    borderRadius = "3px";
+                    width = `${baseSize * 0.35}px`;
+                    height = `${baseSize * 1.4}px`;
+                  } else if (shape === "star") {
+                    borderRadius = "1px";
+                    width = `${baseSize * 0.5}px`;
+                    height = `${baseSize * 0.5}px`;
+                  }
 
                   return (
                     <div
                       key={idx}
                       style={{
                         position: "absolute",
-                        bottom: "35%",
+                        bottom: "38%",
                         left: "50%",
-                        transform: `translate(${xOffset}px, ${yOffset}px) rotate(${fallProgress * 360}deg)`,
-                        width: idx % 2 === 0 ? "8px" : "12px",
-                        height: idx % 2 === 0 ? "5px" : "6px",
+                        transform: `translate(${xOffset}px, ${yOffset}px) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scaleX}, ${scaleY})`,
+                        width,
+                        height,
                         backgroundColor: color,
-                        opacity: interpolate(fallProgress, [0.8, 1], [1, 0]),
+                        borderRadius,
+                        opacity,
+                        boxShadow: `0 1px 3px ${color}40`,
                       }}
-                      className="rounded-sm pointer-events-none"
+                      className="pointer-events-none"
                     />
                   );
                 })}
