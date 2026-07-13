@@ -41,7 +41,7 @@ export const Outro: React.FC<OutroProps> = ({ delay = 0 }) => {
   return (
     <div className="flex flex-col items-center justify-center text-center h-full px-6 max-w-[500px]">
       {/* Animated Logo */}
-      <div 
+      <div
         style={{
           transform: `scale(${logoScale})`,
           opacity: logoScale,
@@ -115,7 +115,7 @@ export const Outro: React.FC<OutroProps> = ({ delay = 0 }) => {
         }}
         className="text-[14px] text-neutral-500 tracking-wider font-semibold"
       >
-        motionstudio.com.br
+        motionstudio.art
       </span>
     </div>
   );
