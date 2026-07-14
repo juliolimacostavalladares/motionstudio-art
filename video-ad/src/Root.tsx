@@ -9,6 +9,7 @@ import { LandingPageVideo } from "./landing-page-video/LandingPageVideo";
 import { LandingPageVideoWithAudio } from "./landing-page-video/LandingPageVideoWithAudio";
 import { ContentVideo } from "./ContentVideo";
 import { AI_VIDEOS } from "./content/aiConfigs";
+import { CarouselVideo } from "./CarouselVideo";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -200,6 +201,16 @@ export const RemotionRoot: React.FC = () => {
           />
         </React.Fragment>
       ))}
+
+      {/* ── Instagram Portrait Carousel (1080x1350) ─────────────────── */}
+      <Composition
+        id="instagram-carousel"
+        component={CarouselVideo}
+        durationInFrames={630} // 7 slides * 90 frames = 21 seconds
+        fps={30}
+        width={1080}
+        height={1350} // Instagram portrait feed aspect ratio
+      />
     </>
   );
 };
