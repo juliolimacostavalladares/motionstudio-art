@@ -1,25 +1,13 @@
 import React from "react";
 import { Sequence } from "remotion";
+import { Intro } from "../shared/Intro";
+import { Outro } from "../shared/Outro";
 import { BrandReveal } from "./components/BrandReveal";
 import { Manifesto } from "./components/Manifesto";
 import { ProductDemo } from "./components/ProductDemo";
 import { ClimaxCTA } from "./components/ClimaxCTA";
 
 export const LandingPageVideo: React.FC = () => {
-
-  // TIMINGS (Total 1770 frames = 59s @ 30fps)
-  const part1Start = 0;
-  const part1Duration = 300; // 10s (0s - 10s)
-
-  const part2Start = part1Start + part1Duration;
-  const part2Duration = 450; // 15s (10s - 25s)
-
-  const part3Start = part2Start + part2Duration;
-  const part3Duration = 600; // 20s (25s - 45s)
-
-  const part4Start = part3Start + part3Duration;
-  const part4Duration = 420; // 14s (45s - 59s)
-
   return (
     <div
       className="w-full h-full relative select-none overflow-hidden"
@@ -40,24 +28,34 @@ export const LandingPageVideo: React.FC = () => {
         `}
       </style>
 
-      {/* PARTE 1: O Despertar da Marca (0s - 10s) */}
-      <Sequence from={part1Start} durationInFrames={part1Duration}>
+      {/* ── INTRO: Padrão Motion Studio (0s - 2.5s) ──────────────────── */}
+      <Sequence from={0} durationInFrames={75}>
+        <Intro />
+      </Sequence>
+
+      {/* ── PARTE 1: O Despertar da Marca - Texturas (2.5s - 10s) ────────── */}
+      <Sequence from={75} durationInFrames={225}>
         <BrandReveal />
       </Sequence>
 
-      {/* PARTE 2: Identidade e Manifesto (10s - 25s) */}
-      <Sequence from={part2Start} durationInFrames={part2Duration}>
+      {/* ── PARTE 2: Identidade e Manifesto (10s - 25s) ────────────────── */}
+      <Sequence from={300} durationInFrames={450}>
         <Manifesto />
       </Sequence>
 
-      {/* PARTE 3: Demonstração de Produto & UI (25s - 45s) */}
-      <Sequence from={part3Start} durationInFrames={part3Duration}>
+      {/* ── PARTE 3: Demonstração de Produto & UI (25s - 45s) ────────────── */}
+      <Sequence from={750} durationInFrames={600}>
         <ProductDemo />
       </Sequence>
 
-      {/* PARTE 4: Clímax e CTA (45s - 59s) */}
-      <Sequence from={part4Start} durationInFrames={part4Duration}>
+      {/* ── PARTE 4: Clímax - Flashes e CTAs (45s - 56.5s) ─────────────── */}
+      <Sequence from={1350} durationInFrames={345}>
         <ClimaxCTA />
+      </Sequence>
+
+      {/* ── OUTRO: Padrão Motion Studio (56.5s - 59s) ──────────────────── */}
+      <Sequence from={1695} durationInFrames={75}>
+        <Outro cta="Crie sua Landing Page" metric="+84.7% Leads" />
       </Sequence>
     </div>
   );

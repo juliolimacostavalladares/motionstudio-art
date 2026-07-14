@@ -165,7 +165,7 @@ export const Manifesto: React.FC = () => {
                   transform: `scale(${spring({ frame: frame - 200, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
-                Sua landing page
+                Criamos sua
               </span>
               <span
                 style={{
@@ -180,7 +180,7 @@ export const Manifesto: React.FC = () => {
                   transform: `scale(${spring({ frame: frame - 215, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
-                premium
+                landing page
               </span>
               <span
                 style={{
@@ -193,7 +193,7 @@ export const Manifesto: React.FC = () => {
                   opacity: interpolate(frame - 200, [0, 30], [0, 1], { extrapolateRight: "clamp" }),
                 }}
               >
-                entregue em semanas.
+                focada em alta conversão.
               </span>
             </div>
           ) : (
@@ -209,7 +209,7 @@ export const Manifesto: React.FC = () => {
                   transform: `scale(${spring({ frame: frame - 265, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
-                Design exclusivo.
+                Design autoral.
               </span>
               <span
                 style={{
@@ -224,7 +224,7 @@ export const Manifesto: React.FC = () => {
                   transform: `scale(${spring({ frame: frame - 280, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
-                Conversão Máxima.
+                Código premium.
               </span>
             </div>
           )}
