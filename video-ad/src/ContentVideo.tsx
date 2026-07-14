@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Easing,
   interpolate,
   spring,
   Sequence,
@@ -172,7 +171,7 @@ const WordReveal: React.FC<WordRevealProps> = ({
         });
         const opacity = Math.max(0, s);
         const ty = (1 - Math.max(0, s)) * 28;
-        const isAccent = accentWords.includes(word.replace(/[.,!?]/g, ""));
+        const isAccent = accentWords.indexOf(word.replace(/[.,!?]/g, "")) !== -1;
         return (
           <span
             key={i}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Composition, Folder } from "remotion";
+import { Composition } from "remotion";
 import { AdVideo } from "./AdVideo";
 import { AdVideoWithAudio } from "./AdVideoWithAudio";
 import { EcommerceVideo } from "./EcommerceVideo";
@@ -7,6 +7,8 @@ import { EcommerceVideoWithAudio } from "./EcommerceVideoWithAudio";
 import { WeeklyVideo, TOTAL_FRAMES, DAY_CONFIGS } from "./WeeklyVideo";
 import { LandingPageVideo } from "./landing-page-video/LandingPageVideo";
 import { LandingPageVideoWithAudio } from "./landing-page-video/LandingPageVideoWithAudio";
+import { ContentVideo } from "./ContentVideo";
+import { AI_VIDEOS } from "./content/aiConfigs";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -174,6 +176,30 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1080}
       />
+
+      {/* ── AI Tips Compositions (com ContentVideo template) ────────── */}
+      {AI_VIDEOS.map((config) => (
+        <React.Fragment key={config.id}>
+          <Composition
+            id={`${config.id}-vertical`}
+            component={ContentVideo}
+            durationInFrames={420} // 14 seconds
+            fps={30}
+            width={1080}
+            height={1920} // Vertical Reels
+            defaultProps={{ config }}
+          />
+          <Composition
+            id={`${config.id}-square`}
+            component={ContentVideo}
+            durationInFrames={420} // 14 seconds
+            fps={30}
+            width={1080}
+            height={1080} // Square Feed
+            defaultProps={{ config }}
+          />
+        </React.Fragment>
+      ))}
     </>
   );
 };
