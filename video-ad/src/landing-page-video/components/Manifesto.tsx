@@ -33,7 +33,7 @@ export const Manifesto: React.FC = () => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: BRAND.black,
+        backgroundColor: "transparent",
         color: "#ffffff",
         fontFamily: "'Sora', sans-serif",
         position: "relative",
@@ -148,7 +148,7 @@ export const Manifesto: React.FC = () => {
             height: "100%",
             padding: "0 30px",
             textAlign: "center",
-            backgroundColor: frame % 15 < 2 ? BRAND.lime : BRAND.black,
+            backgroundColor: frame % 15 < 2 ? BRAND.lime : "transparent",
             color: frame % 15 < 2 ? BRAND.black : "#ffffff",
           }}
         >

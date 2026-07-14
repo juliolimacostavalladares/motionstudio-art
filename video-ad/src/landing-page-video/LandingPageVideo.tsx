@@ -1,5 +1,6 @@
 import React from "react";
 import { Sequence } from "remotion";
+import { LandingPageBackground } from "./components/LandingPageBackground";
 import { IntroScene } from "./components/IntroScene";
 import { BrandReveal } from "./components/BrandReveal";
 import { Manifesto } from "./components/Manifesto";
@@ -12,7 +13,7 @@ export const LandingPageVideo: React.FC = () => {
     <div
       className="w-full h-full relative select-none overflow-hidden"
       style={{
-        backgroundColor: "#111111",
+        backgroundColor: "#060608",
       }}
     >
       {/* Font imports */}
@@ -21,12 +22,15 @@ export const LandingPageVideo: React.FC = () => {
           @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&display=swap');
           body {
             font-family: 'Sora', sans-serif;
-            background-color: #111111;
+            background-color: #060608;
             margin: 0;
             padding: 0;
           }
         `}
       </style>
+
+      {/* ── BACKGROUND GLOBAL CINEMATOGRÁFICO ───────────────────────────── */}
+      <LandingPageBackground />
 
       {/* ── INTRO: Estilo ad-with-audio-vertical (0s - 7.0s | frames 0 - 210) ──── */}
       <Sequence from={0} durationInFrames={210}>

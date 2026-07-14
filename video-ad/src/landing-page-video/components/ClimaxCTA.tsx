@@ -58,7 +58,7 @@ export const ClimaxCTA: React.FC = () => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: BRAND.black,
+        backgroundColor: "transparent",
         position: "relative",
         overflow: "hidden",
         display: "flex",

@@ -69,7 +69,7 @@ export const BrandReveal: React.FC = () => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: "#111111",
+        backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
