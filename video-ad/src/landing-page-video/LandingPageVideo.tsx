@@ -53,7 +53,7 @@ export const LandingPageVideo: React.FC = () => {
 
       {/* ── OUTRO: Estilo ad-with-audio-vertical (52.5s - 59s | frames 1575 - 1770) ── */}
       <Sequence from={1575} durationInFrames={195}>
-        <Outro delay={10} />
+        <Outro delay={10} showCaption={false} />
       </Sequence>
     </div>
   );

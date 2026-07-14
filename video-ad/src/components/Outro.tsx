@@ -4,9 +4,10 @@ import { Logo } from "./Logo";
 
 interface OutroProps {
   delay?: number;
+  showCaption?: boolean;
 }
 
-export const Outro: React.FC<OutroProps> = ({ delay = 0 }) => {
+export const Outro: React.FC<OutroProps> = ({ delay = 0, showCaption = true }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -39,7 +40,7 @@ export const Outro: React.FC<OutroProps> = ({ delay = 0 }) => {
   const buttonPulse = Math.sin((frame - (delay + 30)) * 0.1) * 0.03 + 1;
 
   return (
-    <div className="flex flex-col items-center justify-center text-center h-full px-6 max-w-[500px]">
+    <div className="flex flex-col items-center justify-center text-center h-full px-6 max-w-[500px] mx-auto">
       {/* Animated Logo */}
       <div
         style={{
@@ -117,6 +118,24 @@ export const Outro: React.FC<OutroProps> = ({ delay = 0 }) => {
       >
         motionstudio.art
       </span>
+
+      {/* Narração - Legenda Cena 4 */}
+      {showCaption && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "6%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            maxWidth: "90%",
+          }}
+          className="bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-center"
+        >
+          <p className="text-white text-[13px] md:text-[15px] leading-relaxed font-medium">
+            Transformamos desafios do seu negócio em tecnologia sob medida. Fale com um especialista e comece hoje.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

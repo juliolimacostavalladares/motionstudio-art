@@ -42,8 +42,8 @@ export const Manifesto: React.FC = () => {
             height: "100%",
             padding: "0 30px",
             textAlign: "center",
-            backgroundColor: frame % 15 < 2 ? BRAND.lime : "transparent",
-            color: frame % 15 < 2 ? BRAND.black : "#ffffff",
+            backgroundColor: "transparent",
+            color: "#ffffff",
           }}
         >
           {frame < 120 ? (
@@ -66,7 +66,7 @@ export const Manifesto: React.FC = () => {
                   fontFamily: "'Bricolage Grotesque', sans-serif",
                   fontSize: "56px",
                   fontWeight: 800,
-                  color: frame % 15 < 2 ? BRAND.black : BRAND.lime,
+                  color: BRAND.lime,
                   display: "block",
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
@@ -110,7 +110,7 @@ export const Manifesto: React.FC = () => {
                   fontFamily: "'Bricolage Grotesque', sans-serif",
                   fontSize: "56px",
                   fontWeight: 800,
-                  color: frame % 15 < 2 ? BRAND.black : BRAND.lime,
+                  color: BRAND.lime,
                   display: "block",
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",

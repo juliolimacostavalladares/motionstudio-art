@@ -210,40 +210,6 @@ export const ProductDemo: React.FC = () => {
         />
       )}
 
-      {/* Dynamic subtitle describing type of landing pages */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "3.5%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          textAlign: "center",
-          width: "90%",
-          zIndex: 50,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontSize: "15px",
-            fontWeight: 700,
-            color: BRAND.white,
-            backgroundColor: "rgba(6, 6, 8, 0.8)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            padding: "8px 18px",
-            borderRadius: "30px",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
-            display: "inline-block",
-          }}
-        >
-          {activeScene === 1 && "Arquitetura Editorial Premium (Ranty)"}
-          {activeScene === 2 && "SaaS FinTech Futurista & Dark (Liquid Brokers)"}
-          {activeScene === 3 && "Productivity SaaS Clean & Organizado (ChronoTask)"}
-          {activeScene === 4 && "Product Analytics e Conversão de Elite (Redacted)"}
-        </span>
-      </div>
     </div>
   );
 };
