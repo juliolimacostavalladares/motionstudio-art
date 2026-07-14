@@ -918,7 +918,7 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         padding: "30px 40px 0 40px",
       }}
     >
@@ -1010,6 +1010,9 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
       {/* Dashboard Mockup rising from behind front hills */}
       <div
         style={{
+          position: "absolute",
+          bottom: 0,
+          left: "13%",
           width: "74%",
           backgroundColor: "#ffffff",
           border: "1px solid rgba(0, 0, 0, 0.08)",
@@ -1017,7 +1020,6 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           boxShadow: "0 -15px 40px rgba(0,0,0,0.08)",
           padding: "16px 18px 0 18px",
           height: "170px",
-          alignSelf: "center",
           transform: `translateY(${dashY}px)`,
           zIndex: 3,
           display: "flex",
