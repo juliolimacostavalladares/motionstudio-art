@@ -6,25 +6,24 @@ export const BrandReveal: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
 
-  // Parte 1 dura 225 frames (7.5s)
-  // Textura alternando a cada 45 frames (1.5s)
-  // 0 - 45: Metálico
-  // 45 - 90: Inflável
-  // 90 - 135: Pelúcia (Rugoso)
-  // 135 - 170: Zoom out e transição para o reveal completo
-  // 170 - 225: Logo centralizada + Texto "Motion Studio" escalando
+  // Parte 1 (pós-intro) dura 90 frames (3s)
+  // Textura alternando a cada 25 frames
+  // 0 - 25: Metálico
+  // 25 - 50: Inflável
+  // 50 - 75: Pelúcia (Rugoso)
+  // 75 - 90: Reveal da logo + Texto "Motion Studio"
 
   // Animação de Zoom inicial
-  // No início (0-135), fazemos closes abstratos com zoom alto
-  const zoom = interpolate(frame, [0, 135, 170], [2.8, 2.2, 1.0], {
+  // No início, fazemos closes abstratos com zoom alto
+  const zoom = interpolate(frame, [0, 70, 90], [2.8, 2.2, 1.0], {
     extrapolateRight: "clamp",
   });
 
-  const panX = interpolate(frame, [0, 45, 90, 135, 170], [40, -30, 20, 0, 0], {
+  const panX = interpolate(frame, [0, 25, 50, 75, 90], [40, -30, 20, 0, 0], {
     extrapolateRight: "clamp",
   });
 
-  const panY = interpolate(frame, [0, 45, 90, 135, 170], [-20, 30, -10, 0, 0], {
+  const panY = interpolate(frame, [0, 25, 50, 75, 90], [-20, 30, -10, 0, 0], {
     extrapolateRight: "clamp",
   });
 
@@ -35,31 +34,31 @@ export const BrandReveal: React.FC = () => {
     [10, 35]
   );
 
-  // Reveal da logo inteira no final da cena (a partir do frame 170)
+  // Reveal da logo inteira no final da cena (a partir do frame 70)
   const revealSpring = spring({
-    frame: frame - 165,
+    frame: frame - 70,
     fps,
     config: { damping: 14, stiffness: 90 },
   });
 
   const textRevealSpring = spring({
-    frame: frame - 175,
+    frame: frame - 75,
     fps,
     config: { damping: 12, stiffness: 100 },
   });
 
   // Determinar qual filtro aplicar baseado no frame
   let currentFilter = "";
-  if (frame < 45) {
+  if (frame < 25) {
     currentFilter = "url(#metallic)";
-  } else if (frame < 90) {
+  } else if (frame < 50) {
     currentFilter = "url(#inflated)";
-  } else if (frame < 135) {
+  } else if (frame < 75) {
     currentFilter = "url(#plush)";
   }
 
   // Se estiver na fase de reveal final, não usamos mais o zoom/pan maluco e sim a mola final
-  const isRevealPhase = frame >= 165;
+  const isRevealPhase = frame >= 70;
 
   const currentZoom = isRevealPhase ? revealSpring : zoom;
   const currentPanX = isRevealPhase ? 0 : panX;
@@ -223,7 +222,7 @@ export const BrandReveal: React.FC = () => {
       </div>
 
       {/* Texto de Apresentação (Motion Studio) */}
-      {frame >= 170 && (
+      {frame >= 75 && (
         <div
           style={{
             marginTop: "40px",
@@ -264,3 +263,4 @@ export const BrandReveal: React.FC = () => {
     </div>
   );
 };
+export default BrandReveal;
