@@ -2,7 +2,6 @@ import React from "react";
 import { Sequence } from "remotion";
 import { LandingPageBackground } from "./components/LandingPageBackground";
 import { IntroScene } from "./components/IntroScene";
-import { BrandReveal } from "./components/BrandReveal";
 import { Manifesto } from "./components/Manifesto";
 import { ProductDemo } from "./components/ProductDemo";
 import { ClimaxCTA } from "./components/ClimaxCTA";
@@ -37,23 +36,18 @@ export const LandingPageVideo: React.FC = () => {
         <IntroScene />
       </Sequence>
 
-      {/* ── PARTE 1: Close-up Texturas (7.0s - 10s | frames 210 - 300) ─────────── */}
-      <Sequence from={210} durationInFrames={90}>
-        <BrandReveal />
-      </Sequence>
-
-      {/* ── PARTE 2: Identidade e Manifesto (10s - 25s | frames 300 - 750) ─────── */}
-      <Sequence from={300} durationInFrames={450}>
+      {/* ── PARTE 1: Identidade e Manifesto (7.0s - 20.3s | frames 210 - 610) ───── */}
+      <Sequence from={210} durationInFrames={400}>
         <Manifesto />
       </Sequence>
 
-      {/* ── PARTE 3: Demonstração de Produto & UI (25s - 45s | frames 750 - 1350) ── */}
-      <Sequence from={750} durationInFrames={600}>
+      {/* ── PARTE 2: Demonstração de Produto & UI (20.3s - 43.3s | frames 610 - 1300) ─ */}
+      <Sequence from={610} durationInFrames={690}>
         <ProductDemo />
       </Sequence>
 
-      {/* ── PARTE 4: Clímax - Flashes e CTAs (45s - 52.5s | frames 1350 - 1575) ──── */}
-      <Sequence from={1350} durationInFrames={225}>
+      {/* ── PARTE 3: Clímax - Flashes e CTAs (43.3s - 52.5s | frames 1300 - 1575) ── */}
+      <Sequence from={1300} durationInFrames={275}>
         <ClimaxCTA />
       </Sequence>
 

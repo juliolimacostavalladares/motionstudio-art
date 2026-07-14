@@ -6,8 +6,8 @@ export const ClimaxCTA: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Local frame runs from 0 to 225 (physically 1350 to 1575)
-  // Each phrase has a duration of 28 frames
+  // Local frame runs from 0 to 275 (physically 1300 to 1575)
+  // Each phrase has a duration of 34 frames
   const phrases = [
     { text: "Quer mais leads?", highlight: "leads?" },
     { text: "Quer vender mais?", highlight: "vender mais?" },
@@ -19,7 +19,7 @@ export const ClimaxCTA: React.FC = () => {
     { text: "Fale com um especialista!", highlight: "especialista!" }
   ];
 
-  const phraseDuration = 28;
+  const phraseDuration = 34;
   const phraseIndex = Math.min(
     Math.floor(frame / phraseDuration),
     phrases.length - 1
@@ -38,7 +38,7 @@ export const ClimaxCTA: React.FC = () => {
   });
 
   // Entrance and exit fade
-  const opacity = interpolate(localFrame, [0, 4, 24, 28], [0, 1, 1, 0], {
+  const opacity = interpolate(localFrame, [0, 4, 30, 34], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

@@ -60,7 +60,7 @@ export const IntroScene: React.FC = () => {
   });
 
   return (
-    <div style={getSceneStyle()}>
+    <div style={getSceneStyle()} className="text-white">
       <div
         className={`flex flex-col items-center text-center px-8 ${isVertical ? "max-w-[450px]" : "max-w-[700px]"}`}
       >

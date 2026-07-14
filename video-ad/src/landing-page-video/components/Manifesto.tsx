@@ -6,24 +6,14 @@ export const Manifesto: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Local frames for this scene (total 450 frames: from 300 to 750)
+  // Local frames for this scene (total 400 frames: from 210 to 610)
   // Sub-scenes:
-  // 0 - 200: Color Palette
-  // 200 - 330: Kinetic Typography / Manifesto
-  // 330 - 450: Typographic Split Screen (Bricolage vs Sora)
+  // 0 - 240: Kinetic Typography / Manifesto (without color palette)
+  // 240 - 400: Typographic Split Screen (Bricolage vs Sora)
 
-  // 1. Color Palette Animation
-  const colors = [
-    { name: "Lime", hex: BRAND.lime, textHex: "#111111" },
-    { name: "Neutral 950", hex: "#171717", textHex: "#ffffff" },
-    { name: "Black", hex: BRAND.black2, textHex: BRAND.lime },
-    { name: "White", hex: BRAND.white, textHex: "#111111" },
-    { name: "Gray 700", hex: BRAND.gray700, textHex: "#ffffff" },
-  ];
-
-  // 2. Typographic Split Screen Springs
+  // Typographic Split Screen Springs
   const splitEntrance = spring({
-    frame: frame - 335,
+    frame: frame - 245,
     fps,
     config: { damping: 15, stiffness: 80 },
   });
@@ -40,104 +30,8 @@ export const Manifesto: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* --- SUB-SCENE 1: Color Palette (0 - 200) --- */}
-      {frame < 200 && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-            padding: "0 40px",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "'Bricolage Grotesque', sans-serif",
-              fontSize: "36px",
-              fontWeight: 800,
-              color: "#ffffff",
-              marginBottom: "10px",
-              letterSpacing: "-0.03em",
-              textAlign: "center",
-              transform: `translateY(${interpolate(frame, [0, 30], [20, 0], { extrapolateRight: "clamp" })}px)`,
-              opacity: interpolate(frame, [0, 30], [0, 1], { extrapolateRight: "clamp" }),
-            }}
-          >
-            Nossa Identidade
-          </h2>
-          <p
-            style={{
-              fontSize: "14px",
-              color: BRAND.gray300,
-              marginBottom: "40px",
-              textAlign: "center",
-              transform: `translateY(${interpolate(frame, [5, 35], [20, 0], { extrapolateRight: "clamp" })}px)`,
-              opacity: interpolate(frame, [5, 35], [0, 1], { extrapolateRight: "clamp" }),
-            }}
-          >
-            Cores curadas para converter e impressionar.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: "12px",
-              width: "100%",
-              maxWidth: "400px",
-            }}
-          >
-            {colors.map((color, index) => {
-              // Staggered springs for each card
-              const cardSpring = spring({
-                frame: frame - (15 + index * 10),
-                fps,
-                config: { damping: 12, stiffness: 100 },
-              });
-
-              const opacity = cardSpring;
-              const translateX = (1 - cardSpring) * 100;
-
-              return (
-                <div
-                  key={color.name}
-                  style={{
-                    backgroundColor: color.hex,
-                    color: color.textHex,
-                    padding: "20px 24px",
-                    borderRadius: "16px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    fontWeight: 700,
-                    opacity,
-                    transform: `translateX(${translateX}px)`,
-                    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.3)",
-                    border: "1px solid rgba(255, 255, 255, 0.05)",
-                  }}
-                >
-                  <span style={{ fontSize: "18px" }}>{color.name}</span>
-                  <span
-                    style={{
-                      fontFamily: "monospace",
-                      fontSize: "14px",
-                      opacity: 0.8,
-                    }}
-                  >
-                    {color.hex.toUpperCase()}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* --- SUB-SCENE 2: Kinetic Typography / Manifesto (200 - 330) --- */}
-      {frame >= 200 && frame < 330 && (
+      {/* --- SUB-SCENE 1: Kinetic Typography / Manifesto (0 - 240) --- */}
+      {frame < 240 && (
         <div
           style={{
             display: "flex",
@@ -152,7 +46,7 @@ export const Manifesto: React.FC = () => {
             color: frame % 15 < 2 ? BRAND.black : "#ffffff",
           }}
         >
-          {frame < 265 ? (
+          {frame < 120 ? (
             <div key="text1">
               <span
                 style={{
@@ -162,7 +56,7 @@ export const Manifesto: React.FC = () => {
                   display: "block",
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
-                  transform: `scale(${spring({ frame: frame - 200, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 Criamos sua
@@ -177,7 +71,7 @@ export const Manifesto: React.FC = () => {
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
                   marginTop: "10px",
-                  transform: `scale(${spring({ frame: frame - 215, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame: frame - 15, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 landing page
@@ -189,8 +83,8 @@ export const Manifesto: React.FC = () => {
                   display: "block",
                   color: BRAND.gray300,
                   marginTop: "20px",
-                  transform: `translateY(${interpolate(frame - 200, [0, 30], [20, 0], { extrapolateRight: "clamp" })}px)`,
-                  opacity: interpolate(frame - 200, [0, 30], [0, 1], { extrapolateRight: "clamp" }),
+                  transform: `translateY(${interpolate(frame, [0, 30], [20, 0], { extrapolateRight: "clamp" })}px)`,
+                  opacity: interpolate(frame, [0, 30], [0, 1], { extrapolateRight: "clamp" }),
                 }}
               >
                 focada em alta conversão.
@@ -206,7 +100,7 @@ export const Manifesto: React.FC = () => {
                   display: "block",
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
-                  transform: `scale(${spring({ frame: frame - 265, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame: frame - 120, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 Design autoral.
@@ -221,7 +115,7 @@ export const Manifesto: React.FC = () => {
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
                   marginTop: "15px",
-                  transform: `scale(${spring({ frame: frame - 280, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame: frame - 135, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 Código premium.
@@ -231,8 +125,8 @@ export const Manifesto: React.FC = () => {
         </div>
       )}
 
-      {/* --- SUB-SCENE 3: Typographic Split Screen (330 - 450) --- */}
-      {frame >= 330 && (
+      {/* --- SUB-SCENE 2: Typographic Split Screen (240 - 400) --- */}
+      {frame >= 240 && (
         <div
           style={{
             display: "flex",
