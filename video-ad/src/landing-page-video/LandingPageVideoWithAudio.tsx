@@ -37,51 +37,60 @@ export const LandingPageVideoWithAudio: React.FC = () => {
       />
 
       {/* ── Narração 1: Cena 1 (Intro) ─────────────────────────────────── */}
-      <Sequence from={0} durationInFrames={160}>
+      {/* Toca de forma livre e integral a partir do frame 0 */}
+      <Sequence from={0}>
         <Audio src={staticFile("tts-intro.wav")} volume={1.3} />
       </Sequence>
 
       {/* ── Narração 2: Cena 2 (Manifesto B2B) ─────────────────────────── */}
-      <Sequence from={160} durationInFrames={450}>
+      {/* Sincronizado para começar exatamente no frame 210 do Manifesto visual */}
+      <Sequence from={210}>
         <Audio src={staticFile("tts-manifesto.wav")} volume={1.3} />
       </Sequence>
 
-      {/* ── Narração 3: Cena 4 (Clímax Cinético 8-Fases) ───────────────── */}
-      {/* Cada frase tem duração de 34 frames (1.13s) no ritmo da música */}
-      <Sequence from={1300} durationInFrames={34}>
+      {/* ── Narração 3: Cena 3 (Demonstração Desktop) ───────────────────── */}
+      {/* Toca a partir do frame 610 do ProductDemo visual */}
+      <Sequence from={610}>
+        <Audio src={staticFile("tts-demo.wav")} volume={1.3} />
+      </Sequence>
+
+      {/* ── Narração 4: Cena 4 (Clímax Cinético 8-Fases) ───────────────── */}
+      {/* Cada gatilho de fala inicia exatamente na entrada da frase correspondente */}
+      <Sequence from={1300}>
         <Audio src={staticFile("tts-climax1.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1334} durationInFrames={34}>
+      <Sequence from={1334}>
         <Audio src={staticFile("tts-climax2.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1368} durationInFrames={34}>
+      <Sequence from={1368}>
         <Audio src={staticFile("tts-climax3.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1402} durationInFrames={34}>
+      <Sequence from={1402}>
         <Audio src={staticFile("tts-climax4.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1436} durationInFrames={34}>
+      <Sequence from={1436}>
         <Audio src={staticFile("tts-climax5.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1470} durationInFrames={34}>
+      <Sequence from={1470}>
         <Audio src={staticFile("tts-climax6.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1504} durationInFrames={34}>
+      <Sequence from={1504}>
         <Audio src={staticFile("tts-climax7.wav")} volume={1.3} />
       </Sequence>
 
-      <Sequence from={1538} durationInFrames={34}>
+      <Sequence from={1538}>
         <Audio src={staticFile("tts-climax8.wav")} volume={1.3} />
       </Sequence>
 
-      {/* ── Narração 4: Cena 5 (Outro/Fechamento com 10f de delay) ────── */}
-      <Sequence from={1585} durationInFrames={185}>
+      {/* ── Narração 5: Cena 5 (Outro/Fechamento) ──────────────────────── */}
+      {/* Sincronizado para começar no frame 1585 com o delay visual do fechamento */}
+      <Sequence from={1585}>
         <Audio src={staticFile("tts-outro.wav")} volume={1.3} />
       </Sequence>
     </AbsoluteFill>
