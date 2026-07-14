@@ -8,67 +8,86 @@ export const ProductDemo: React.FC = () => {
 
   // Local frame runs from 0 to 600 (physically 750 to 1350)
   // Sub-scenes:
-  // 0 - 300: Scrolling UI Grid (vertical scrolling with speed interpolate)
-  // 300 - 600: Zoom highlight on 3D Floating Checkout Card with SVG graph animation
+  // 0 - 80: Browser window entry (slides up with spring)
+  // 80 - 400: Live scroll & Cursor interaction on client's landing page
+  // 400 - 600: Transition to "Success conversion analytics"
 
-  // Grid scrolling interpolation
-  const gridY = interpolate(frame, [0, 300], [0, -320], {
-    extrapolateRight: "clamp",
-  });
-
-  const gridScale = interpolate(frame, [0, 20, 280, 300], [0.8, 1, 1, 0.75], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  const gridOpacity = interpolate(frame, [0, 20, 280, 300], [0, 1, 1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Card highlight springs (starts at local frame 300)
-  const cardEntrance = spring({
-    frame: frame - 300,
+  // 1. Browser Window Entry
+  const browserEntry = spring({
+    frame,
     fps,
-    config: { damping: 14, stiffness: 80 },
+    config: { damping: 15, stiffness: 80 },
   });
 
-  const graphEntrance = spring({
-    frame: frame - 330,
+  const browserY = (1 - browserEntry) * 400;
+  const browserScale = interpolate(browserEntry, [0, 1], [0.85, 1]);
+
+  // 2. Landing Page Scroll inside browser
+  // We scroll down from frame 100 to 350
+  const scrollTop = interpolate(frame, [100, 350], [0, -260], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // 3. Virtual Mouse Cursor Movement
+  // We move the cursor from the bottom-right corner to the CTA button on the page
+  // The CTA button is roughly in the center at Y: 120 (taking scroll into account)
+  // Target position: X: 40, Y: 110 (relative to browser center)
+  // Path starts at frame 120 and arrives at frame 380
+  const mouseActive = frame >= 120 && frame <= 420;
+  
+  // Curved trajectory using math
+  const mouseX = interpolate(frame, [120, 380], [200, 30], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  
+  // We add a slight wave to make the mouse look organic
+  const mouseCurveY = Math.sin(interpolate(frame, [120, 380], [0, Math.PI])) * -50;
+  const mouseY = interpolate(frame, [120, 380], [350, 100], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }) + mouseCurveY;
+
+  // Hover state (active from frame 380 to 400)
+  const isHovered = frame >= 380 && frame < 400;
+  const hoverScale = spring({
+    frame: frame - 380,
     fps,
-    config: { damping: 15, stiffness: 60 },
+    config: { damping: 10, stiffness: 150 },
   });
+  const ctaButtonScale = isHovered ? interpolate(hoverScale, [0, 1], [1, 1.08]) : 1;
 
-  const buttonEntrance = spring({
-    frame: frame - 360,
+  // 4. Click animation (at frame 400)
+  const isClicked = frame >= 400;
+  
+  const clickSpring = spring({
+    frame: frame - 400,
     fps,
-    config: { damping: 12, stiffness: 90 },
+    config: { damping: 8, stiffness: 200 },
   });
 
-  // 3D Perspective Rotation
-  const rotateX = interpolate(frame, [300, 600], [18, 8], {
+  const pulseScale = interpolate(clickSpring, [0, 1], [0.5, 1.8], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const pulseOpacity = interpolate(clickSpring, [0, 0.8, 1], [1, 0.5, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const rotateY = interpolate(frame, [300, 600], [-25, -8], {
+  // 5. Success screen reveal (starts at frame 408)
+  const successReveal = spring({
+    frame: frame - 408,
+    fps,
+    config: { damping: 14, stiffness: 90 },
+  });
+
+  // SVG drawing of checkmark
+  const checkmarkOffset = interpolate(successReveal, [0, 1], [100, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-
-  // SVG Line Animation
-  // strokeDashoffset goes from 300 (hidden) to 0 (fully drawn)
-  const strokeOffset = interpolate(graphEntrance, [0, 1], [300, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Button glow animation
-  const glowIntensity = interpolate(
-    Math.sin(frame * 0.1),
-    [-1, 1],
-    [5, 20]
-  );
 
   return (
     <div
@@ -81,398 +100,399 @@ export const ProductDemo: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "0 30px",
+        padding: "0 24px",
       }}
     >
-      {/* Background abstract elements */}
+      {/* Background abstract overlay grid */}
       <div
         style={{
           position: "absolute",
-          top: "10%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "600px",
-          height: "600px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(212, 225, 87, 0.05) 0%, transparent 70%)",
-          filter: "blur(50px)",
-          pointerEvents: "none",
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+          maskImage: "radial-gradient(circle at center, black 50%, transparent 95%)",
+          WebkitMaskImage: "radial-gradient(circle at center, black 50%, transparent 95%)",
+          opacity: 0.8,
         }}
       />
 
-      {/* --- SCENE 1: SCROLLING GRID (0 - 300) --- */}
-      {frame < 300 && (
+      {/* Volumetric glow on client page elements */}
+      <div
+        style={{
+          position: "absolute",
+          width: "350px",
+          height: "350px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 75%)",
+          top: "30%",
+          left: "40%",
+          filter: "blur(40px)",
+        }}
+      />
+
+      {/* --- BROWSER CONTAINER --- */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "400px",
+          height: "560px",
+          backgroundColor: "#0d0e12",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          borderRadius: "28px",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          transform: `translateY(${browserY}px) scale(${browserScale})`,
+          boxShadow: "0 35px 70px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+          position: "relative",
+          zIndex: 5,
+        }}
+      >
+        {/* Browser Top Bar */}
         <div
           style={{
-            width: "100%",
-            height: "100%",
+            backgroundColor: "#16171d",
+            height: "44px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
             alignItems: "center",
-            opacity: gridOpacity,
-            transform: `scale(${gridScale}) translateY(${gridY}px)`,
-            paddingTop: "60px",
+            padding: "0 16px",
+            justifyContent: "space-between",
+            flexShrink: 0,
+            zIndex: 10,
           }}
         >
-          {/* Card Mockup 1 */}
-          <div style={mockupStyle}>
-            <div style={headerStyle}>
-              <div style={dotsStyle} />
-              <span style={titleStyle}>Métricas de Conversão</span>
-            </div>
-            <div style={contentStyle}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "10px" }}>
-                <span style={{ fontSize: "28px", fontWeight: 800, color: BRAND.lime }}>+142%</span>
-                <span style={{ fontSize: "11px", color: BRAND.gray300 }}>LEADS GERADOS</span>
-              </div>
-              <div style={{ width: "100%", height: "4px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "2px" }}>
-                <div style={{ width: "78%", height: "100%", backgroundColor: BRAND.lime, borderRadius: "2px" }} />
-              </div>
-            </div>
+          {/* OS Buttons */}
+          <div style={{ display: "flex", gap: "6px" }}>
+            <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }} />
+            <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }} />
+            <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }} />
           </div>
-
-          {/* Card Mockup 2 */}
-          <div style={mockupStyle}>
-            <div style={headerStyle}>
-              <div style={dotsStyle} />
-              <span style={titleStyle}>Landing Page SaaS</span>
-            </div>
-            <div style={{ ...contentStyle, padding: "16px" }}>
-              <div style={{ fontSize: "16px", fontWeight: 800, color: "#fff", marginBottom: "6px" }}>
-                O próximo nível para seu negócio.
-              </div>
-              <p style={{ fontSize: "11px", color: BRAND.gray300, margin: 0, lineHeight: 1.4 }}>
-                Design autoral construído para obter os melhores resultados do seu tráfego pago.
-              </p>
-              <div style={{ display: "flex", gap: "6px", marginTop: "14px" }}>
-                <div style={{ flex: 1, height: "24px", borderRadius: "6px", backgroundColor: BRAND.lime, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: BRAND.black2 }}>Começar Agora</div>
-                <div style={{ flex: 1, height: "24px", borderRadius: "6px", backgroundColor: "transparent", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 600 }}>Saiba Mais</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card Mockup 3 */}
-          <div style={mockupStyle}>
-            <div style={headerStyle}>
-              <div style={dotsStyle} />
-              <span style={titleStyle}>Checkout de Alta Conversão</span>
-            </div>
-            <div style={contentStyle}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "8px", backgroundColor: "#1c1c1e", border: "1px solid rgba(255,255,255,0.05)" }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "12px", fontWeight: 700 }}>Ebook Premium</div>
-                  <div style={{ fontSize: "10px", color: BRAND.gray300 }}>R$ 47,00</div>
-                </div>
-                <div style={{ fontSize: "11px", fontWeight: 700, color: BRAND.lime, backgroundColor: "rgba(212,225,87,0.1)", padding: "4px 8px", borderRadius: "6px" }}>1-Click</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card Mockup 4 */}
-          <div style={mockupStyle}>
-            <div style={headerStyle}>
-              <div style={dotsStyle} />
-              <span style={titleStyle}>Performance & SEO</span>
-            </div>
-            <div style={contentStyle}>
-              <div style={{ display: "flex", justifyItems: "center", justifyContent: "space-between" }}>
-                <div>
-                  <div style={{ fontSize: "20px", fontWeight: 800, color: BRAND.white }}>99/100</div>
-                  <div style={{ fontSize: "9px", color: BRAND.gray300, textTransform: "uppercase" }}>Mobile speed score</div>
-                </div>
-                <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: BRAND.lime }} />
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: BRAND.lime }}>Excelente</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- SCENE 2: 3D CARD ZOOM HIGHLIGHT (300 - 600) --- */}
-      {frame >= 300 && (
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "400px",
-            opacity: cardEntrance,
-            transform: `scale(${interpolate(cardEntrance, [0, 1], [0.6, 1.0])}) translateY(${(1 - cardEntrance) * 100}px)`,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* 3D Wrapper */}
+          {/* Address Bar */}
           <div
             style={{
-              width: "100%",
-              transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-              transformOrigin: "center center",
-              backgroundColor: "rgba(17, 17, 17, 0.8)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              borderRadius: "28px",
-              padding: "24px",
-              boxShadow: `
-                0 30px 60px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 0 50px rgba(212, 225, 87, 0.03)
-              `,
+              backgroundColor: "#0d0e12",
+              border: "1px solid rgba(255, 255, 255, 0.05)",
+              borderRadius: "10px",
+              padding: "4px 20px",
+              fontSize: "11px",
+              color: BRAND.gray300,
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontWeight: 500,
             }}
           >
-            {/* Header window */}
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span>glowskin.co/skincare</span>
+          </div>
+          <div style={{ width: "42px" }} />
+        </div>
+
+        {/* Browser Content Frame */}
+        <div
+          style={{
+            flex: 1,
+            position: "relative",
+            overflow: "hidden",
+            backgroundColor: "#0d0e12",
+          }}
+        >
+          {/* --- VIEW 1: THE REAL LANDING PAGE DESIGN --- */}
+          {!isClicked && (
             <div
               style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                transform: `translateY(${scrollTop}px)`,
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-                paddingBottom: "16px",
-                marginBottom: "20px",
+                flexDirection: "column",
+                padding: "24px 20px",
               }}
             >
-              <div style={{ display: "flex", gap: "6px" }}>
-                <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }} />
-                <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }} />
-                <span style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }} />
+              {/* Client Branding Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
+                <span style={{ fontFamily: "serif", fontSize: "16px", fontWeight: 700, color: "#fff", letterSpacing: "0.05em" }}>GlowSkin</span>
+                <span style={{ fontSize: "10px", fontWeight: 600, color: "#ec4899", border: "1px solid rgba(236,72,153,0.3)", padding: "2px 8px", borderRadius: "20px" }}>100% Orgânico</span>
               </div>
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  color: BRAND.gray300,
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
-                }}
-              >
-                checkout.motionstudio.art
-              </span>
-              <div style={{ width: "42px" }} />
-            </div>
 
-            {/* Product details */}
-            <div style={{ marginBottom: "20px" }}>
-              <span
+              {/* Hero Copy */}
+              <span style={{ fontSize: "10px", fontWeight: 700, color: "#a78bfa", letterSpacing: "0.15em", textTransform: "uppercase" }}>Fórmula botânica natural</span>
+              <h2
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: BRAND.lime,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  display: "block",
-                  marginBottom: "4px",
+                  fontFamily: "'Bricolage Grotesque', sans-serif",
+                  fontSize: "30px",
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.1,
+                  margin: "8px 0 12px 0",
+                  letterSpacing: "-0.02em",
                 }}
               >
-                Resumo do Pedido
-              </span>
+                Sua pele radiante de forma <span style={{ background: "linear-gradient(90deg, #a78bfa, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>natural</span>.
+              </h2>
+              <p style={{ fontSize: "12px", color: BRAND.gray300, lineHeight: 1.4, margin: "0 0 24px 0" }}>
+                Nutrição profunda e regeneração celular diária através de séruns purificados sem toxinas.
+              </p>
+
+              {/* Client CTA Button */}
+              <div style={{ display: "flex", justifyContent: "center", width: "100%", marginBottom: "40px" }}>
+                <button
+                  style={{
+                    width: "100%",
+                    height: "50px",
+                    borderRadius: "14px",
+                    background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+                    border: "none",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    boxShadow: "0 10px 25px rgba(139, 92, 246, 0.3)",
+                    transform: `scale(${ctaButtonScale})`,
+                    transition: "transform 0.1s ease",
+                  }}
+                >
+                  Garantir Meu Sérum
+                </button>
+              </div>
+
+              {/* Features Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "30px" }}>
+                <div style={featureCardStyle}>
+                  <span style={{ fontSize: "18px", marginBottom: "4px" }}>🌱</span>
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff" }}>Ingredientes Puros</span>
+                  <span style={{ fontSize: "9px", color: BRAND.gray500 }}>Diretamente da terra</span>
+                </div>
+                <div style={featureCardStyle}>
+                  <span style={{ fontSize: "18px", marginBottom: "4px" }}>✨</span>
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff" }}>Luminosidade</span>
+                  <span style={{ fontSize: "9px", color: BRAND.gray500 }}>Brilho rejuvenescido</span>
+                </div>
+              </div>
+
+              {/* Social Proof Review */}
+              <div
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.04)",
+                  borderRadius: "16px",
+                  padding: "16px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ color: "#fbbf24", fontSize: "12px", marginBottom: "6px" }}>⭐⭐⭐⭐⭐</div>
+                <p style={{ fontSize: "11px", color: BRAND.gray300, fontStyle: "italic", margin: 0 }}>
+                  "Em apenas 2 semanas meu rosto ganhou um toque macio e viço que eu nunca tinha visto."
+                </p>
+                <span style={{ display: "block", fontSize: "9px", fontWeight: 700, color: BRAND.gray500, marginTop: "6px" }}>MARIANA R., SÃO PAULO</span>
+              </div>
+            </div>
+          )}
+
+          {/* --- VIEW 2: SUCCESS STATE / ANALYTICS (After Click) --- */}
+          {isClicked && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "24px",
+                opacity: successReveal,
+                transform: `scale(${interpolate(successReveal, [0, 1], [0.9, 1])})`,
+              }}
+            >
+              {/* Checkmark circle */}
+              <div
+                style={{
+                  width: "72px",
+                  height: "72px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(34, 197, 94, 0.12)",
+                  border: "2.5px solid #22c55e",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "20px",
+                  transform: `scale(${successReveal})`,
+                  boxShadow: "0 0 20px rgba(34, 197, 94, 0.15)",
+                }}
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3">
+                  <polyline points="20 6 9 17 4 12" strokeDasharray="100" strokeDashoffset={checkmarkOffset} />
+                </svg>
+              </div>
+
               <h3
                 style={{
                   fontFamily: "'Bricolage Grotesque', sans-serif",
                   fontSize: "24px",
                   fontWeight: 800,
-                  margin: 0,
-                  color: "#ffffff",
+                  color: "#fff",
+                  margin: "0 0 6px 0",
+                  textAlign: "center",
                 }}
               >
-                Landing Page Premium
+                Conversão Concluída!
               </h3>
-              <p style={{ fontSize: "13px", color: BRAND.gray300, marginTop: "4px", marginBottom: 0 }}>
-                Projeto personalizado e de alta conversão.
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: BRAND.gray300,
+                  textAlign: "center",
+                  margin: "0 0 30px 0",
+                  maxWidth: "260px",
+                }}
+              >
+                Landing page testada e validada com dados reais de usuários.
               </p>
-            </div>
 
-            {/* Price list */}
-            <div
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.02)",
-                border: "1px solid rgba(255, 255, 255, 0.04)",
-                borderRadius: "14px",
-                padding: "16px",
-                marginBottom: "24px",
-                transform: `translateY(${(1 - graphEntrance) * 20}px)`,
-                opacity: graphEntrance,
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "8px" }}>
-                <span style={{ color: BRAND.gray300 }}>Desenho Estrutural</span>
-                <span>R$ 0,00</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "8px" }}>
-                <span style={{ color: BRAND.gray300 }}>Copywriting Persuasivo</span>
-                <span>Incluso</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "8px" }}>
-                <span style={{ color: BRAND.gray300 }}>Desenvolvimento Remotion/React</span>
-                <span>Incluso</span>
-              </div>
+              {/* Conversion metrics box */}
               <div
                 style={{
+                  width: "100%",
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  borderRadius: "18px",
+                  padding: "16px",
                   display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  marginTop: "12px",
-                  paddingTop: "12px",
-                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  flexDirection: "column",
+                  gap: "12px",
                 }}
               >
-                <span>Taxa de Conversão</span>
-                <span style={{ color: BRAND.lime }}>+84.7% média</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "11px", color: BRAND.gray300 }}>TAXA DE CONVERSÃO</span>
+                  <span style={{ fontSize: "14px", fontWeight: 800, color: "#22c55e" }}>+94.6%</span>
+                </div>
+                <div style={{ width: "100%", height: "4px", backgroundColor: "rgba(255,255,255,0.04)" }}>
+                  <div style={{ width: "94.6%", height: "100%", backgroundColor: "#22c55e", borderRadius: "2px" }} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "11px", color: BRAND.gray300 }}>CUSTO POR LEAD (CPL)</span>
+                  <span style={{ fontSize: "14px", fontWeight: 800, color: "#22c55e" }}>-38.2%</span>
+                </div>
               </div>
-            </div>
 
-            {/* SVG Conversion graph climbing */}
+              {/* Footer attribution */}
+              <span
+                style={{
+                  marginTop: "30px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  color: BRAND.gray500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Desenvolvido por Motion Studio
+              </span>
+            </div>
+          )}
+
+          {/* --- VIRTUAL MOUSE CURSOR --- */}
+          {mouseActive && (
             <div
               style={{
-                height: "80px",
-                width: "100%",
-                position: "relative",
-                marginBottom: "24px",
-                opacity: graphEntrance,
-                transform: `translateY(${(1 - graphEntrance) * 15}px)`,
+                position: "absolute",
+                left: `${mouseX}px`,
+                top: `${mouseY}px`,
+                transform: "translate(-8px, -4px)",
+                zIndex: 100,
+                pointerEvents: "none",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
               <svg
-                width="100%"
-                height="100%"
-                viewBox="0 0 300 80"
-                style={{ overflow: "visible" }}
+                width="24"
+                height="24"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  filter: "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45))",
+                }}
               >
-                {/* SVG path of the graph */}
                 <path
-                  d="M 10 70 Q 70 60 110 40 T 210 20 T 290 8"
-                  fill="none"
-                  stroke={BRAND.lime}
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeDasharray="300"
-                  strokeDashoffset={strokeOffset}
-                  style={{
-                    filter: "drop-shadow(0 4px 10px rgba(212, 225, 87, 0.4))",
-                  }}
+                  d="M8.2 2.2c-.4 0-.8.2-1 .6-.2.4-.2.8 0 1.2l10 24c.2.4.6.6 1 .6.4 0 .8-.2 1-.6l3.5-8.5 8.5-3.5c.4-.2.6-.6.6-1s-.2-.8-.6-1l-24-10c-.1-.1-.3-.2-.4-.2-.2 0-.4 0-.6.1z"
+                  fill="white"
+                  stroke="black"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
                 />
-                {/* Dots along the path */}
-                {graphEntrance > 0.9 && (
-                  <>
-                    <circle cx="290" cy="8" r="5" fill="#ffffff" />
-                    <circle
-                      cx="290"
-                      cy="8"
-                      r="12"
-                      fill="transparent"
-                      stroke="rgba(255, 255, 255, 0.4)"
-                      strokeWidth="2"
-                      style={{
-                        animation: "ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite",
-                      }}
-                    />
-                  </>
-                )}
-                {/* Grid guidelines */}
-                <line x1="10" y1="70" x2="290" y2="70" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="10" y1="40" x2="290" y2="40" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="10" y1="10" x2="290" y2="10" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="1" strokeDasharray="4 4" />
               </svg>
-              <span
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "0px",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  backgroundColor: BRAND.lime,
-                  color: BRAND.black,
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  opacity: graphEntrance,
-                }}
-              >
-                Lead Peak
-              </span>
-            </div>
 
-            {/* Neon lime button */}
-            <div
-              style={{
-                width: "100%",
-                opacity: buttonEntrance,
-                transform: `scale(${buttonEntrance}) translateY(${(1 - buttonEntrance) * 15}px)`,
-              }}
-            >
-              <button
-                style={{
-                  width: "100%",
-                  height: "54px",
-                  borderRadius: "14px",
-                  backgroundColor: BRAND.lime,
-                  border: "none",
-                  fontSize: "15px",
-                  fontWeight: 800,
-                  color: BRAND.black2,
-                  cursor: "pointer",
-                  letterSpacing: "0.02em",
-                  boxShadow: `0 0 ${glowIntensity}px rgba(212, 225, 87, 0.45)`,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <span>Garantir Minha Landing Page</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
+              {/* Click ripple waves */}
+              {isClicked && frame < 420 && (
+                <div
+                  style={{
+                    transform: `scale(${pulseScale})`,
+                    opacity: pulseOpacity,
+                    position: "absolute",
+                    left: "-8px",
+                    top: "-8px",
+                  }}
+                  className="w-8 h-8 rounded-full border-4 border-[#8b5cf6] bg-[#8b5cf6]/20"
+                />
+              )}
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
+
+      {/* Screen subtitle describing product result */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "4%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          textAlign: "center",
+          width: "90%",
+          zIndex: 10,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Bricolage Grotesque', sans-serif",
+            fontSize: "15px",
+            fontWeight: 700,
+            color: BRAND.white,
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            padding: "8px 18px",
+            borderRadius: "30px",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+            display: "inline-block",
+          }}
+        >
+          {frame < 400 ? "Navegação real e fluxo intuitivo" : "Conversões validadas na prática"}
+        </span>
+      </div>
     </div>
   );
 };
 
-// CSS styles
-const mockupStyle: React.CSSProperties = {
-  width: "100%",
-  maxWidth: "360px",
-  backgroundColor: "#171717",
-  border: "1px solid rgba(255, 255, 255, 0.06)",
-  borderRadius: "16px",
-  marginBottom: "16px",
-  overflow: "hidden",
-  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
-};
-
-const headerStyle: React.CSSProperties = {
-  backgroundColor: "#1a1a1a",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-  padding: "10px 14px",
+const featureCardStyle: React.CSSProperties = {
+  backgroundColor: "rgba(255, 255, 255, 0.01)",
+  border: "1px solid rgba(255, 255, 255, 0.04)",
+  borderRadius: "12px",
+  padding: "12px",
   display: "flex",
-  alignItems: "center",
-  gap: "10px",
-};
-
-const dotsStyle: React.CSSProperties = {
-  width: "6px",
-  height: "6px",
-  borderRadius: "50%",
-  backgroundColor: "rgba(255, 255, 255, 0.15)",
-  boxShadow: "10px 0 0 rgba(255, 255, 255, 0.15), 20px 0 0 rgba(255, 255, 255, 0.15)",
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: "10px",
-  fontWeight: 600,
-  color: BRAND.gray300,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  marginLeft: "24px",
-};
-
-const contentStyle: React.CSSProperties = {
-  padding: "14px 18px",
+  flexDirection: "column",
+  alignItems: "flex-start",
 };
