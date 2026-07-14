@@ -7,6 +7,8 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { VideoConfig } from "./content/configs";
+import { ClaudeCode, Antigravity } from "@lobehub/icons";
+import { Logo } from "./components/Logo";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -579,25 +581,7 @@ const ClaudeCodeIcon: React.FC<{ frame: number }> = ({ frame }) => {
       width: "140px",
       height: "140px",
     }}>
-      <svg width="110" height="110" viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="claudeGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ffb088" />
-            <stop offset="100%" stopColor="#b25d38" />
-          </radialGradient>
-        </defs>
-        <g transform="translate(50,50)">
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-            <path
-              key={angle}
-              d="M 0,-28 C 8,-28 16,-10 0,0 C -16,-10 -8,-28 0,-28 Z"
-              fill="url(#claudeGrad)"
-              transform={`rotate(${angle})`}
-            />
-          ))}
-          <circle cx="0" cy="0" r="8" fill="#fff" opacity="0.9" />
-        </g>
-      </svg>
+      <ClaudeCode.Color size={110} />
     </div>
   );
 };
@@ -617,18 +601,7 @@ const CodexAntigravityIcon: React.FC<{ frame: number }> = ({ frame }) => {
       width: "140px",
       height: "140px",
     }}>
-      <svg width="115" height="115" viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="agyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00f5ff" />
-            <stop offset="100%" stopColor="#d4e157" />
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="36" fill="none" stroke="url(#agyGrad)" strokeWidth="2.5" strokeDasharray="12 6" />
-        <circle cx="50" cy="50" r="26" fill="none" stroke="#d4e157" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.7" />
-        <circle cx="50" cy="50" r="14" fill="url(#agyGrad)" />
-        <circle cx="50" cy="50" r="6" fill="#fff" />
-      </svg>
+      <Antigravity.Color size={115} />
     </div>
   );
 };
@@ -648,19 +621,7 @@ const MotionStudioIcon: React.FC<{ frame: number }> = ({ frame }) => {
       width: "140px",
       height: "140px",
     }}>
-      <svg width="110" height="110" viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="msGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#d4e157" />
-            <stop offset="100%" stopColor="#a3e635" />
-          </linearGradient>
-        </defs>
-        <rect x="15" y="20" width="70" height="60" rx="10" fill="#151515" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
-        <line x1="25" y1="30" x2="45" y2="30" stroke="#d4e157" strokeWidth="3" strokeLinecap="round" />
-        <path d="M 40,42 L 30,50 L 40,58" fill="none" stroke="url(#msGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M 60,42 L 70,50 L 60,58" fill="none" stroke="url(#msGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="53" y1="40" x2="47" y2="60" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-      </svg>
+      <Logo size={115} />
     </div>
   );
 };

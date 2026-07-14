@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@lobehub/icons": "^5.13.0",
     "@remotion/cli": "4.0.487",
     "@remotion/tailwind-v4": "4.0.487",
     "lucide-react": "^1.24.0",
