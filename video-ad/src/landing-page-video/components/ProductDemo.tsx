@@ -21,28 +21,25 @@ export const ProductDemo: React.FC = () => {
   const hoverRotateY = Math.cos(frame * 0.015) * 3.2;
   const hoverScale = 1 + Math.sin(frame * 0.01) * 0.012;
 
-  // Track active scene and local frames
+  // Track active scene
   let activeScene = 1;
   if (frame >= 170 && frame < 340) activeScene = 2;
   else if (frame >= 340 && frame < 510) activeScene = 3;
   else if (frame >= 510) activeScene = 4;
 
   // Define transition progresses
-  // Transition 1 (Ranty to Liquid Brokers)
   const t1Spring = spring({
     frame: frame - 150,
     fps,
     config: { damping: 14, stiffness: 100 },
   });
 
-  // Transition 2 (Liquid Brokers to ChronoTask)
   const t2Spring = spring({
     frame: frame - 320,
     fps,
     config: { damping: 15, stiffness: 90 },
   });
 
-  // Transition 3 (ChronoTask to Redacted)
   const t3Spring = spring({
     frame: frame - 490,
     fps,
@@ -78,7 +75,7 @@ export const ProductDemo: React.FC = () => {
         }}
       />
 
-      {/* --- PREVIEW VIEWPORTS CONTAINER (LARGER PREVIEW DESKTOP 960px) --- */}
+      {/* --- PREVIEW VIEWPORTS CONTAINER --- */}
       <div
         style={{
           width: "960px",
@@ -97,7 +94,6 @@ export const ProductDemo: React.FC = () => {
               position: "absolute",
               width: "100%",
               height: "100%",
-              // Transition 1 slide out + 3D rotation left
               transform: `
                 rotateX(${hoverRotateX}deg) 
                 rotateY(${hoverRotateY - t1Spring * 45}deg) 
@@ -121,7 +117,6 @@ export const ProductDemo: React.FC = () => {
               position: "absolute",
               width: "100%",
               height: "100%",
-              // Transition 1 entry + Transition 2 exit (depth scale)
               transform: `
                 rotateX(${hoverRotateX}deg)
                 rotateY(${hoverRotateY + (1 - t1Spring) * 45 - t2Spring * 15}deg)
@@ -148,7 +143,6 @@ export const ProductDemo: React.FC = () => {
               position: "absolute",
               width: "100%",
               height: "100%",
-              // Transition 2 entry (exploding zoom) + Transition 3 slide Y
               transform: `
                 rotateX(${hoverRotateX - (1 - t2Spring) * 15}deg)
                 rotateY(${hoverRotateY}deg)
@@ -175,7 +169,6 @@ export const ProductDemo: React.FC = () => {
               position: "absolute",
               width: "100%",
               height: "100%",
-              // Transition 3 entry (swipes up)
               transform: `
                 rotateX(${hoverRotateX}deg)
                 rotateY(${hoverRotateY}deg)
@@ -209,7 +202,6 @@ export const ProductDemo: React.FC = () => {
           }}
         />
       )}
-
     </div>
   );
 };
@@ -294,13 +286,13 @@ const BrowserFrame: React.FC<BrowserProps> = ({ children, domain, dark }) => {
 // --- LP 1: RANTY (ARCHITECTURE) ---
 // ─────────────────────────────────────────────────────────────────────────────
 const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
-  // Autoscroll down from localFrame 10 to 140
-  const scrollTop = interpolate(localFrame, [15, 140], [0, -220], {
+  // Deep scroll Y that exposes a fully custom projects gallery, testimonial, and footer.
+  // Scroll goes from 0 to -650px.
+  const scrollTop = interpolate(localFrame, [15, 145], [0, -650], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Slide-in for right elements
   const rightEntrance = spring({
     frame: localFrame - 10,
     fps: 30,
@@ -311,9 +303,9 @@ const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
     <div
       style={{
         transform: `translateY(${scrollTop}px)`,
-        padding: "30px 40px 80px 40px",
+        padding: "30px 40px 100px 40px",
         backgroundColor: "#f4ede4", // Beige editorial background
-        minHeight: "100%",
+        minHeight: "1350px", // Giant height to avoid white spaces on scroll!
         color: "#2f2d2b",
         display: "flex",
         flexDirection: "column",
@@ -371,7 +363,7 @@ const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           </button>
         </div>
 
-        {/* Hero Card Column (Mockup image based on actual generated asset) */}
+        {/* Hero Card Column */}
         <div
           style={{
             flex: 1.1,
@@ -402,7 +394,7 @@ const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
             
             <span style={{ fontSize: "16px", fontWeight: 700, letterSpacing: "-0.01em" }}>Unique design & ergonomics</span>
 
-            {/* Generated House Image Integration */}
+            {/* Generated House Image */}
             <div
               style={{
                 width: "100%",
@@ -425,7 +417,7 @@ const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
             </div>
           </div>
 
-          {/* Floating Roomtour card on top of the image */}
+          {/* Floating Roomtour card */}
           <div
             style={{
               position: "absolute",
@@ -452,47 +444,75 @@ const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
         </div>
       </div>
 
-      {/* Material cards bottom row */}
-      <div style={{ display: "flex", gap: "20px", marginTop: "60px" }}>
-        {/* Floating Card Left */}
-        <div style={{ flex: 1.2, backgroundColor: "#bc9f87", borderRadius: "24px", padding: "20px 24px", color: "#fff", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <div>
-            <span style={{ fontSize: "16px", fontWeight: 700, display: "block", marginBottom: "6px" }}>We use best materials!</span>
-            <span style={{ fontSize: "11px", opacity: 0.85, display: "block" }}>Working with verified suppliers.</span>
-          </div>
+      {/* Materials Row */}
+      <div style={{ display: "flex", gap: "20px", marginTop: "60px", marginBottom: "60px" }}>
+        <div style={{ flex: 1.2, backgroundColor: "#bc9f87", borderRadius: "24px", padding: "20px 24px", color: "#fff" }}>
+          <span style={{ fontSize: "16px", fontWeight: 700, display: "block", marginBottom: "6px" }}>We use best materials!</span>
+          <span style={{ fontSize: "11px", opacity: 0.85, display: "block" }}>Working with verified suppliers.</span>
         </div>
-        {/* Text Right */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ display: "flex", gap: "-6px", alignItems: "center", marginBottom: "8px" }}>
             <span style={{ width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#bfb6ae", border: "2px solid #fff" }} />
             <span style={{ width: "24px", height: "24px", borderRadius: "50%", backgroundColor: BRAND.gray700, border: "2px solid #fff", marginLeft: "-6px" }} />
             <span style={{ fontSize: "20px", fontWeight: 800, marginLeft: "10px" }}>12m+</span>
           </div>
-          <span style={{ fontSize: "11px", color: BRAND.gray500, fontWeight: 500 }}>Customers satisfied with custom comfort.</span>
+          <span style={{ fontSize: "11px", color: BRAND.gray500, fontWeight: 500 }}>Customers satisfied.</span>
+        </div>
+      </div>
+
+      {/* PROJECTS SHOWCASE GRID (NEW SECTION - PREVENTS EMPTY ON SCROLL) */}
+      <div style={{ marginTop: "40px" }}>
+        <h2 style={{ fontFamily: "Georgia, serif", fontSize: "32px", fontWeight: 400, marginBottom: "24px", letterSpacing: "-0.02em" }}>
+          Our Latest Projects
+        </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "40px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <img src={staticFile("ranty_pool.jpg")} alt="Ranty Infinity Pool" style={rantyProjectImg} />
+            <span style={{ fontSize: "12px", fontWeight: 700 }}>Infinity Pool Horizon</span>
+            <span style={{ fontSize: "10px", color: BRAND.gray500 }}>Sunset Vista Villa</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <img src={staticFile("ranty_concrete.jpg")} alt="Ranty Concrete Detail" style={rantyProjectImg} />
+            <span style={{ fontSize: "12px", fontWeight: 700 }}>Minimalist Concrete Villa</span>
+            <span style={{ fontSize: "10px", color: BRAND.gray500 }}>Urban Oasis House</span>
+          </div>
+        </div>
+
+        {/* Elegant Quote */}
+        <div style={{ borderLeft: "3px solid #2f2d2b", paddingLeft: "20px", margin: "40px 0", fontStyle: "italic", fontSize: "16px", color: BRAND.gray700 }}>
+          "Combining nature and modern engineering to build custom luxury homes that last forever."
+        </div>
+
+        {/* Footer */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: "30px", marginTop: "50px", fontSize: "11px", color: BRAND.gray500 }}>
+          <span>RANTY ARCHITECTS &copy; 2026</span>
+          <span>TERMS & PRIVACY</span>
         </div>
       </div>
     </div>
   );
 };
-const rantyBadge: React.CSSProperties = {
-  fontSize: "10px",
-  fontWeight: 700,
-  padding: "3px 12px",
-  borderRadius: "12px",
-  backgroundColor: "#f4ede4",
-  color: "#2f2d2b",
-  border: "1px solid rgba(0,0,0,0.05)",
+const rantyProjectImg: React.CSSProperties = {
+  width: "100%",
+  height: "170px",
+  borderRadius: "16px",
+  objectFit: "cover",
+  boxShadow: "0 10px 20px rgba(0,0,0,0.03)",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // --- LP 2: LIQUID BROKERS (FINTECH DARK) ---
 // ─────────────────────────────────────────────────────────────────────────────
 const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
-  // Constant rotation and pulsing scale for the metallic blob
+  // Slow scroll Y from localFrame 40 to 140
+  const scrollTop = interpolate(localFrame, [40, 140], [0, -320], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
   const rotateBall = localFrame * 0.25;
   const pulseBlob = 1 + Math.sin(localFrame * 0.05) * 0.03;
 
-  // Spring entrance for glassmorphic elements
   const itemsEntrance = spring({
     frame: localFrame,
     fps: 30,
@@ -502,18 +522,18 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
   return (
     <div
       style={{
-        padding: "30px 40px",
-        backgroundColor: "#08090c", // Rich deep space dark
-        height: "100%",
+        transform: `translateY(${scrollTop}px)`,
+        padding: "30px 40px 100px 40px",
+        backgroundColor: "#08090c",
+        minHeight: "1050px", // Extended to avoid white areas when scrolling!
         color: "#ffffff",
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        justifyContent: "space-between",
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
         <span style={{ fontSize: "16px", fontWeight: 850, letterSpacing: "-0.03em" }}>Liquid Brokers</span>
         <div style={{ display: "flex", gap: "24px", fontSize: "11px", color: BRAND.gray300 }}>
           <span>About</span>
@@ -521,24 +541,13 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           <span>Contact</span>
           <span>FAQ</span>
         </div>
-        <button
-          style={{
-            backgroundColor: "#ffffff",
-            color: "#08090c",
-            border: "none",
-            borderRadius: "20px",
-            padding: "7px 18px",
-            fontSize: "11px",
-            fontWeight: 800,
-            cursor: "pointer",
-          }}
-        >
+        <button style={{ backgroundColor: "#ffffff", color: "#08090c", border: "none", borderRadius: "20px", padding: "7px 18px", fontSize: "11px", fontWeight: 800 }}>
           Sign up
         </button>
       </div>
 
       {/* Core Typography */}
-      <div style={{ textAlign: "center", marginTop: "40px", zIndex: 10 }}>
+      <div style={{ textAlign: "center", marginTop: "30px", marginBottom: "40px" }}>
         <h2
           style={{
             fontFamily: "'Bricolage Grotesque', sans-serif",
@@ -553,54 +562,36 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           Trading Experience
         </h2>
         <p style={{ fontSize: "13px", color: BRAND.gray300, maxWidth: "340px", margin: "0 auto 24px auto", lineHeight: 1.4 }}>
-          Unlock your trading potential in a fully regulated environment, powered by Liquid Brokers.
+          Unlock your trading potential in a fully regulated environment.
         </p>
-        <button
-          style={{
-            backgroundColor: "#ffffff",
-            border: "none",
-            color: "#08090c",
-            borderRadius: "24px",
-            padding: "12px 36px",
-            fontSize: "12px",
-            fontWeight: 800,
-            boxShadow: "0 15px 30px rgba(255,255,255,0.06)",
-            cursor: "pointer",
-          }}
-        >
+        <button style={{ backgroundColor: "#ffffff", border: "none", color: "#08090c", borderRadius: "24px", padding: "12px 36px", fontSize: "12px", fontWeight: 800 }}>
           Sign Up & Trade
         </button>
       </div>
 
-      {/* Generated Liquid Metal Blob Integration */}
+      {/* Generated Liquid Metal Blob (Positioned absolutely behind text) */}
       <div
         style={{
           position: "absolute",
           width: "480px",
           height: "480px",
-          bottom: "-180px",
+          top: "140px",
           left: "50%",
           transform: `translateX(-50%) scale(${pulseBlob}) rotate(${rotateBall}deg)`,
           zIndex: 1,
           pointerEvents: "none",
-          opacity: 0.85,
+          opacity: 0.8,
         }}
       >
         <img
           src={staticFile("liquid_metal_blob.jpg")}
           alt="Liquid Metal Blob"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            mixBlendMode: "screen",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "contain", mixBlendMode: "screen" }}
         />
       </div>
 
-      {/* Floating Glassmorphic Indicators */}
-      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", zIndex: 10 }}>
-        {/* Left card */}
+      {/* Glassmorphic Indicators */}
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", zIndex: 10, marginTop: "40px", marginBottom: "80px" }}>
         <div
           style={{
             ...glassCardStyle,
@@ -608,10 +599,9 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
             opacity: itemsEntrance,
           }}
         >
-          <span style={{ fontSize: "8px", color: BRAND.gray500, display: "block", fontWeight: 700, letterSpacing: "0.05em" }}>TRADING PAIRS</span>
+          <span style={{ fontSize: "8px", color: BRAND.gray500, display: "block", fontWeight: 700 }}>TRADING PAIRS</span>
           <span style={{ fontSize: "12px", fontWeight: 700, display: "block", marginTop: "3px" }}>Unparalleled Access</span>
         </div>
-        {/* Right card */}
         <div
           style={{
             ...glassCardStyle,
@@ -620,28 +610,62 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
             textAlign: "right",
           }}
         >
-          <span style={{ fontSize: "8px", color: BRAND.gray500, display: "block", fontWeight: 700, letterSpacing: "0.05em" }}>LIVE ACCURACY</span>
+          <span style={{ fontSize: "8px", color: BRAND.gray500, display: "block", fontWeight: 700 }}>LIVE ACCURACY</span>
           <span style={{ fontSize: "15px", fontWeight: 800, color: "#f59e0b", display: "block", marginTop: "3px" }}>96%</span>
+        </div>
+      </div>
+
+      {/* CRYPTO SUPPORTED ASSETS (NEW SECTION - PREVENTS EMPTY ON SCROLL) */}
+      <div style={{ zIndex: 10, marginTop: "40px" }}>
+        <h3 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontSize: "28px", fontWeight: 800, marginBottom: "20px", letterSpacing: "-0.03em" }}>
+          Supported Markets
+        </h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div style={cryptoAssetStyle}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#f59e0b" }} />
+              <span style={{ fontSize: "12px", fontWeight: 800 }}>BTC / USD</span>
+            </div>
+            <span style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e" }}>$64,820.50 (+2.4%)</span>
+          </div>
+          <div style={cryptoAssetStyle}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#6366f1" }} />
+              <span style={{ fontSize: "12px", fontWeight: 800 }}>ETH / USD</span>
+            </div>
+            <span style={{ fontSize: "13px", fontWeight: 800, color: "#22c55e" }}>$3,450.20 (+1.8%)</span>
+          </div>
+        </div>
+
+        {/* Muted stats box */}
+        <div style={{ marginTop: "40px", backgroundColor: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", padding: "20px", borderRadius: "20px", textAlign: "center" }}>
+          <span style={{ fontSize: "11px", color: BRAND.gray500, letterSpacing: "0.1em" }}>DAILY VOLUME FLOW</span>
+          <span style={{ display: "block", fontSize: "24px", fontWeight: 900, color: "#f59e0b", marginTop: "4px" }}>$4.8B+ USD</span>
         </div>
       </div>
     </div>
   );
 };
-const glassCardStyle: React.CSSProperties = {
-  backgroundColor: "rgba(255, 255, 255, 0.03)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  borderRadius: "18px",
-  padding: "14px 20px",
-  width: "160px",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
+const cryptoAssetStyle: React.CSSProperties = {
+  backgroundColor: "rgba(255, 255, 255, 0.02)",
+  border: "1px solid rgba(255, 255, 255, 0.06)",
+  borderRadius: "16px",
+  padding: "16px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // --- LP 3: CHRONOTASK (PRODUCTIVITY LIGHT) ---
 // ─────────────────────────────────────────────────────────────────────────────
 const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
-  // Elements fly-in with different spring delays
+  // Scroll Y from localFrame 40 to 140
+  const scrollTop = interpolate(localFrame, [40, 140], [0, -320], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
   const noteEntrance = spring({
     frame: localFrame - 5,
     fps: 30,
@@ -661,21 +685,20 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
   return (
     <div
       style={{
-        padding: "30px 40px",
+        transform: `translateY(${scrollTop}px)`,
+        padding: "30px 40px 100px 40px",
         backgroundColor: "#fafafb",
-        // Dotted grid overlay
         backgroundImage: "radial-gradient(rgba(0, 0, 0, 0.035) 1.5px, transparent 1.5px)",
         backgroundSize: "20px 20px",
-        height: "100%",
+        minHeight: "1050px", // Extended to prevent empty spaces!
         color: "#18181b",
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        justifyContent: "space-between",
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span style={{ display: "flex", gap: "4px" }}>
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#3b82f6" }} />
@@ -689,11 +712,11 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           <span>Resources</span>
           <span>Pricing</span>
         </div>
-        <span style={{ fontSize: "11px", fontWeight: 700, color: "#3b82f6", cursor: "pointer" }}>Get demo</span>
+        <span style={{ fontSize: "11px", fontWeight: 700, color: "#3b82f6" }}>Get demo</span>
       </div>
 
       {/* Title */}
-      <div style={{ textAlign: "center", marginTop: "30px", zIndex: 10 }}>
+      <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "40px" }}>
         <h3
           style={{
             fontFamily: "'Bricolage Grotesque', sans-serif",
@@ -707,29 +730,17 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           Think, plan, and track <br />
           <span style={{ color: BRAND.gray500 }}>all in one place</span>
         </h3>
-        <button
-          style={{
-            backgroundColor: "#3b82f6",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "12px",
-            padding: "10px 24px",
-            fontSize: "11px",
-            fontWeight: 700,
-            boxShadow: "0 6px 18px rgba(59, 130, 246, 0.25)",
-            cursor: "pointer",
-          }}
-        >
+        <button style={{ backgroundColor: "#3b82f6", color: "#ffffff", border: "none", borderRadius: "12px", padding: "10px 24px", fontSize: "11px", fontWeight: 700, boxShadow: "0 6px 18px rgba(59, 130, 246, 0.25)" }}>
           Get free demo
         </button>
       </div>
 
       {/* Floating UI Components */}
-      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", zIndex: 10, marginTop: "10px" }}>
-        {/* Yellow Note (Left) */}
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", marginTop: "10px", marginBottom: "50px" }}>
+        {/* Yellow Note */}
         <div
           style={{
-            backgroundColor: "#fef08a", // Yellow
+            backgroundColor: "#fef08a",
             borderRadius: "12px",
             padding: "14px",
             width: "140px",
@@ -738,15 +749,13 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
             opacity: noteEntrance,
           }}
         >
-          <span style={{ fontSize: "11px", fontWeight: 800, display: "block", color: "#854d0e", marginBottom: "6px" }}>
-            Take Notes
-          </span>
+          <span style={{ fontSize: "11px", fontWeight: 800, display: "block", color: "#854d0e", marginBottom: "6px" }}>Take Notes</span>
           <span style={{ fontSize: "9px", color: "#854d0e", opacity: 0.8, lineHeight: 1.3, display: "block" }}>
-            Take notes to keep track of crucial details, and accomplish more tasks with ease.
+            Take notes to keep track of crucial details.
           </span>
         </div>
 
-        {/* Task Checklist (Right) */}
+        {/* Task Checklist */}
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -772,7 +781,7 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           </div>
         </div>
 
-        {/* Generated 3D Glassmorphic Clock Reminder (Far Right/Top) */}
+        {/* Relógio Glassmorphic */}
         <div
           style={{
             width: "110px",
@@ -790,53 +799,47 @@ const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           }}
         >
           <span style={{ fontSize: "8px", fontWeight: 800, color: BRAND.gray500 }}>REMINIDER</span>
-          <img
-            src={staticFile("chronotask_clock_icon.jpg")}
-            alt="3D Clock Icon"
-            style={{ width: "100%", height: "80px", borderRadius: "10px", objectFit: "cover" }}
-          />
+          <img src={staticFile("chronotask_clock_icon.jpg")} alt="3D Clock Icon" style={{ width: "100%", height: "80px", borderRadius: "10px", objectFit: "cover" }} />
         </div>
       </div>
 
-      {/* Integration icons (Bottom Row) */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "14px",
-          marginTop: "10px",
-          opacity: remindersEntrance,
-          transform: `scale(${remindersEntrance})`,
-        }}
-      >
-        <span style={{ fontSize: "10px", color: BRAND.gray500, fontWeight: 750 }}>100+ Integrations</span>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <span style={integrationIconStyle}>✉️</span>
-          <span style={integrationIconStyle}>💬</span>
-          <span style={integrationIconStyle}>📅</span>
+      {/* PRODUCTIVITY GRAPH & FEATURES (NEW SECTION - PREVENTS EMPTY ON SCROLL) */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "30px" }}>
+        <h4 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontSize: "24px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+          Performance Tracker
+        </h4>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 10px 30px rgba(0,0,0,0.03)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+            <div>
+              <span style={{ fontSize: "10px", color: BRAND.gray500 }}>WEEKLY SCORE</span>
+              <span style={{ display: "block", fontSize: "22px", fontWeight: 900, color: "#3b82f6" }}>+48.6% Growth</span>
+            </div>
+            <span style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", fontSize: "11px", fontWeight: 700, padding: "4px 10px", borderRadius: "10px" }}>Active</span>
+          </div>
+
+          {/* Simple Vector Graph line */}
+          <div style={{ width: "100%", height: "60px", opacity: 0.85 }}>
+            <svg width="100%" height="100%" viewBox="0 0 400 60">
+              <path d="M 0 50 Q 100 20 200 40 T 400 10" fill="none" stroke="#3b82f6" strokeWidth="4" strokeLinecap="round" />
+              <path d="M 0 50 Q 100 20 200 40 T 400 10 L 400 60 L 0 60 Z" fill="url(#graphgrad)" opacity="0.1" />
+              <defs>
+                <linearGradient id="graphgrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor="#3b82f6" />
+                  <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-const integrationIconStyle: React.CSSProperties = {
-  width: "24px",
-  height: "24px",
-  borderRadius: "6px",
-  backgroundColor: "#ffffff",
-  border: "1px solid rgba(0,0,0,0.06)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: "12px",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // --- LP 4: REDACTED (ANALYTICS GREEN LANDSCAPE) ---
 // ─────────────────────────────────────────────────────────────────────────────
 const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
-  // Dashboard slides up from the bottom with a delay
   const dashSpring = spring({
     frame: localFrame - 25,
     fps: 30,
@@ -844,6 +847,12 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
   });
 
   const dashY = (1 - dashSpring) * 180;
+
+  // Fade in for social proof logos
+  const logoFade = interpolate(localFrame, [40, 70], [0, 0.75], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   return (
     <div
@@ -868,7 +877,7 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           <span>Docs</span>
           <span>Status</span>
         </div>
-        <span style={{ fontSize: "11px", fontWeight: 700, backgroundColor: "#84cc16", color: "#000", padding: "5px 14px", borderRadius: "12px", cursor: "pointer" }}>
+        <span style={{ fontSize: "11px", fontWeight: 700, backgroundColor: "#84cc16", color: "#000", padding: "5px 14px", borderRadius: "12px" }}>
           Get started
         </span>
       </div>
@@ -892,16 +901,16 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           Redacted turns product behavior into clear signals, helping you spot risk early.
         </p>
         <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
-          <button style={{ backgroundColor: "#84cc16", border: "none", color: "#000", fontSize: "10px", fontWeight: 800, borderRadius: "8px", padding: "8px 18px", cursor: "pointer" }}>
+          <button style={{ backgroundColor: "#84cc16", border: "none", color: "#000", fontSize: "10px", fontWeight: 800, borderRadius: "8px", padding: "8px 18px" }}>
             Start for free →
           </button>
-          <button style={{ backgroundColor: "#0f172a", border: "none", color: "#fff", fontSize: "10px", fontWeight: 800, borderRadius: "8px", padding: "8px 18px", cursor: "pointer" }}>
+          <button style={{ backgroundColor: "#0f172a", border: "none", color: "#fff", fontSize: "10px", fontWeight: 800, borderRadius: "8px", padding: "8px 18px" }}>
             Talk to us
           </button>
         </div>
       </div>
 
-      {/* Generated Windows XP Green Hills Landscape Integration */}
+      {/* Generated Green Hills Landscape (XP Style) */}
       <div
         style={{
           position: "absolute",
@@ -916,13 +925,31 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
         <img
           src={staticFile("redacted_green_hills.jpg")}
           alt="Green Hills Landscape"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            verticalAlign: "bottom",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
+      </div>
+
+      {/* Social Proof brand names overlay on bottom hills (based on ref) */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 4,
+          display: "flex",
+          gap: "28px",
+          alignItems: "center",
+          opacity: logoFade,
+          width: "90%",
+          justifyContent: "center",
+        }}
+      >
+        <span style={brandLogos}>vimeo</span>
+        <span style={brandLogos}>Uber</span>
+        <span style={brandLogos}>stripe</span>
+        <span style={brandLogos}>Google</span>
+        <span style={brandLogos}>Revolut</span>
       </div>
 
       {/* Dashboard Mockup rising from behind front hills */}
@@ -962,4 +989,30 @@ const RedactedLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
       </div>
     </div>
   );
+};
+const brandLogos: React.CSSProperties = {
+  fontSize: "12px",
+  fontWeight: 700,
+  color: "#ffffff",
+  textShadow: "0 2px 4px rgba(0,0,0,0.2)",
+  letterSpacing: "-0.02em",
+  opacity: 0.8,
+};
+const rantyBadge: React.CSSProperties = {
+  fontSize: "10px",
+  fontWeight: 700,
+  padding: "3px 12px",
+  borderRadius: "12px",
+  backgroundColor: "#f4ede4",
+  color: "#2f2d2b",
+  border: "1px solid rgba(0,0,0,0.05)",
+};
+const glassCardStyle: React.CSSProperties = {
+  backgroundColor: "rgba(255, 255, 255, 0.03)",
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  borderRadius: "18px",
+  padding: "14px 20px",
+  width: "160px",
+  backdropFilter: "blur(14px)",
+  WebkitBackdropFilter: "blur(14px)",
 };
