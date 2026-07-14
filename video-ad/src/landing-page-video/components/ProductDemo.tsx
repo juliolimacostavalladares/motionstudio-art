@@ -509,9 +509,6 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
     extrapolateRight: "clamp",
   });
 
-  const rotateBall = localFrame * 0.25;
-  const pulseBlob = 1 + Math.sin(localFrame * 0.05) * 0.03;
-
   const itemsEntrance = spring({
     frame: localFrame,
     fps: 30,
@@ -589,7 +586,7 @@ const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
           height: "380px",
           top: "160px",
           right: "-30px",
-          transform: `scale(${pulseBlob}) rotate(${rotateBall}deg)`,
+          transform: "none",
           zIndex: 1, // Stays beneath relative text
           pointerEvents: "none",
           opacity: 0.85,
