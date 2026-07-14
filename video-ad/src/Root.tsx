@@ -5,6 +5,8 @@ import { AdVideoWithAudio } from "./AdVideoWithAudio";
 import { EcommerceVideo } from "./EcommerceVideo";
 import { EcommerceVideoWithAudio } from "./EcommerceVideoWithAudio";
 import { WeeklyVideo, TOTAL_FRAMES, DAY_CONFIGS } from "./WeeklyVideo";
+import { LandingPageVideo } from "./landing-page-video/LandingPageVideo";
+import { LandingPageVideoWithAudio } from "./landing-page-video/LandingPageVideoWithAudio";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -51,7 +53,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="ecommerce-ad-square"
         component={EcommerceVideoWithAudio}
-        durationInFrames={945}
+        durationInFrames={1142}
         fps={30}
         width={1080}
         height={1080}
@@ -59,17 +61,47 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="ecommerce-ad-vertical"
         component={EcommerceVideoWithAudio}
-        durationInFrames={945}
+        durationInFrames={1142}
         fps={30}
         width={1080}
         height={1920}
+      />
+
+      {/* ── TikTok (1080x1920 vertical) ──────────────────────────────── */}
+      <Composition
+        id="ecommerce-tiktok"
+        component={EcommerceVideoWithAudio}
+        durationInFrames={1142}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* ── Instagram Reels (1080x1920 vertical) ─────────────────────── */}
+      <Composition
+        id="ecommerce-instagram-reels"
+        component={EcommerceVideoWithAudio}
+        durationInFrames={1142}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* ── Instagram Feed (1080x1080 square) ────────────────────────── */}
+      <Composition
+        id="ecommerce-instagram-feed"
+        component={EcommerceVideoWithAudio}
+        durationInFrames={1142}
+        fps={30}
+        width={1080}
+        height={1080}
       />
 
       {/* ── E-commerce Ads (sem áudio) ────────────────────────────────── */}
       <Composition
         id="ecommerce-linkedin-ad-square"
         component={EcommerceVideo}
-        durationInFrames={945}
+        durationInFrames={1142}
         fps={30}
         width={1080}
         height={1080}
@@ -77,7 +109,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="ecommerce-instagram-ad-vertical"
         component={EcommerceVideo}
-        durationInFrames={945}
+        durationInFrames={1142}
         fps={30}
         width={1080}
         height={1920}
@@ -108,6 +140,40 @@ export const RemotionRoot: React.FC = () => {
           defaultProps={{ day, cta, metric }}
         />
       ))}
+
+      {/* ── Landing Page Video (Com e sem áudio) ──────────────────────── */}
+      <Composition
+        id="landing-page-ad-vertical"
+        component={LandingPageVideo}
+        durationInFrames={1770}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="landing-page-ad-square"
+        component={LandingPageVideo}
+        durationInFrames={1770}
+        fps={30}
+        width={1080}
+        height={1080}
+      />
+      <Composition
+        id="landing-page-ad-with-audio-vertical"
+        component={LandingPageVideoWithAudio}
+        durationInFrames={1770}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="landing-page-ad-with-audio-square"
+        component={LandingPageVideoWithAudio}
+        durationInFrames={1770}
+        fps={30}
+        width={1080}
+        height={1080}
+      />
     </>
   );
 };
