@@ -563,6 +563,108 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
 
 // ─── Scene 2: Content items ────────────────────────────────────────────────────
 
+// ─── 3D Floating Icons for Scene 2 Items ──────────────────────────────────────
+
+const ClaudeCodeIcon: React.FC<{ frame: number }> = ({ frame }) => {
+  const rotationY = frame * 1.5;
+  const floatOffset = Math.sin(frame * 0.08) * 8;
+  return (
+    <div style={{
+      transform: `rotateY(${rotationY}deg) translateY(${floatOffset}px)`,
+      transformStyle: "preserve-3d",
+      filter: "drop-shadow(0 0 24px rgba(234,113,56,0.35))",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "140px",
+      height: "140px",
+    }}>
+      <svg width="110" height="110" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="claudeGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ffb088" />
+            <stop offset="100%" stopColor="#b25d38" />
+          </radialGradient>
+        </defs>
+        <g transform="translate(50,50)">
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+            <path
+              key={angle}
+              d="M 0,-28 C 8,-28 16,-10 0,0 C -16,-10 -8,-28 0,-28 Z"
+              fill="url(#claudeGrad)"
+              transform={`rotate(${angle})`}
+            />
+          ))}
+          <circle cx="0" cy="0" r="8" fill="#fff" opacity="0.9" />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+const CodexAntigravityIcon: React.FC<{ frame: number }> = ({ frame }) => {
+  const rotationX = Math.sin(frame * 0.06) * 18;
+  const rotationY = frame * 2.0;
+  const floatOffset = Math.cos(frame * 0.07) * 8;
+  return (
+    <div style={{
+      transform: `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateY(${floatOffset}px)`,
+      transformStyle: "preserve-3d",
+      filter: "drop-shadow(0 0 24px rgba(0,245,255,0.35))",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "140px",
+      height: "140px",
+    }}>
+      <svg width="115" height="115" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="agyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00f5ff" />
+            <stop offset="100%" stopColor="#d4e157" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="url(#agyGrad)" strokeWidth="2.5" strokeDasharray="12 6" />
+        <circle cx="50" cy="50" r="26" fill="none" stroke="#d4e157" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.7" />
+        <circle cx="50" cy="50" r="14" fill="url(#agyGrad)" />
+        <circle cx="50" cy="50" r="6" fill="#fff" />
+      </svg>
+    </div>
+  );
+};
+
+const MotionStudioIcon: React.FC<{ frame: number }> = ({ frame }) => {
+  const rotationY = frame * 1.8;
+  const rotationX = Math.sin(frame * 0.08) * 15;
+  const floatOffset = Math.sin(frame * 0.07) * 8;
+  return (
+    <div style={{
+      transform: `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateY(${floatOffset}px)`,
+      transformStyle: "preserve-3d",
+      filter: "drop-shadow(0 0 28px rgba(212,225,87,0.45))",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "140px",
+      height: "140px",
+    }}>
+      <svg width="110" height="110" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="msGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#d4e157" />
+            <stop offset="100%" stopColor="#a3e635" />
+          </linearGradient>
+        </defs>
+        <rect x="15" y="20" width="70" height="60" rx="10" fill="#151515" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
+        <line x1="25" y1="30" x2="45" y2="30" stroke="#d4e157" strokeWidth="3" strokeLinecap="round" />
+        <path d="M 40,42 L 30,50 L 40,58" fill="none" stroke="url(#msGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M 60,42 L 70,50 L 60,58" fill="none" stroke="url(#msGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="53" y1="40" x2="47" y2="60" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+      </svg>
+    </div>
+  );
+};
+
 const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   config,
   isVertical,
@@ -570,10 +672,33 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const cam = useCamera();
-  // Camera pans slightly down on this scene for depth
-  const camOffset = interpolate(frame, [0, SCENE2], [0, 18], { extrapolateRight: "clamp" });
+  
+  // Camera offset for deep pan
+  const camOffset = interpolate(frame, [0, SCENE2], [0, 15], { extrapolateRight: "clamp" });
 
   const titleS = spring({ frame, fps, config: { damping: 16, stiffness: 120 } });
+
+  // 3 Items. Frame budget = 195. 65 frames per item.
+  const activeIndex = Math.min(2, Math.floor(frame / 65));
+  const localFrame = frame % 65;
+
+  // Transitions inside each item slot
+  const itemSpring = spring({
+    frame: localFrame,
+    fps,
+    config: { damping: 14, stiffness: 120, mass: 0.6 },
+  });
+  const itemExit = interpolate(localFrame, [52, 65], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  const itemOpacity = itemSpring * (1 - itemExit);
+  const itemScale = (0.85 + 0.15 * itemSpring) * (1 - 0.25 * itemExit);
+  // Slide from right on enter, slide left on exit
+  const itemTranslateX = (1 - itemSpring) * 120 + itemExit * -120;
+
+  const currentItem = config.items[activeIndex] || config.items[0];
 
   return (
     <div
@@ -593,11 +718,11 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
         style={{
           fontFamily: "'Bricolage Grotesque', sans-serif",
           fontWeight: 700,
-          fontSize: isVertical ? "22px" : "28px",
+          fontSize: isVertical ? "20px" : "26px",
           color: LIME,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
-          marginBottom: "6px",
+          marginBottom: "4px",
           opacity: Math.max(0, titleS),
           transform: `translateY(${(1 - Math.max(0, titleS)) * 16}px)`,
         }}
@@ -606,86 +731,83 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
       </h2>
       <AccentLine startFrame={4} width="100%" />
 
-      {/* Items — single column always for cinematic feel */}
+      {/* 3D Floating Icon Showcase */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: isVertical ? "12px" : "14px",
+          perspective: 1200,
           width: "100%",
-          maxWidth: isVertical ? "480px" : "720px",
+          height: "160px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "20px",
+          opacity: itemOpacity,
+          transform: `scale(${itemScale}) translateX(${itemTranslateX}px)`,
         }}
       >
-        {config.items.map((item, idx) => {
-          const delay = 14 + idx * 14;
-          const s = spring({
-            frame: frame - delay,
-            fps,
-            config: { damping: 14, stiffness: 130, mass: 0.6 },
-          });
-          const opacity = Math.max(0, s);
-          const tx = (1 - Math.max(0, s)) * -40;
+        {activeIndex === 0 && <ClaudeCodeIcon frame={frame} />}
+        {activeIndex === 1 && <CodexAntigravityIcon frame={frame} />}
+        {activeIndex === 2 && <MotionStudioIcon frame={frame} />}
+      </div>
 
-          return (
-            <div
-              key={idx}
-              style={{
-                opacity,
-                transform: `translateX(${tx}px)`,
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "16px",
-                background: item.highlight
-                  ? "rgba(212,225,87,0.05)"
-                  : "rgba(255,255,255,0.025)",
-                borderLeft: `2.5px solid ${item.highlight ? LIME : "rgba(255,255,255,0.1)"}`,
-                borderRadius: "0 12px 12px 0",
-                padding: isVertical ? "14px 18px" : "16px 22px",
-              }}
-            >
-              {/* Icon */}
-              <div
-                style={{
-                  fontFamily: "'Bricolage Grotesque', sans-serif",
-                  fontWeight: 800,
-                  fontSize: isVertical ? "22px" : "26px",
-                  color: item.highlight ? LIME : "rgba(255,255,255,0.5)",
-                  minWidth: "32px",
-                  lineHeight: 1,
-                  marginTop: "2px",
-                }}
-              >
-                {item.icon}
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'Bricolage Grotesque', sans-serif",
-                    fontWeight: 700,
-                    fontSize: isVertical ? "14px" : "16px",
-                    color: item.highlight ? LIME : "#e8e8e8",
-                    lineHeight: 1.3,
-                    marginBottom: item.sub ? "4px" : 0,
-                  }}
-                >
-                  {item.text}
-                </div>
-                {item.sub && (
-                  <div
-                    style={{
-                      fontFamily: "'Sora', sans-serif",
-                      fontSize: isVertical ? "11px" : "12px",
-                      color: "#5a5a5a",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {item.sub}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+      {/* Text Info Card */}
+      <div
+        style={{
+          opacity: itemOpacity,
+          transform: `translateY(${(1 - itemSpring) * 30}px)`,
+          width: "100%",
+          maxWidth: isVertical ? "400px" : "600px",
+          textAlign: "center",
+          background: currentItem.highlight
+            ? "rgba(212,225,87,0.03)"
+            : "rgba(255,255,255,0.015)",
+          border: `1px solid ${currentItem.highlight ? LIME + "28" : "rgba(255,255,255,0.05)"}`,
+          borderRadius: "16px",
+          padding: isVertical ? "16px 20px" : "20px 28px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+        }}
+      >
+        {/* Badge tag */}
+        <div
+          style={{
+            display: "inline-block",
+            fontSize: "9px",
+            fontWeight: "bold",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: LIME,
+            background: "rgba(212,225,87,0.08)",
+            padding: "4px 10px",
+            borderRadius: "6px",
+            marginBottom: "8px",
+          }}
+        >
+          {currentItem.icon} · {activeIndex === 0 ? "AI DEV AGENT" : activeIndex === 1 ? "AUTONOMOUS SDK" : "CUSTOM DEV"}
+        </div>
+        {/* Title */}
+        <h3
+          style={{
+            fontFamily: "'Bricolage Grotesque', sans-serif",
+            fontWeight: 800,
+            fontSize: isVertical ? "20px" : "24px",
+            color: "#f0f0f0",
+            marginBottom: "6px",
+            lineHeight: 1.2,
+          }}
+        >
+          {currentItem.text}
+        </h3>
+        {/* Description */}
+        <p
+          style={{
+            fontFamily: "'Sora', sans-serif",
+            fontSize: isVertical ? "12px" : "13.5px",
+            color: "#8a8a8a",
+            lineHeight: 1.6,
+          }}
+        >
+          {currentItem.sub}
+        </p>
       </div>
     </div>
   );
