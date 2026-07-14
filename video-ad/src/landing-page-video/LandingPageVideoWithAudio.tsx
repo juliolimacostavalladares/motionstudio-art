@@ -48,11 +48,7 @@ export const LandingPageVideoWithAudio: React.FC = () => {
         <Audio src={staticFile("tts-manifesto.wav")} volume={1.3} />
       </Sequence>
 
-      {/* ── Narração 3: Cena 3 (Demonstração Desktop) ───────────────────── */}
-      {/* Sincronizado para começar exatamente no frame 590 do ProductDemo visual */}
-      <Sequence from={590}>
-        <Audio src={staticFile("tts-demo.wav")} volume={1.3} />
-      </Sequence>
+
 
       {/* ── Narração 4: Cena 4 (Clímax Cinético 8-Fases) ───────────────── */}
       {/* Cada gatilho inicia exatamente na entrada da frase correspondente e no fim do áudio anterior */}
