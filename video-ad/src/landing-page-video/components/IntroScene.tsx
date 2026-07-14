@@ -7,7 +7,7 @@ export const IntroScene: React.FC = () => {
   const { fps, width, height } = useVideoConfig();
 
   const isVertical = width < height;
-  const duration = 210;
+  const duration = 230;
 
   // Transition Helper: Slide and Fade Out
   const getSceneStyle = () => {

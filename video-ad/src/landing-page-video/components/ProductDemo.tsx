@@ -6,15 +6,15 @@ export const ProductDemo: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Local timeline: 0 to 690 frames (physically 610 to 1300)
+  // Local timeline: 0 to 349 frames (physically 590 to 939)
   // Scenes timeline:
-  // 0 - 170: LP 1 - Ranty (Architecture)
-  //   - Transition 1 (150 - 180): Slider rotation
-  // 170 - 340: LP 2 - Liquid Brokers (FinTech)
-  //   - Transition 2 (320 - 350): Zoom in/out depth
-  // 340 - 510: LP 3 - ChronoTask (Productivity)
-  //   - Transition 3 (490 - 520): Diagonal Lime Wipe
-  // 510 - 690: LP 4 - Redacted (Analytics)
+  // 0 - 87: LP 1 - Ranty (Architecture)
+  //   - Transition 1 (77 - 97): Slider rotation
+  // 87 - 174: LP 2 - Liquid Brokers (FinTech)
+  //   - Transition 2 (164 - 184): Zoom in/out depth
+  // 174 - 261: LP 3 - ChronoTask (Productivity)
+  //   - Transition 3 (251 - 271): Diagonal Lime Wipe
+  // 261 - 349: LP 4 - Redacted (Analytics)
 
   // Constant slow 3D camera hover effect
   const hoverRotateX = Math.sin(frame * 0.02) * 2.2;
@@ -23,25 +23,25 @@ export const ProductDemo: React.FC = () => {
 
   // Track active scene
   let activeScene = 1;
-  if (frame >= 170 && frame < 340) activeScene = 2;
-  else if (frame >= 340 && frame < 510) activeScene = 3;
-  else if (frame >= 510) activeScene = 4;
+  if (frame >= 87 && frame < 174) activeScene = 2;
+  else if (frame >= 174 && frame < 261) activeScene = 3;
+  else if (frame >= 261) activeScene = 4;
 
   // Define transition progresses
   const t1Spring = spring({
-    frame: frame - 150,
+    frame: frame - 77,
     fps,
     config: { damping: 14, stiffness: 100 },
   });
 
   const t2Spring = spring({
-    frame: frame - 320,
+    frame: frame - 164,
     fps,
     config: { damping: 15, stiffness: 90 },
   });
 
   const t3Spring = spring({
-    frame: frame - 490,
+    frame: frame - 251,
     fps,
     config: { damping: 13, stiffness: 110 },
   });
@@ -88,7 +88,7 @@ export const ProductDemo: React.FC = () => {
         }}
       >
         {/* LP 1: Ranty (Architecture) */}
-        {frame < 180 && (
+        {frame < 97 && (
           <div
             style={{
               position: "absolute",
@@ -111,7 +111,7 @@ export const ProductDemo: React.FC = () => {
         )}
 
         {/* LP 2: Liquid Brokers (FinTech) */}
-        {frame >= 150 && frame < 350 && (
+        {frame >= 77 && frame < 184 && (
           <div
             style={{
               position: "absolute",
@@ -123,7 +123,7 @@ export const ProductDemo: React.FC = () => {
                 translateX(${(1 - t1Spring) * 1100}px)
                 scale(${hoverScale * (t1Spring * 0.85 + 0.15) * (1 - t2Spring * 0.5)})
               `,
-              opacity: interpolate(frame, [150, 165, 320, 345], [0, 1, 1, 0], {
+              opacity: interpolate(frame, [77, 92, 164, 179], [0, 1, 1, 0], {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",
               }),
@@ -131,13 +131,13 @@ export const ProductDemo: React.FC = () => {
             }}
           >
             <BrowserFrame domain="liquidbrokers.io/trade" dark={true}>
-              <LiquidBrokersLP localFrame={frame - 170} />
+              <LiquidBrokersLP localFrame={frame - 87} />
             </BrowserFrame>
           </div>
         )}
 
         {/* LP 3: ChronoTask (Productivity) */}
-        {frame >= 320 && frame < 520 && (
+        {frame >= 164 && frame < 271 && (
           <div
             style={{
               position: "absolute",
@@ -149,7 +149,7 @@ export const ProductDemo: React.FC = () => {
                 scale(${hoverScale * (t2Spring * 0.9 + 0.1)})
                 translateY(${t3Spring * -800}px)
               `,
-              opacity: interpolate(frame, [320, 335, 490, 515], [0, 1, 1, 0], {
+              opacity: interpolate(frame, [164, 179, 251, 266], [0, 1, 1, 0], {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",
               }),
@@ -157,13 +157,13 @@ export const ProductDemo: React.FC = () => {
             }}
           >
             <BrowserFrame domain="chronotask.app/signup" dark={false}>
-              <ChronoTaskLP localFrame={frame - 340} />
+              <ChronoTaskLP localFrame={frame - 174} />
             </BrowserFrame>
           </div>
         )}
 
         {/* LP 4: Redacted (Analytics) */}
-        {frame >= 490 && (
+        {frame >= 251 && (
           <div
             style={{
               position: "absolute",
@@ -175,21 +175,21 @@ export const ProductDemo: React.FC = () => {
                 translateY(${(1 - t3Spring) * 800}px)
                 scale(${hoverScale})
               `,
-              opacity: interpolate(frame, [490, 505], [0, 1], {
+              opacity: interpolate(frame, [251, 266], [0, 1], {
                 extrapolateLeft: "clamp",
               }),
               zIndex: 10,
             }}
           >
             <BrowserFrame domain="redacted.co/dashboard" dark={false}>
-              <RedactedLP localFrame={frame - 510} />
+              <RedactedLP localFrame={frame - 261} />
             </BrowserFrame>
           </div>
         )}
       </div>
 
       {/* --- CINEMATOGRAPHIC WIPE OVERLAY --- */}
-      {frame >= 490 && frame < 520 && (
+      {frame >= 251 && frame < 271 && (
         <div
           style={{
             position: "absolute",
@@ -287,7 +287,7 @@ const BrowserFrame: React.FC<BrowserProps> = ({ children, domain, dark }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const RantyLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
   // Deep scroll Y to show custom project gallery, testimonial, and footer
-  const scrollTop = interpolate(localFrame, [15, 145], [0, -650], {
+  const scrollTop = interpolate(localFrame, [10, 70], [0, -650], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -504,7 +504,7 @@ const rantyProjectImg: React.CSSProperties = {
 // ─────────────────────────────────────────────────────────────────────────────
 const LiquidBrokersLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
   // Slow scroll Y
-  const scrollTop = interpolate(localFrame, [40, 140], [0, -320], {
+  const scrollTop = interpolate(localFrame, [15, 70], [0, -320], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -696,7 +696,7 @@ const cryptoCardStyle: React.CSSProperties = {
 // --- LP 3: CHRONOTASK (PRODUCTIVITY LIGHT) ---
 // ─────────────────────────────────────────────────────────────────────────────
 const ChronoTaskLP: React.FC<{ localFrame: number }> = ({ localFrame }) => {
-  const scrollTop = interpolate(localFrame, [40, 140], [0, -320], {
+  const scrollTop = interpolate(localFrame, [15, 70], [0, -320], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

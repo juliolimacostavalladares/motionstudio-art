@@ -6,8 +6,8 @@ export const ClimaxCTA: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Local frame runs from 0 to 275 (physically 1300 to 1575)
-  // Each phrase has a duration of 34 frames
+  // Local frame runs from 0 to 540 (physically 939 to 1480)
+  // Each phrase has a custom duration matched to the actual wav voiceover duration!
   const phrases = [
     { text: "Quer mais leads?", highlight: "leads?" },
     { text: "Quer vender mais?", highlight: "vender mais?" },
@@ -19,16 +19,25 @@ export const ClimaxCTA: React.FC = () => {
     { text: "Fale com um especialista!", highlight: "especialista!" }
   ];
 
-  const phraseDuration = 34;
-  const phraseIndex = Math.min(
-    Math.floor(frame / phraseDuration),
-    phrases.length - 1
-  );
+  const phraseDurations = [52, 56, 68, 97, 70, 84, 51, 63];
+
+  // Calculate active phrase index and local offset dynamically
+  let phraseIndex = 0;
+  let accumulatedFrames = 0;
+  for (let i = 0; i < phraseDurations.length; i++) {
+    if (frame < accumulatedFrames + phraseDurations[i]) {
+      phraseIndex = i;
+      break;
+    }
+    accumulatedFrames += phraseDurations[i];
+    if (i === phraseDurations.length - 1) {
+      phraseIndex = i;
+    }
+  }
 
   const current = phrases[phraseIndex];
-
-  // Local frame of the active phrase
-  const localFrame = frame - phraseIndex * phraseDuration;
+  const localFrame = frame - accumulatedFrames;
+  const currentDuration = phraseDurations[phraseIndex];
 
   // Spring zoom-in for the active phrase
   const scale = spring({
@@ -37,8 +46,8 @@ export const ClimaxCTA: React.FC = () => {
     config: { damping: 11, stiffness: 140 },
   });
 
-  // Entrance and exit fade
-  const opacity = interpolate(localFrame, [0, 4, 30, 34], [0, 1, 1, 0], {
+  // Entrance and exit fade matching custom duration
+  const opacity = interpolate(localFrame, [0, 4, currentDuration - 4, currentDuration], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

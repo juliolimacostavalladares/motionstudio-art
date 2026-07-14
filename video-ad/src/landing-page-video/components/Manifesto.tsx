@@ -6,14 +6,14 @@ export const Manifesto: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Local frames for this scene (total 400 frames: from 210 to 610)
+  // Local frames for this scene (total 360 frames: from 230 to 590)
   // Sub-scenes:
-  // 0 - 240: Kinetic Typography / Manifesto (without color palette)
-  // 240 - 400: Typographic Split Screen (Bricolage vs Sora)
+  // 0 - 220: Kinetic Typography / Manifesto (without color palette)
+  // 220 - 360: Typographic Split Screen (Bricolage vs Sora)
 
   // Typographic Split Screen Springs
   const splitEntrance = spring({
-    frame: frame - 245,
+    frame: frame - 225,
     fps,
     config: { damping: 15, stiffness: 80 },
   });
@@ -30,8 +30,8 @@ export const Manifesto: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* --- SUB-SCENE 1: Kinetic Typography / Manifesto (0 - 240) --- */}
-      {frame < 240 && (
+      {/* --- SUB-SCENE 1: Kinetic Typography / Manifesto (0 - 220) --- */}
+      {frame < 220 && (
         <div
           style={{
             display: "flex",
@@ -46,7 +46,7 @@ export const Manifesto: React.FC = () => {
             color: "#ffffff",
           }}
         >
-          {frame < 120 ? (
+          {frame < 110 ? (
             <div key="text1">
               <span
                 style={{
@@ -100,7 +100,7 @@ export const Manifesto: React.FC = () => {
                   display: "block",
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
-                  transform: `scale(${spring({ frame: frame - 120, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame: frame - 110, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 Design autoral.
@@ -115,7 +115,7 @@ export const Manifesto: React.FC = () => {
                   lineHeight: 1.1,
                   letterSpacing: "-0.04em",
                   marginTop: "15px",
-                  transform: `scale(${spring({ frame: frame - 135, fps, config: { damping: 10, stiffness: 120 } })})`,
+                  transform: `scale(${spring({ frame: frame - 125, fps, config: { damping: 10, stiffness: 120 } })})`,
                 }}
               >
                 Código premium.
@@ -125,8 +125,8 @@ export const Manifesto: React.FC = () => {
         </div>
       )}
 
-      {/* --- SUB-SCENE 2: Typographic Split Screen (240 - 400) --- */}
-      {frame >= 240 && (
+      {/* --- SUB-SCENE 2: Typographic Split Screen (220 - 360) --- */}
+      {frame >= 220 && (
         <div
           style={{
             display: "flex",
