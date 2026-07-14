@@ -659,8 +659,6 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
   // Slide from right on enter, slide left on exit
   const itemTranslateX = (1 - itemSpring) * 120 + itemExit * -120;
 
-  const currentItem = config.items[activeIndex] || config.items[0];
-
   return (
     <div
       style={{
@@ -671,104 +669,187 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
         alignItems: "center",
         justifyContent: "center",
         transform: `scale(${cam.scale}) translate(${cam.tx * 0.5}px, ${cam.ty * 0.5 + camOffset}px)`,
-        padding: isVertical ? "0 40px" : "0 60px",
+        padding: isVertical ? "40px 32px 30px" : "60px 48px",
       }}
     >
-      {/* Section title */}
-      <h2
-        style={{
-          fontFamily: "'Bricolage Grotesque', sans-serif",
-          fontWeight: 700,
-          fontSize: isVertical ? "20px" : "26px",
-          color: LIME,
-          letterSpacing: "0.04em",
-          textTransform: "uppercase",
-          marginBottom: "4px",
-          opacity: Math.max(0, titleS),
-          transform: `translateY(${(1 - Math.max(0, titleS)) * 16}px)`,
-        }}
-      >
-        {config.scene2Title}
-      </h2>
-      <AccentLine startFrame={4} width="100%" />
-
-      {/* 3D Floating Icon Showcase */}
+      {/* Section title banner (styled like the screenshot's layout header) */}
       <div
         style={{
-          perspective: 1200,
           width: "100%",
-          height: "160px",
+          maxWidth: isVertical ? "400px" : "800px",
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
           alignItems: "center",
-          marginBottom: "20px",
-          opacity: itemOpacity,
-          transform: `scale(${itemScale}) translateX(${itemTranslateX}px)`,
+          marginBottom: isVertical ? "20px" : "32px",
+          opacity: Math.max(0, titleS),
+          transform: `translateY(${(1 - Math.max(0, titleS)) * -16}px)`,
         }}
       >
-        {activeIndex === 0 && <ClaudeIcon frame={frame} />}
-        {activeIndex === 1 && <OpenAIIcon frame={frame} />}
-        {activeIndex === 2 && <MotionStudioIcon frame={frame} />}
-      </div>
-
-      {/* Text Info Card */}
-      <div
-        style={{
-          opacity: itemOpacity,
-          transform: `translateY(${(1 - itemSpring) * 30}px)`,
-          width: "100%",
-          maxWidth: isVertical ? "400px" : "600px",
-          textAlign: "center",
-          background: currentItem.highlight
-            ? "rgba(212,225,87,0.03)"
-            : "rgba(255,255,255,0.015)",
-          border: `1px solid ${currentItem.highlight ? LIME + "28" : "rgba(255,255,255,0.05)"}`,
-          borderRadius: "16px",
-          padding: isVertical ? "16px 20px" : "20px 28px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-        }}
-      >
-        {/* Badge tag */}
         <div
           style={{
-            display: "inline-block",
-            fontSize: "9px",
-            fontWeight: "bold",
-            letterSpacing: "0.08em",
+            fontFamily: "monospace",
+            fontSize: "10px",
+            color: "rgba(255, 255, 255, 0.4)",
+            letterSpacing: "0.2em",
             textTransform: "uppercase",
-            color: LIME,
-            background: "rgba(212,225,87,0.08)",
-            padding: "4px 10px",
-            borderRadius: "6px",
-            marginBottom: "8px",
+            marginBottom: "4px",
           }}
         >
-          {currentItem.icon} · {activeIndex === 0 ? "ANTHROPIC CLAUDE" : activeIndex === 1 ? "OPENAI CHATGPT" : "CUSTOM DEV"}
+          CAMADA 02 · SELEÇÃO DE FERRAMENTAS
         </div>
-        {/* Title */}
-        <h3
+        <div
           style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 800,
-            fontSize: isVertical ? "20px" : "24px",
-            color: "#f0f0f0",
-            marginBottom: "6px",
-            lineHeight: 1.2,
+            background: `linear-gradient(90deg, transparent, ${LIME}33, transparent)`,
+            border: `1px solid ${LIME}aa`,
+            width: "100%",
+            textAlign: "center",
+            padding: "8px 0",
+            borderRadius: "6px",
           }}
         >
-          {currentItem.text}
-        </h3>
-        {/* Description */}
-        <p
+          <h2
+            style={{
+              fontFamily: "'Bricolage Grotesque', sans-serif",
+              fontWeight: 800,
+              fontSize: isVertical ? "18px" : "24px",
+              color: "#fff",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              lineHeight: 1,
+            }}
+          >
+            {config.scene2Title}
+          </h2>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: isVertical ? "column" : "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: isVertical ? "20px" : "48px",
+          width: "100%",
+          maxWidth: isVertical ? "400px" : "860px",
+        }}
+      >
+        {/* 3D Floating Icon Showcase */}
+        <div
           style={{
-            fontFamily: "'Sora', sans-serif",
-            fontSize: isVertical ? "12px" : "13.5px",
-            color: "#8a8a8a",
-            lineHeight: 1.6,
+            perspective: 1200,
+            width: isVertical ? "100%" : "380px",
+            height: isVertical ? "150px" : "240px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            opacity: itemOpacity,
+            transform: `scale(${itemScale}) translateX(${itemTranslateX}px)`,
           }}
         >
-          {currentItem.sub}
-        </p>
+          {activeIndex === 0 && <ClaudeIcon frame={frame} />}
+          {activeIndex === 1 && <OpenAIIcon frame={frame} />}
+          {activeIndex === 2 && <MotionStudioIcon frame={frame} />}
+        </div>
+
+        {/* Structured List (Matching Screenshot Style) */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            width: "100%",
+            maxWidth: isVertical ? "100%" : "380px",
+          }}
+        >
+          {config.items.map((item, idx) => {
+            const isActive = idx === activeIndex;
+            const delay = 14 + idx * 8;
+            const cardS = spring({
+              frame: frame - delay,
+              fps,
+              config: { damping: 15, stiffness: 120 },
+            });
+            const cardOpacity = Math.max(0, cardS) * (isActive ? 1 : 0.35);
+            const scaleVal = isActive ? 1.03 : 1.0;
+            const borderVal = isActive ? `1px solid ${LIME}` : "1px solid rgba(255, 255, 255, 0.05)";
+            const bgVal = isActive ? "rgba(212, 225, 87, 0.06)" : "rgba(255, 255, 255, 0.015)";
+
+            return (
+              <div
+                key={idx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "14px",
+                  background: bgVal,
+                  border: borderVal,
+                  borderRadius: "12px",
+                  padding: isVertical ? "8px 12px" : "12px 16px",
+                  width: "100%",
+                  opacity: cardOpacity,
+                  transform: `scale(${scaleVal})`,
+                  transition: "all 0.25s ease-out",
+                  boxShadow: isActive ? `0 8px 24px rgba(212, 225, 87, 0.1)` : "none",
+                }}
+              >
+                {/* Number Badge (01, 02, 03) */}
+                <div
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: isActive ? "#000" : LIME,
+                    background: isActive ? LIME : "rgba(212, 225, 87, 0.08)",
+                    border: `1px solid ${LIME}33`,
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "6px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  0{idx + 1}
+                </div>
+
+                {/* Text section */}
+                <div style={{ textAlign: "left", flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontFamily: "'Bricolage Grotesque', sans-serif",
+                      fontWeight: 800,
+                      fontSize: isVertical ? "13px" : "15px",
+                      color: isActive ? "#fff" : "#a0a0a0",
+                      lineHeight: 1.2,
+                      marginBottom: "2px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.text}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Sora', sans-serif",
+                      fontSize: isVertical ? "10px" : "11px",
+                      color: isActive ? "#a0a0a0" : "#555",
+                      lineHeight: 1.3,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.sub}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -1034,6 +1115,79 @@ const TopBar: React.FC<{ config: VideoConfig }> = ({ config }) => {
   );
 };
 
+// ─── Design Layout Grid & Monospace Metadata ───────────────────────────────
+
+const DesignLayout: React.FC<{ isVertical: boolean }> = ({ isVertical }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: isVertical ? "32px 24px" : "28px",
+        border: "1px solid rgba(255, 255, 255, 0.05)",
+        pointerEvents: "none",
+        zIndex: 10,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "10px 14px",
+      }}
+    >
+      {/* Top Header metadata */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontFamily: "monospace",
+          fontSize: "8.5px",
+          color: "rgba(255, 255, 255, 0.35)",
+          letterSpacing: "0.15em",
+          textTransform: "uppercase",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.03)",
+          paddingBottom: "6px",
+          width: "100%",
+        }}
+      >
+        <div>©2026 MOTION STUDIO</div>
+        <div style={{ color: `${LIME}99` }}>STATUS: OPERATIONAL</div>
+        <div>CAMADA 01</div>
+      </div>
+
+      {/* Grid lines - very faint layout aesthetics */}
+      <div
+        style={{
+          position: "absolute",
+          top: "40px",
+          bottom: "40px",
+          left: "50%",
+          width: "1px",
+          background: "linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.03) 100%)",
+        }}
+      />
+
+      {/* Bottom Footer metadata */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontFamily: "monospace",
+          fontSize: "8.5px",
+          color: "rgba(255, 255, 255, 0.35)",
+          letterSpacing: "0.15em",
+          textTransform: "uppercase",
+          borderTop: "1px solid rgba(255, 255, 255, 0.03)",
+          paddingTop: "6px",
+          width: "100%",
+        }}
+      >
+        <div>SOFTWARE DE ELITE</div>
+        <div>AUTOMAÇÃO COM IA</div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main export ─────────────────────────────────────────────────────────────
 
 export const ContentVideo: React.FC<{ config: VideoConfig }> = ({ config }) => {
@@ -1059,6 +1213,9 @@ export const ContentVideo: React.FC<{ config: VideoConfig }> = ({ config }) => {
 
       {/* Background always visible */}
       <CinematicBackground />
+
+      {/* Design System layout grid frame */}
+      <DesignLayout isVertical={isVertical} />
 
       {/* Top bar */}
       <TopBar config={config} />
