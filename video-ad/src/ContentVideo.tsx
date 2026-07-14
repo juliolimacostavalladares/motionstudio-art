@@ -218,6 +218,243 @@ const AccentLine: React.FC<{ startFrame: number; width?: string }> = ({
   );
 };
 
+// ─── MiniCodeWindow for Scene 1 Hook Animation ───────────────────────────────
+
+interface MiniCodeWindowProps {
+  delay: number;
+  config: VideoConfig;
+  isVertical: boolean;
+}
+
+const MiniCodeWindow: React.FC<MiniCodeWindowProps> = ({ delay, config, isVertical }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  // Scale entrance
+  const scale = spring({
+    frame: frame - delay,
+    fps,
+    config: { mass: 0.8, damping: 15, stiffness: 120 },
+  });
+
+  // Code definitions based on config.id
+  let codeLines: { t: string; c: string }[][] = [];
+  if (config.id === "ai-tool-rebellion") {
+    codeLines = [
+      [{ t: "const ", c: "kw" }, { t: "system", c: "var" }, { t: " = ", c: "op" }, { t: "connectIA", c: "fn" }, { t: "({", c: "punct" }],
+      [{ t: "  brain: ", c: "key" }, { t: '"Claude 3.5"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  sync: ", c: "key" }, { t: '"realtime"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  status: ", c: "key" }, { t: '"active"', c: "str" }],
+      [{ t: "});", c: "punct" }]
+    ];
+  } else if (config.id === "silent-leak-saas") {
+    codeLines = [
+      [{ t: "const ", c: "kw" }, { t: "mySaaS", c: "var" }, { t: " = ", c: "op" }, { t: "buildMVP", c: "fn" }, { t: "({", c: "punct" }],
+      [{ t: "  ux: ", c: "key" }, { t: '"custom-design"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  code: ", c: "key" }, { t: '"proprietary"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  speed: ", c: "key" }, { t: '"3-weeks"', c: "str" }],
+      [{ t: "});", c: "punct" }]
+    ];
+  } else {
+    // scaling-secret-digital
+    codeLines = [
+      [{ t: "const ", c: "kw" }, { t: "flow", c: "var" }, { t: " = ", c: "op" }, { t: "syncSystem", c: "fn" }, { t: "({", c: "punct" }],
+      [{ t: "  leads: ", c: "key" }, { t: '"auto-capture"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  crm: ", c: "key" }, { t: '"instant-sync"', c: "str" }, { t: ",", c: "punct" }],
+      [{ t: "  scale: ", c: "key" }, { t: '"infinite"', c: "str" }],
+      [{ t: "});", c: "punct" }]
+    ];
+  }
+
+  const COLOR_MAP: Record<string, string> = {
+    kw:      "#d4e157",   // keyword  → lime
+    var:     "#e2e8f0",   // variable → white-ish
+    fn:      "#60a5fa",   // function → blue
+    key:     "#f472b6",   // object key → pink
+    str:     "#86efac",   // string → green
+    op:      "#94a3b8",   // operator → slate
+    punct:   "#64748b",   // punctuation → dim slate
+  };
+
+  const fullText = codeLines.map((l) => l.map((t) => t.t).join("")).join("\n");
+  const typingStart = delay + 15;
+  const elapsed = frame - typingStart;
+
+  // Very fast typing simulation: 1.8 chars per frame
+  let charsTyped = elapsed > 0 ? Math.floor(elapsed * 1.8) : 0;
+  charsTyped = Math.min(charsTyped, fullText.length);
+
+  const isTypingDone = charsTyped >= fullText.length;
+  const cursorVisible = !isTypingDone && Math.floor(elapsed / 4) % 2 === 0;
+
+  // Map typed chars to line widths
+  let remaining = charsTyped;
+  const charsPerLine = codeLines.map((line) => {
+    const lineLen = line.reduce((acc, t) => acc + t.t.length, 0);
+    const vis = Math.max(0, Math.min(lineLen, remaining));
+    remaining = Math.max(0, remaining - lineLen - 1);
+    return vis;
+  });
+
+  const renderSyntax = (tokens: { t: string; c: string }[], visChars: number) => {
+    let rem = visChars;
+    return tokens.map((token, idx) => {
+      if (rem <= 0) return null;
+      const visible = token.t.slice(0, rem);
+      rem -= token.t.length;
+      return (
+        <span key={idx} style={{ color: COLOR_MAP[token.c] || "#e2e8f0" }}>
+          {visible}
+        </span>
+      );
+    });
+  };
+
+  // 3D flip starting at frame 72
+  const flipStart = delay + 72;
+  const flipSpring = spring({
+    frame: frame - flipStart,
+    fps,
+    config: { mass: 1.2, damping: 18, stiffness: 70 },
+  });
+  const rotationY = interpolate(flipSpring, [0, 1], [0, 180]);
+
+  // Verso dashboard assets
+  const dashboardActive = frame > flipStart + 12;
+  const metricsScale = spring({
+    frame: frame - (flipStart + 15),
+    fps,
+    config: { damping: 14, stiffness: 110 },
+  });
+
+  const line1Val = spring({ frame: frame - (flipStart + 18), fps, config: { damping: 15 } });
+  const line2Val = spring({ frame: frame - (flipStart + 24), fps, config: { damping: 15 } });
+
+  return (
+    <div
+      style={{
+        transform: `scale(${Math.max(0, scale)})`,
+        transformOrigin: "center center",
+        perspective: 1000,
+        width: isVertical ? "280px" : "340px",
+        height: "150px",
+      }}
+    >
+      <div
+        style={{
+          transform: `rotateY(${rotationY}deg)`,
+          transformStyle: "preserve-3d",
+          width: "100%",
+          height: "100%",
+          position: "relative",
+        }}
+      >
+        {/* FRONT: Code Editor */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            borderRadius: "16px",
+            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(15,15,15,0.85)",
+            padding: "14px",
+            boxShadow: "0 12px 24px rgba(0,0,0,0.5)",
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "left",
+            fontFamily: "monospace",
+          }}
+        >
+          {/* Header OS dots */}
+          <div style={{ display: "flex", gap: "5px", marginBottom: "8px" }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ff5f57" }} />
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#febc2e" }} />
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#28c840" }} />
+          </div>
+          {/* Code */}
+          <div style={{ fontSize: "10px", lineHeight: "1.4", color: "#e2e8f0" }}>
+            {codeLines.map((line, li) => (
+              <div key={li} style={{ minHeight: "1.4em" }}>
+                <span style={{ color: "#475569", marginRight: "8px", userSelect: "none" }}>{li + 1}</span>
+                {renderSyntax(line, charsPerLine[li] ?? 0)}
+                {!isTypingDone &&
+                  cursorVisible &&
+                  li === codeLines.findIndex((_, idx) => (charsPerLine[idx] ?? 0) < codeLines[idx].reduce((s, t) => s + t.t.length, 0)) && (
+                    <span style={{ display: "inline-block", width: "4px", height: "10px", background: "#d4e157", marginLeft: "2px" }} />
+                  )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* BACK: Completed Dashboard */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            borderRadius: "16px",
+            border: "1px solid rgba(212,225,87,0.18)",
+            background: "rgba(5,5,5,0.92)",
+            padding: "14px",
+            boxShadow: "0 12px 24px rgba(0,0,0,0.6)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Title */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "6px" }}>
+            <span style={{ fontSize: "8px", fontWeight: "bold", letterSpacing: "0.05em", color: "#fff" }}>
+              {config.id === "ai-tool-rebellion" ? "IA ENGINE ACTIVE" : config.id === "silent-leak-saas" ? "SaaS BUILD COMPLETE" : "SYSTEM SYNCHRONIZED"}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: "100px", padding: "1px 6px" }}>
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#4ade80" }} />
+              <span style={{ fontSize: "7px", fontWeight: "bold", color: "#4ade80" }}>100% OK</span>
+            </div>
+          </div>
+
+          {/* Metric mockup */}
+          {dashboardActive && (
+            <div style={{ display: "flex", gap: "8px", margin: "6px 0", opacity: metricsScale, transform: `scale(${metricsScale})` }}>
+              <div style={{ flex: 1, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", borderRadius: "8px", padding: "4px 6px" }}>
+                <div style={{ fontSize: "6.5px", color: "#888", textTransform: "uppercase" }}>Performance</div>
+                <div style={{ fontSize: "11px", fontWeight: "bold", color: "#fff" }}>{config.metric || "100% OK"}</div>
+              </div>
+              <div style={{ flex: 1, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", borderRadius: "8px", padding: "4px 6px" }}>
+                <div style={{ fontSize: "6.5px", color: "#888", textTransform: "uppercase" }}>Status</div>
+                <div style={{ fontSize: "11px", fontWeight: "bold", color: "#d4e157" }}>Ativo</div>
+              </div>
+            </div>
+          )}
+
+          {/* Growing micro list */}
+          {dashboardActive && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", opacity: line1Val, transform: `translateX(${(1-line1Val)*-10}px)` }}>
+                <span style={{ color: "#d4e157", fontSize: "7.5px" }}>✓</span>
+                <span style={{ fontSize: "7.5px", color: "#aaa" }}>
+                  {config.id === "ai-tool-rebellion" ? "Modelos LLM conectados" : config.id === "silent-leak-saas" ? "UI & UX Customizada" : "Sincronização de leads"}
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", opacity: line2Val, transform: `translateX(${(1-line2Val)*-10}px)` }}>
+                <span style={{ color: "#d4e157", fontSize: "7.5px" }}>✓</span>
+                <span style={{ fontSize: "7.5px", color: "#aaa" }}>
+                  {config.id === "ai-tool-rebellion" ? "Agente ativo na nuvem" : config.id === "silent-leak-saas" ? "Código proprietário limpo" : "Automação operacional"}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Scene 1: Hook ────────────────────────────────────────────────────────────
 
 const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
@@ -258,7 +495,7 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
           color: LIME,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          marginBottom: "32px",
+          marginBottom: "24px",
           fontFamily: "'Sora', sans-serif",
           opacity: Math.max(0, badgeS),
           transform: `translateY(${(1 - Math.max(0, badgeS)) * -20}px)`,
@@ -274,7 +511,7 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
           textAlign: "center",
           fontFamily: "'Bricolage Grotesque', sans-serif",
           fontWeight: 800,
-          fontSize: isVertical ? "42px" : "58px",
+          fontSize: isVertical ? "38px" : "48px",
           lineHeight: 1.05,
           letterSpacing: "-0.035em",
           color: "#f0f0f0",
@@ -302,6 +539,7 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
         style={{
           textAlign: "center",
           maxWidth: isVertical ? "360px" : "560px",
+          marginBottom: "20px",
         }}
       >
         <WordReveal
@@ -310,12 +548,15 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
           wordDelay={3}
           style={{
             fontFamily: "'Sora', sans-serif",
-            fontSize: isVertical ? "15px" : "17px",
+            fontSize: isVertical ? "14px" : "16px",
             color: "#8a8a8a",
-            lineHeight: 1.7,
+            lineHeight: 1.6,
           }}
         />
       </div>
+
+      {/* Hook Demo Animation (Code typing & 3D Flip) */}
+      <MiniCodeWindow delay={10} config={config} isVertical={isVertical} />
     </div>
   );
 };
