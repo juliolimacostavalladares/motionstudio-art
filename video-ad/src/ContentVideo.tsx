@@ -7,7 +7,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { VideoConfig } from "./content/configs";
-import { ClaudeCode, Antigravity } from "@lobehub/icons";
+import { Claude, OpenAI } from "@lobehub/icons";
 import { Logo } from "./components/Logo";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -567,26 +567,26 @@ const SceneHook: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
 
 // ─── 3D Floating Icons for Scene 2 Items ──────────────────────────────────────
 
-const ClaudeCodeIcon: React.FC<{ frame: number }> = ({ frame }) => {
+const ClaudeIcon: React.FC<{ frame: number }> = ({ frame }) => {
   const rotationY = frame * 1.5;
   const floatOffset = Math.sin(frame * 0.08) * 8;
   return (
     <div style={{
       transform: `rotateY(${rotationY}deg) translateY(${floatOffset}px)`,
       transformStyle: "preserve-3d",
-      filter: "drop-shadow(0 0 24px rgba(234,113,56,0.35))",
+      filter: "drop-shadow(0 0 24px rgba(217,119,87,0.4))",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       width: "140px",
       height: "140px",
     }}>
-      <ClaudeCode.Color size={110} />
+      <Claude.Color size={110} />
     </div>
   );
 };
 
-const CodexAntigravityIcon: React.FC<{ frame: number }> = ({ frame }) => {
+const OpenAIIcon: React.FC<{ frame: number }> = ({ frame }) => {
   const rotationX = Math.sin(frame * 0.06) * 18;
   const rotationY = frame * 2.0;
   const floatOffset = Math.cos(frame * 0.07) * 8;
@@ -594,14 +594,14 @@ const CodexAntigravityIcon: React.FC<{ frame: number }> = ({ frame }) => {
     <div style={{
       transform: `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateY(${floatOffset}px)`,
       transformStyle: "preserve-3d",
-      filter: "drop-shadow(0 0 24px rgba(0,245,255,0.35))",
+      filter: "drop-shadow(0 0 24px rgba(16,163,127,0.35))",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       width: "140px",
       height: "140px",
     }}>
-      <Antigravity.Color size={115} />
+      <OpenAI size={115} />
     </div>
   );
 };
@@ -706,8 +706,8 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
           transform: `scale(${itemScale}) translateX(${itemTranslateX}px)`,
         }}
       >
-        {activeIndex === 0 && <ClaudeCodeIcon frame={frame} />}
-        {activeIndex === 1 && <CodexAntigravityIcon frame={frame} />}
+        {activeIndex === 0 && <ClaudeIcon frame={frame} />}
+        {activeIndex === 1 && <OpenAIIcon frame={frame} />}
         {activeIndex === 2 && <MotionStudioIcon frame={frame} />}
       </div>
 
@@ -743,7 +743,7 @@ const SceneItems: React.FC<{ config: VideoConfig; isVertical: boolean }> = ({
             marginBottom: "8px",
           }}
         >
-          {currentItem.icon} · {activeIndex === 0 ? "AI DEV AGENT" : activeIndex === 1 ? "AUTONOMOUS SDK" : "CUSTOM DEV"}
+          {currentItem.icon} · {activeIndex === 0 ? "ANTHROPIC CLAUDE" : activeIndex === 1 ? "OPENAI CHATGPT" : "CUSTOM DEV"}
         </div>
         {/* Title */}
         <h3

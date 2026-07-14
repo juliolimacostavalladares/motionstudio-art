@@ -11,11 +11,11 @@ export const AI_VIDEOS: VideoConfig[] = [
     badge: "⚡ Dev Stack 2026",
     headlineLines: ["A maioria das IAs", "é perda de tempo"],
     accentLineIndex: 1,
-    subCopy: "Ferramentas isoladas geram retrabalho. O segredo está nos agentes autônomos integrados diretamente ao seu código.",
+    subCopy: "Ferramentas isoladas geram retrabalho. O segredo está nos agentes autônomos e APIs integrados diretamente ao seu código.",
     scene2Title: "O Stack Definitivo ⚙️",
     items: [
-      { icon: "CL", text: "Claude Code", sub: "O agente de terminal que escreve, testa e refatora código em segundos." },
-      { icon: "AG", text: "Codex Antigravity", sub: "SDK para orquestração de multi-agentes autônomos e fluxos operacionais." },
+      { icon: "CL", text: "Claude (Anthropic)", sub: "A inteligência mais avançada para escrita, refatoração e lógica de código." },
+      { icon: "OA", text: "OpenAI (ChatGPT)", sub: "APIs robustas para geração de texto, análise de dados e automações complexas." },
       { icon: "MS", text: "Motion Studio", sub: "Desenvolvemos sua infraestrutura customizada com IA integrada sob medida.", highlight: true }
     ],
     ctaHeadline: "Integre agentes de IA à engenharia real do seu negócio",
@@ -33,11 +33,11 @@ export const AI_VIDEOS: VideoConfig[] = [
     badge: "🚀 Engenharia SaaS",
     headlineLines: ["Construindo o novo", "SaaS com Agentes"],
     accentLineIndex: 1,
-    subCopy: "Esqueça wrappers genéricos. O SaaS moderno usa orquestradores robustos para resolver problemas de infraestrutura.",
+    subCopy: "Esqueça wrappers genéricos. O SaaS moderno usa orquestradores robustos e APIs para resolver problemas complexos.",
     scene2Title: "Arquitetura de Elite 📈",
     items: [
-      { icon: "CL", text: "Claude Code", sub: "Acelera a escrita de rotas, schemas e migrações no backend." },
-      { icon: "AG", text: "Codex Antigravity", sub: "SDK para rodar agentes de IA em sandbox isoladas em tempo de execução." },
+      { icon: "CL", text: "Claude (Anthropic)", sub: "Acelera a escrita de rotas, schemas e migrações no backend." },
+      { icon: "OA", text: "OpenAI (ChatGPT)", sub: "Garante processamento dinâmico de linguagem natural na sua aplicação." },
       { icon: "MS", text: "Motion Studio", sub: "Transformamos sua ideia em um produto escalável com engenharia de ponta.", highlight: true }
     ],
     ctaHeadline: "Valide seu produto com stack tecnológico imbatível",
@@ -55,11 +55,11 @@ export const AI_VIDEOS: VideoConfig[] = [
     badge: "⚠️ Retorno Financeiro",
     headlineLines: ["Sua operação ainda", "depende de cliques?"],
     accentLineIndex: 1,
-    subCopy: "Processos manuais travam seu crescimento. Automatize workflows de engenharia e negócios com agentes.",
+    subCopy: "Processos manuais travam seu crescimento. Automatize workflows de engenharia e negócios com agentes e APIs.",
     scene2Title: "Orquestração Autônoma 🔗",
     items: [
-      { icon: "CL", text: "Claude Code", sub: "Automatiza correções de bugs e monitoramento de logs no terminal." },
-      { icon: "AG", text: "Codex Antigravity", sub: "SDK que roda tarefas em background sem depender de supervisão humana." },
+      { icon: "CL", text: "Claude (Anthropic)", sub: "Automatiza correções de bugs e monitoramento de logs no terminal." },
+      { icon: "OA", text: "OpenAI (ChatGPT)", sub: "Processa entradas de clientes e responde e-mails de forma inteligente." },
       { icon: "MS", text: "Motion Studio", sub: "Construímos seu ecossistema de automação interna sob medida.", highlight: true }
     ],
     ctaHeadline: "Substitua planilhas e cliques por agentes de IA autônomos",
