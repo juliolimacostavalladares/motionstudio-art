@@ -10,19 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --black: #0a0a0a;
-      --black-2: #111111;
+      --black: #06070a;
+      --black-2: #0e1017;
       --lime: #d4e157;
       --lime-dark: #b5c63e;
       --white: #f5f5f5;
       --gray-100: #e5e5e5;
       --gray-300: #a3a3a3;
-      --gray-500: #737373;
+      --gray-400: #94a3b8;
+      --gray-500: #94a3b8;
       --gray-700: #404040;
       --gray-800: #262626;
       --gray-900: #171717;
       --radius: 14px;
       --radius-sm: 8px;
+      --radius-full: 9999px;
       --transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
       --spring: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -103,6 +105,39 @@
       color: var(--lime);
     }
 
+    .btn-pill {
+      border-radius: var(--radius-full);
+      padding: 16px 30px;
+    }
+
+    .btn-glow-blue {
+      background: linear-gradient(135deg, #0e5eff 0%, #00b4d8 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 28px rgba(14, 94, 255, 0.42);
+    }
+
+    .btn-glow-blue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(14, 94, 255, 0.65);
+      filter: brightness(1.08);
+      color: #ffffff;
+    }
+
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .btn-glass:hover {
+      border-color: rgba(0, 229, 255, 0.45);
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
     /* Section headers */
     .section-label {
       display: inline-flex;
@@ -162,20 +197,24 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      padding: 18px 0;
-      transition: background var(--transition), backdrop-filter var(--transition);
+      padding: 20px 0;
+      transition: all var(--transition);
     }
 
     .header.scrolled {
-      background: rgba(10, 10, 10, 0.82);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 14px 0;
+      background: rgba(6, 7, 10, 0.8);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
     }
 
     .header-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 24px;
     }
 
     .logo {
@@ -186,15 +225,29 @@
       font-weight: 800;
       font-size: 20px;
       letter-spacing: -0.02em;
+      color: var(--white);
+      transition: opacity var(--transition);
     }
 
-    .logo svg { width: 36px; height: 36px; }
+    .logo:hover { opacity: 0.9; }
 
-    .nav { display: flex; align-items: center; gap: 36px; }
+    .logo svg {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 12px rgba(212, 225, 87, 0.25));
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      align-items: center;
+      gap: 28px;
     }
 
     .nav-links a {
@@ -203,6 +256,7 @@
       color: var(--gray-300);
       transition: color var(--transition);
       position: relative;
+      padding: 6px 0;
     }
 
     .nav-links a:hover { color: var(--white); }
@@ -210,15 +264,77 @@
     .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -6px;
+      bottom: 0;
       left: 0;
       width: 0;
       height: 2px;
       background: var(--lime);
+      box-shadow: 0 0 8px var(--lime);
       transition: width var(--transition);
     }
 
     .nav-links a:hover::after { width: 100%; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-300);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      letter-spacing: 0.02em;
+      transition: all var(--transition);
+      cursor: default;
+    }
+
+    .status-dot-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 8px var(--lime);
+      animation: pulse 2s infinite;
+    }
+
+    .btn-nav {
+      padding: 9px 22px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Sora', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-nav-primary {
+      background: linear-gradient(135deg, #0e5eff 0%, #00b4d8 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(14, 94, 255, 0.38);
+    }
+
+    .btn-nav-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px rgba(14, 94, 255, 0.55);
+      filter: brightness(1.08);
+    }
 
     .menu-toggle {
       display: none;
@@ -226,6 +342,7 @@
       border: none;
       color: var(--white);
       cursor: pointer;
+      padding: 6px;
     }
 
     /* Hero */
@@ -233,37 +350,91 @@
       position: relative;
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      padding: 140px 0 100px;
+      flex-direction: column;
+      justify-content: center;
+      padding: 150px 0 80px;
       overflow: hidden;
+      background: var(--black);
     }
 
     .hero-bg {
       position: absolute;
       inset: 0;
       z-index: 0;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(212, 225, 87, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(212, 225, 87, 0.08) 0%, transparent 35%),
-        linear-gradient(180deg, var(--black) 0%, var(--black-2) 100%);
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Radiant Electric Blue glow on left - inspired by reference screenshot */
+    .hero-glow-left {
+      position: absolute;
+      top: 2%;
+      left: -15%;
+      width: 65vw;
+      height: 65vw;
+      max-width: 850px;
+      max-height: 850px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14, 94, 255, 0.42) 0%, rgba(2, 54, 180, 0.22) 38%, rgba(0, 20, 60, 0.05) 65%, transparent 78%);
+      filter: blur(80px);
+      opacity: 0.95;
+      animation: pulseGlow 10s ease-in-out infinite alternate;
+    }
+
+    /* Glowing Purple & Cyan Atmosphere on right behind 3D elements */
+    .hero-glow-right {
+      position: absolute;
+      top: 5%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      max-width: 800px;
+      max-height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.26) 0%, rgba(0, 229, 255, 0.15) 35%, transparent 70%);
+      filter: blur(85px);
+      opacity: 0.88;
+      animation: pulseGlow 12s ease-in-out 1.5s infinite alternate;
+    }
+
+    /* Subtle lime touch preserving Motion Studio identity */
+    .hero-glow-lime {
+      position: absolute;
+      top: 25%;
+      left: 36%;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.07) 0%, transparent 68%);
+      filter: blur(75px);
+      pointer-events: none;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.82; }
+      50% { transform: scale(1.08) translate(15px, -15px); opacity: 0.98; }
+      100% { transform: scale(0.96) translate(-10px, 10px); opacity: 0.85; }
     }
 
     .hero-grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
       background-size: 64px 64px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 80%);
+      mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, black 25%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, black 25%, transparent 75%);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .hero-content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 48px;
       align-items: center;
     }
 
@@ -271,114 +442,252 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 14px;
-      background: rgba(212, 225, 87, 0.1);
-      border: 1px solid rgba(212, 225, 87, 0.2);
-      border-radius: 100px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 600;
-      color: var(--lime);
+      color: var(--white);
       margin-bottom: 28px;
       width: fit-content;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .hero-badge::before {
-      content: '';
+    .hero-badge-dot {
       width: 6px;
       height: 6px;
       background: var(--lime);
       border-radius: 50%;
+      box-shadow: 0 0 10px var(--lime);
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,225,87,0.4); }
-      50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(212,225,87,0); }
-    }
-
     .hero h1 {
-      font-size: clamp(42px, 6vw, 72px);
+      font-size: clamp(40px, 5.5vw, 68px);
       font-weight: 800;
       margin-bottom: 24px;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
     }
 
     .hero h1 .line { display: block; }
 
     .hero p {
-      font-size: 18px;
+      font-size: 17px;
       color: var(--gray-300);
       max-width: 520px;
       margin-bottom: 36px;
       line-height: 1.7;
     }
 
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
+    /* 3D Visual Section */
     .hero-visual {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      perspective: 1200px;
+      transform-style: preserve-3d;
     }
 
-    .hero-card {
+    .hero-3d-wrapper {
+      position: relative;
       width: 100%;
-      max-width: 460px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 32px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-      transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
-      transition: transform var(--spring);
-    }
-
-    .hero-card:hover {
-      transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
-    }
-
-    .code-window-header {
+      max-width: 490px;
+      aspect-ratio: 1 / 1;
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
     }
 
-    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .code-dot.red { background: #ff5f57; }
-    .code-dot.yellow { background: #febc2e; }
-    .code-dot.green { background: #28c840; }
-
-    .code-block {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--gray-300);
-    }
-
-    .code-block .kw { color: var(--lime); }
-    .code-block .str { color: #89ddff; }
-    .code-block .fn { color: #82aaff; }
-    .code-block .comment { color: var(--gray-500); }
-
-    .floating-tag {
+    .hero-3d-glow-under {
       position: absolute;
-      background: var(--black-2);
-      border: 1px solid var(--gray-700);
-      border-radius: 12px;
-      padding: 12px 18px;
+      bottom: 0;
+      width: 82%;
+      height: 42%;
+      background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.24) 0%, rgba(147, 51, 234, 0.2) 35%, transparent 70%);
+      filter: blur(45px);
+      pointer-events: none;
+      z-index: 0;
+      transform: translateZ(-30px);
+    }
+
+    .hero-3d-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      border-radius: 28px;
+      transform: translateZ(10px);
+      transition: opacity 400ms ease;
+    }
+
+    .hero-3d-img.hidden {
+      display: none;
+      opacity: 0;
+    }
+
+    /* Floating badges */
+    .floating-badge {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: rgba(14, 16, 24, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-full);
       font-size: 13px;
       font-weight: 600;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-      animation: float 6s ease-in-out infinite;
+      color: var(--white);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      z-index: 2;
+      pointer-events: none;
+      animation: floatBadge 5s ease-in-out infinite;
     }
 
-    .floating-tag.tag-1 { top: 10%; right: 0; animation-delay: 0s; }
-    .floating-tag.tag-2 { bottom: 15%; left: -20px; animation-delay: 2s; }
+    .badge-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(212, 225, 87, 0.15);
+      color: var(--lime);
+      flex-shrink: 0;
+    }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+    .badge-icon.blue {
+      background: rgba(14, 94, 255, 0.18);
+      color: #38bdf8;
+    }
+
+    .badge-1 {
+      top: 6%;
+      right: -2%;
+      animation-delay: 0s;
+      transform: translateZ(35px);
+    }
+
+    .badge-2 {
+      bottom: 12%;
+      left: -6%;
+      animation-delay: 2.5s;
+      transform: translateZ(40px);
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0) translateZ(35px); }
+      50% { transform: translateY(-10px) translateZ(35px); }
+    }
+
+    .palette-toggle {
+      position: absolute;
+      top: -24px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-300);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all var(--transition);
+      z-index: 3;
+    }
+
+    .palette-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .palette-toggle svg {
+      width: 13px;
+      height: 13px;
+      color: var(--lime);
+    }
+
+    /* Pillars from reference screenshot */
+    .hero-pillars {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      padding-top: 48px;
+      margin-top: 48px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    .pillar-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .pillar-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38bdf8;
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+
+    .pillar-item:hover .pillar-icon {
+      border-color: rgba(0, 229, 255, 0.3);
+      background: rgba(0, 229, 255, 0.08);
+      color: #00e5ff;
+      transform: translateY(-2px);
+    }
+
+    .pillar-text strong {
+      display: block;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .pillar-text span {
+      display: block;
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.45;
     }
 
     /* Trust */
@@ -415,11 +724,11 @@
       font-family: 'Bricolage Grotesque', sans-serif;
       font-size: 20px;
       font-weight: 700;
-      color: var(--gray-700);
+      color: var(--gray-500);
       transition: color var(--transition);
     }
 
-    .trust-logo:hover { color: var(--gray-300); }
+    .trust-logo:hover { color: var(--white); }
 
     /* Sections */
     .section { padding: 110px 0; }
@@ -794,7 +1103,7 @@
     }
 
     .form-group input::placeholder,
-    .form-group textarea::placeholder { color: var(--gray-700); }
+    .form-group textarea::placeholder { color: var(--gray-400); }
 
     .form-group textarea { min-height: 120px; resize: vertical; }
 
@@ -874,16 +1183,23 @@
       padding-top: 24px;
       border-top: 1px solid rgba(255,255,255,0.05);
       font-size: 13px;
-      color: var(--gray-700);
+      color: var(--gray-400);
       flex-wrap: wrap;
       gap: 16px;
     }
 
     /* Responsive */
+    @media (min-width: 1440px) {
+      .container { max-width: 1320px; }
+      .hero-3d-wrapper { max-width: 480px; }
+      .section-title { font-size: 56px; }
+    }
+
     @media (max-width: 1024px) {
-      .hero-content { grid-template-columns: 1fr; }
+      .hero-content { grid-template-columns: 1fr; gap: 40px; }
       .hero-visual { order: -1; }
-      .hero-card { max-width: 420px; transform: none; }
+      .hero-3d-wrapper { max-width: 420px; }
+      .hero-pillars { grid-template-columns: repeat(3, 1fr); padding-top: 36px; margin-top: 36px; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .process-steps { grid-template-columns: repeat(2, 1fr); }
       .cases-grid { grid-template-columns: repeat(2, 1fr); }
@@ -891,11 +1207,15 @@
     }
 
     @media (max-width: 768px) {
-      .nav-links { display: none; }
+      .nav-links, .nav-pill-badge { display: none; }
       .menu-toggle { display: block; }
-      .hero { padding: 120px 0 80px; }
+      .hero { padding: 120px 0 60px; }
       .hero-actions { flex-direction: column; }
       .hero-actions .btn { width: 100%; }
+      .hero-3d-wrapper { max-width: 320px; }
+      .badge-1 { top: -6px; right: 0; }
+      .badge-2 { bottom: -6px; left: 0; }
+      .hero-pillars { grid-template-columns: 1fr; gap: 20px; padding-top: 32px; margin-top: 32px; }
       .services-grid,
       .diff-grid,
       .process-steps,
@@ -905,7 +1225,55 @@
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .trust-inner { flex-direction: column; align-items: flex-start; }
       .trust-logos { gap: 28px; }
-      .floating-tag { display: none; }
+    }
+
+    @media (max-width: 375px) {
+      .container { padding: 0 16px; }
+      .hero { padding: 100px 0 48px; }
+      .hero-3d-wrapper { max-width: 270px; }
+      .floating-badge { padding: 8px 12px; font-size: 11px; }
+      .badge-1 { top: -12px; right: -8px; }
+      .badge-2 { bottom: -12px; left: -8px; }
+      .palette-toggle { top: -32px; right: 0; font-size: 10px; padding: 4px 10px; }
+      .btn { padding: 13px 20px; font-size: 14px; }
+      .section { padding: 70px 0; }
+      .hero-badge { font-size: 12px; padding: 6px 14px; }
+    }
+
+    /* Accessibility: Prefers Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto !important;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .floating-badge {
+        animation: none !important;
+      }
+
+      .status-dot-pulse {
+        animation: none !important;
+      }
+
+      .hero-glow-left,
+      .hero-glow-right,
+      .hero-glow-lime {
+        animation: none !important;
+      }
     }
 
     /* Mobile menu */
@@ -966,14 +1334,20 @@
           <a href="#processo">Processo</a>
           <a href="#cases">Cases</a>
         </div>
-        <a href="#contato" class="btn btn-primary">Fale conosco</a>
-        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
+        <div class="nav-actions">
+          <div class="nav-pill-badge" title="Disponibilidade da equipe">
+            <span class="status-dot-pulse"></span>
+            <span>Disponível para novos projetos</span>
+          </div>
+          <a href="#contato" class="btn-nav btn-nav-primary">Fale conosco</a>
+          <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
       </nav>
     </div>
   </header>
@@ -988,43 +1362,89 @@
   </div>
 
   <section class="hero" id="inicio">
-    <div class="hero-bg"></div>
+    <div class="hero-bg">
+      <div class="hero-glow-left"></div>
+      <div class="hero-glow-right"></div>
+      <div class="hero-glow-lime"></div>
+    </div>
     <div class="hero-grid"></div>
     <div class="container hero-content">
       <div class="hero-text">
-        <div class="hero-badge reveal">Software house sob medida</div>
+        <div class="hero-badge reveal">
+          <span class="hero-badge-dot"></span>
+          <span>Software house sob medida</span>
+        </div>
         <h1 class="reveal delay-1">
           <span class="line">Transformamos</span>
           <span class="line">desafios em <span class="text-lime">código</span></span>
         </h1>
         <p class="reveal delay-2">
-          Movimentamos negócios com tecnologia sob medida. Software house especializada em entregar soluções digitais com foco em resultado, transparência e agilidade.
+          Movimentamos negócios com tecnologia sob medida. Software house especializada em entregar soluções digitais com excelência técnica, transparência e alto impacto comercial.
         </p>
         <div class="hero-actions reveal delay-3">
-          <a href="#contato" class="btn btn-primary">Começar um projeto</a>
-          <a href="#cases" class="btn btn-secondary">Ver cases</a>
+          <a href="#contato" class="btn btn-pill btn-glow-blue">
+            <span>Começar um projeto</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a href="#cases" class="btn btn-pill btn-glass">Ver cases</a>
         </div>
       </div>
+
       <div class="hero-visual reveal delay-2">
-        <div class="hero-card">
-          <div class="code-window-header">
-            <span class="code-dot red"></span>
-            <span class="code-dot yellow"></span>
-            <span class="code-dot green"></span>
+        <button id="paletteToggle" class="palette-toggle" title="Alternar estilo 3D">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg>
+          <span id="paletteLabel">Paleta: Motion Studio</span>
+        </button>
+
+        <div class="hero-3d-wrapper" id="hero3dStage">
+          <div class="hero-3d-glow-under"></div>
+          <img src="assets/hero-3d.jpg" alt="Composição 3D Motion Studio - Tecnologia e Software sob medida" class="hero-3d-img" id="imgMotion" width="1024" height="1024" />
+          <img src="assets/hero-3d-purple.jpg" alt="Composição 3D Cyber Neon - Tecnologia e Software sob medida" class="hero-3d-img hidden" id="imgPurple" width="1024" height="1024" />
+
+          <div class="floating-badge badge-1">
+            <span class="badge-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+            </span>
+            <span>+120% eficiência</span>
           </div>
-          <div class="code-block">
-            <span class="kw">const</span> motion = <span class="fn">build</span>({<br>
-            &nbsp;&nbsp;focus: <span class="str">"resultado"</span>,<br>
-            &nbsp;&nbsp;process: <span class="str">"transparente"</span>,<br>
-            &nbsp;&nbsp;delivery: <span class="str">"ágil"</span>,<br>
-            &nbsp;&nbsp;support: <span class="str">"contínuo"</span><br>
-            });<br><br>
-            <span class="comment">// Movimentando negócios</span><br>
-            motion.<span class="fn">launch</span>();
+
+          <div class="floating-badge badge-2">
+            <span class="badge-icon blue">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </span>
+            <span>SLA 99.9%</span>
           </div>
         </div>
-        <div class="floating-tag tag-1">+120% eficiência</div>
-        <div class="floating-tag tag-2">Entrega em semanas</div>
+      </div>
+
+      <div class="hero-pillars reveal delay-4">
+        <div class="pillar-item">
+          <div class="pillar-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          <div class="pillar-text">
+            <strong>Aplicações Web & Mobile</strong>
+            <span>Plataformas complexas e apps sob medida</span>
+          </div>
+        </div>
+        <div class="pillar-item">
+          <div class="pillar-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div class="pillar-text">
+            <strong>Automação & IA</strong>
+            <span>Integrações inteligentes e workflows ágeis</span>
+          </div>
+        </div>
+        <div class="pillar-item">
+          <div class="pillar-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+          </div>
+          <div class="pillar-text">
+            <strong>Engenharia Sob Medida</strong>
+            <span>Arquitetura escalável com código limpo</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1320,6 +1740,74 @@
     window.addEventListener('scroll', () => {
       header.classList.toggle('scrolled', window.scrollY > 40);
     });
+
+    // 3D Hero tilt effect with smooth spring physics
+    const heroVisual = document.querySelector('.hero-visual');
+    const stage3d = document.getElementById('hero3dStage');
+
+    if (heroVisual && stage3d && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let bounds;
+      let mouseX = 0;
+      let mouseY = 0;
+      let currentX = 0;
+      let currentY = 0;
+
+      function updateBounds() {
+        bounds = heroVisual.getBoundingClientRect();
+      }
+
+      window.addEventListener('resize', updateBounds);
+      window.addEventListener('scroll', updateBounds, { passive: true });
+      updateBounds();
+
+      heroVisual.addEventListener('mousemove', (e) => {
+        if (!bounds) return;
+        const x = (e.clientX - bounds.left) / bounds.width - 0.5;
+        const y = (e.clientY - bounds.top) / bounds.height - 0.5;
+        mouseX = x;
+        mouseY = y;
+      });
+
+      heroVisual.addEventListener('mouseleave', () => {
+        mouseX = 0;
+        mouseY = 0;
+      });
+
+      function renderTilt() {
+        currentX += (mouseX - currentX) * 0.08;
+        currentY += (mouseY - currentY) * 0.08;
+
+        const rotY = currentX * 24;
+        const rotX = -currentY * 20;
+
+        stage3d.style.transform = `rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg)`;
+        requestAnimationFrame(renderTilt);
+      }
+
+      requestAnimationFrame(renderTilt);
+    }
+
+    // Palette toggle between Motion Studio (Lime & Cyan) and Cyber Neon (Purple & Blue)
+    const paletteToggle = document.getElementById('paletteToggle');
+    const imgMotion = document.getElementById('imgMotion');
+    const imgPurple = document.getElementById('imgPurple');
+    const paletteLabel = document.getElementById('paletteLabel');
+
+    if (paletteToggle && imgMotion && imgPurple && paletteLabel) {
+      let isDefault = true;
+      paletteToggle.addEventListener('click', () => {
+        isDefault = !isDefault;
+        if (isDefault) {
+          imgMotion.classList.remove('hidden');
+          imgPurple.classList.add('hidden');
+          paletteLabel.textContent = 'Paleta: Motion Studio';
+        } else {
+          imgMotion.classList.add('hidden');
+          imgPurple.classList.remove('hidden');
+          paletteLabel.textContent = 'Paleta: Cyber Neon';
+        }
+      });
+    }
 
     // Mobile menu
     const menuToggle = document.getElementById('menuToggle');
