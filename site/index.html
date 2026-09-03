@@ -480,22 +480,22 @@
       align-items: center;
     }
 
-    /* 3D Interactive SaaS Stack Section (inspired by reference with 3D cards & floating tech) */
+    /* 3D Fanned Tech Deck Section (inspired by Pinterest reference with top-lit glass cards & glowing 3D tech logos) */
     .hero-visual {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1600px;
+      perspective: 1800px;
       transform-style: preserve-3d;
-      min-height: 520px;
+      min-height: 540px;
     }
 
-    .saas-stack-container {
+    .tech-deck-container {
       position: relative;
       width: 100%;
-      max-width: 500px;
-      height: 480px;
+      max-width: 680px;
+      height: 490px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -503,25 +503,32 @@
       will-change: transform;
     }
 
-    .stack-glow-ambient {
+    .deck-ambient-glow {
       position: absolute;
-      width: 440px;
+      width: 560px;
       height: 440px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(212, 225, 87, 0.28) 0%, rgba(181, 198, 62, 0.08) 45%, transparent 70%);
-      filter: blur(60px);
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.22) 0%, rgba(181, 198, 62, 0.06) 45%, transparent 70%);
+      filter: blur(80px);
       pointer-events: none;
       z-index: 0;
-      transform: translateZ(-60px);
+      transform: translateZ(-90px);
     }
 
     /* Common Card Styling */
-    .saas-card {
+    .tech-deck-card {
       position: absolute;
-      width: 310px;
-      height: 400px;
+      left: 50%;
+      top: 50%;
+      width: 220px;
+      height: 360px;
       border-radius: 28px;
-      padding: 26px;
+      background: linear-gradient(180deg, rgba(26, 32, 45, 0.86) 0%, rgba(8, 10, 15, 0.97) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-top: 2px solid var(--rim, rgba(212, 225, 87, 0.7));
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      padding: 22px 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -529,218 +536,46 @@
       cursor: pointer;
       will-change: transform, box-shadow;
       user-select: none;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.14);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Card 3 (Back) - Radiant Lime Card */
-    .card-back {
-      background: linear-gradient(145deg, #d4e157 0%, #a8b82e 100%);
-      color: #0e1017;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(212, 225, 87, 0.35);
-      z-index: 1;
-      transform: translate3d(80px, 60px, -45px) rotateZ(-10deg) rotateY(14deg) rotateX(15deg);
+    /* Radiant Top Rim Highlight & Volumetric Interior Glow (exact match to Pinterest ref) */
+    .card-rim-highlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      border-top: 2.5px solid var(--rim);
+      border-radius: 28px 28px 0 0;
+      background: radial-gradient(ellipse 85% 55% at 50% 0%, var(--glow) 0%, transparent 80%);
+      pointer-events: none;
+      filter: drop-shadow(0 0 14px var(--rim));
+      transition: all 0.3s ease;
     }
 
-    .card-chip-badge {
+    /* Featured Badge for Center Card */
+    .card-featured-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.12);
-      padding: 6px 12px;
+      gap: 5px;
+      background: rgba(212, 225, 87, 0.15);
+      border: 1px solid rgba(212, 225, 87, 0.4);
+      padding: 3px 8px;
       border-radius: 100px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      width: fit-content;
-    }
-
-    .card-pulse-dark {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #0e1017;
-      box-shadow: 0 0 6px #0e1017;
-    }
-
-    .card-content-back {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-
-    .card-brand-tag {
-      font-size: 13px;
-      font-weight: 700;
-      opacity: 0.8;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .card-big-metric {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 54px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-
-    .card-metric-label {
-      font-size: 13px;
-      font-weight: 600;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
-
-    .card-footer-strip {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      border-top: 1px solid rgba(0, 0, 0, 0.12);
-      padding-top: 14px;
-    }
-
-    /* Card 2 (Middle) - Titanium Obsidian Card */
-    .card-middle {
-      background: linear-gradient(155deg, #181b24 0%, #0c0e14 100%);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-      z-index: 2;
-      transform: translate3d(20px, 20px, 0px) rotateZ(-15deg) rotateY(16deg) rotateX(17deg);
-    }
-
-    .card-header-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 12px;
-    }
-
-    .card-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .card-dots span {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-    .dot-red { background: #ff5f57; }
-    .dot-yellow { background: #febc2e; }
-    .dot-green { background: #28c840; }
-
-    .card-file-name {
-      font-family: 'Space Mono', 'SF Mono', monospace;
-      font-size: 11px;
-      color: var(--gray-400);
-    }
-
-    .card-badge-lime {
       font-size: 10px;
       font-weight: 700;
-      background: rgba(212, 225, 87, 0.15);
       color: var(--lime);
-      border: 1px solid rgba(212, 225, 87, 0.3);
-      padding: 2px 8px;
-      border-radius: 6px;
+      letter-spacing: 0.03em;
+      z-index: 2;
     }
 
-    .card-code-body {
-      font-family: 'Space Mono', 'SF Mono', monospace;
-      font-size: 12px;
-      line-height: 1.7;
-      color: var(--gray-300);
-      margin: 18px 0;
-    }
-
-    .card-code-body .c-kw { color: var(--lime); }
-    .card-code-body .c-fn { color: #82aaff; }
-    .card-code-body .c-prop { color: #c792ea; }
-    .card-code-body .c-str { color: #ecc48d; }
-    .card-code-body .c-num { color: #f78c6c; }
-    .card-code-body .indent { padding-left: 14px; }
-
-    .card-footer-middle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--gray-400);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 14px;
-    }
-
-    .pulse-dot-green {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #28c840;
-      box-shadow: 0 0 8px #28c840;
-      animation: pulse 2s infinite;
-    }
-
-    /* Card 1 (Front) - Frosted Glass Card */
-    .card-front {
-      background: rgba(255, 255, 255, 0.06);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 40px 90px rgba(0, 0, 0, 0.75), inset 0 1px 2px rgba(255, 255, 255, 0.35);
-      z-index: 3;
-      transform: translate3d(-40px, -25px, 50px) rotateZ(-22deg) rotateY(20deg) rotateX(20deg);
-      overflow: hidden;
-    }
-
-    .card-glass-specular {
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 45%, rgba(212,225,87,0.08) 75%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .card-front-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-front-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(212, 225, 87, 0.15);
-      border: 1px solid rgba(212, 225, 87, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--lime);
-    }
-
-    .card-front-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--lime);
-      background: rgba(212, 225, 87, 0.1);
-      border: 1px solid rgba(212, 225, 87, 0.2);
-      padding: 4px 10px;
-      border-radius: 100px;
-    }
-
-    .pulse-lime-small {
+    .badge-dot-live {
       width: 5px;
       height: 5px;
       border-radius: 50%;
@@ -749,141 +584,178 @@
       animation: pulse 2s infinite;
     }
 
-    .card-front-body {
+    /* Centerpiece Glowing Tech Emblem */
+    .card-emblem-wrap {
       position: relative;
-      z-index: 1;
-      margin: auto 0;
-    }
-
-    .card-front-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    .card-front-bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      height: 48px;
-      padding-top: 8px;
-    }
-
-    .card-front-bars .bar {
-      flex: 1;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.12);
-      transition: height 0.3s ease;
-    }
-
-    .card-front-bars .bar-1 { height: 45%; }
-    .card-front-bars .bar-2 { height: 75%; background: rgba(212, 225, 87, 0.35); }
-    .card-front-bars .bar-3 { height: 60%; }
-    .card-front-bars .bar-4 { height: 100%; background: var(--lime); box-shadow: 0 0 12px rgba(212, 225, 87, 0.5); }
-
-    .card-front-footer {
+      width: 100%;
+      height: 140px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .card-emblem-halo {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+      filter: blur(24px);
+      pointer-events: none;
+    }
+
+    .card-emblem-img {
       position: relative;
       z-index: 1;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 20px var(--glow)) drop-shadow(0 0 6px var(--rim));
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .card-client-name {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .card-client-tag {
-      font-size: 11px;
-      color: var(--gray-400);
-      letter-spacing: 0.02em;
-    }
-
-    /* Floating 3D Tech Logos */
-    .floating-tech-logo {
-      position: absolute;
-      pointer-events: none;
-      z-index: 4;
-      will-change: transform;
-      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(212, 225, 87, 0.25));
-    }
-
-    .tech-node {
-      top: -35px;
-      right: 60px;
-      width: 82px;
-      height: auto;
-      transform: translateZ(80px);
-    }
-
-    .tech-react {
-      bottom: -30px;
-      right: 40px;
-      width: 90px;
-      height: auto;
-      transform: translateZ(100px);
-    }
-
-    .tech-ts {
-      bottom: 15px;
-      left: -60px;
-      width: 80px;
-      height: auto;
-      transform: translateZ(90px);
-    }
-
-    .floating-tech-logo img {
-      width: 100%;
-      height: auto;
+    .card-emblem-img img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
       display: block;
     }
 
-    /* Metric Badges (from reference right side) */
-    .stack-metric-badge {
+    /* Typography & Metadata */
+    .card-info {
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .card-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 16.5px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent, var(--lime));
+      margin-bottom: 6px;
+      display: block;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.45;
+      margin-bottom: 0;
+    }
+
+    /* The 5 Individual Card Themes with exact Pinterest fan offsets */
+    /* Card 1: React & Next (Cyan Glow) */
+    .card-react {
+      --rim: #00e5ff;
+      --glow: rgba(0, 229, 255, 0.55);
+      --accent: #38bdf8;
+      transform: translate(-50%, -50%) translate3d(-250px, 28px, -35px) rotateZ(-16deg);
+      z-index: 1;
+    }
+
+    /* Card 2: Node.js & APIs (Emerald-Lime Glow) */
+    .card-node {
+      --rim: #4ade80;
+      --glow: rgba(74, 222, 128, 0.55);
+      --accent: #4ade80;
+      transform: translate(-50%, -50%) translate3d(-130px, 10px, -12px) rotateZ(-8deg);
+      z-index: 2;
+    }
+
+    /* Card 3: Motion Core (Center / Featured - Signature Lime #d4e157) */
+    .card-motion-core {
+      --rim: #d4e157;
+      --glow: rgba(212, 225, 87, 0.65);
+      --accent: #d4e157;
+      border: 1px solid rgba(212, 225, 87, 0.3);
+      border-top: 2.5px solid #d4e157;
+      box-shadow: 0 32px 70px rgba(0, 0, 0, 0.85), 0 0 50px rgba(212, 225, 87, 0.3);
+      transform: translate(-50%, -50%) translate3d(0px, -14px, 22px) rotateZ(0deg);
+      z-index: 3;
+    }
+
+    /* Card 4: IA & Workflows (Warm Amber Glow) */
+    .card-ai {
+      --rim: #f59e0b;
+      --glow: rgba(245, 158, 11, 0.55);
+      --accent: #fbbf24;
+      transform: translate(-50%, -50%) translate3d(130px, 10px, -12px) rotateZ(8deg);
+      z-index: 2;
+    }
+
+    /* Card 5: TypeScript & Cloud (Electric Blue-Lime Glow) */
+    .card-ts {
+      --rim: #3b82f6;
+      --glow: rgba(59, 130, 246, 0.55);
+      --accent: #60a5fa;
+      transform: translate(-50%, -50%) translate3d(250px, 28px, -35px) rotateZ(16deg);
+      z-index: 1;
+    }
+
+    /* Hover elevation */
+    .tech-deck-card:hover {
+      box-shadow: 0 38px 85px rgba(0, 0, 0, 0.92), 0 0 45px var(--glow);
+    }
+    .tech-deck-card:hover .card-emblem-img {
+      transform: scale(1.1);
+    }
+
+    /* Floating Metric Pills alongside deck */
+    .deck-metric-pill {
       position: absolute;
-      padding: 16px 20px;
-      background: rgba(14, 16, 24, 0.75);
+      padding: 14px 20px;
+      background: rgba(14, 16, 24, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      z-index: 4;
+      z-index: 5;
       pointer-events: none;
-      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    .metric-top {
-      top: 15px;
-      right: -105px;
-      width: 145px;
-      transform: translateZ(50px);
-    }
-
-    .metric-bottom {
-      bottom: 50px;
-      right: -100px;
+    .metric-pill-top {
+      top: 10px;
+      right: -55px;
       width: 145px;
       transform: translateZ(60px);
     }
 
-    .metric-value {
+    .metric-pill-bottom {
+      bottom: 25px;
+      right: -45px;
+      width: 145px;
+      transform: translateZ(70px);
+    }
+
+    .metric-num {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       color: var(--white);
       line-height: 1;
-      margin-bottom: 6px;
       letter-spacing: -0.02em;
     }
 
-    .metric-desc {
+    .metric-lbl {
       font-size: 11px;
       color: var(--gray-400);
       line-height: 1.4;
@@ -1448,16 +1320,15 @@
     /* Responsive */
     @media (min-width: 1440px) {
       .container { max-width: 1320px; }
-      .saas-stack-container { max-width: 520px; }
+      .tech-deck-container { max-width: 640px; }
       .section-title { font-size: 56px; }
     }
 
     @media (max-width: 1024px) {
       .hero-content { grid-template-columns: 1fr; gap: 40px; }
-      .hero-visual { order: -1; min-height: 440px; }
-      .saas-stack-container { max-width: 440px; height: 420px; }
-      .saas-card { width: 270px; height: 350px; padding: 20px; }
-      .metric-top, .metric-bottom { display: none; }
+      .hero-visual { order: -1; min-height: 480px; }
+      .tech-deck-container { max-width: 520px; height: 440px; transform: scale(0.9); }
+      .metric-pill-top, .metric-pill-bottom { display: none; }
       .hero-pillars { grid-template-columns: repeat(3, 1fr); padding-top: 36px; margin-top: 36px; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .process-steps { grid-template-columns: repeat(2, 1fr); }
@@ -1471,15 +1342,13 @@
       .hero { padding: 120px 0 60px; }
       .hero-actions { flex-direction: column; }
       .hero-actions .btn { width: 100%; }
-      .hero-visual { min-height: 380px; }
-      .saas-stack-container { max-width: 320px; height: 360px; }
-      .saas-card { width: 220px; height: 300px; padding: 16px; border-radius: 20px; }
-      .card-big-metric { font-size: 40px; }
-      .card-front-title { font-size: 18px; }
-      .tech-node { width: 56px; top: -10px; right: 10px; }
-      .tech-react { width: 60px; bottom: 10px; right: -10px; }
-      .tech-ts { width: 52px; bottom: 15px; left: -20px; }
-      .metric-top, .metric-bottom { display: none; }
+      .hero-visual { min-height: 420px; }
+      .tech-deck-container { max-width: 360px; height: 400px; transform: scale(0.8); }
+      .card-react, .card-ts { display: none; }
+      .card-node { transform: translate(-50%, -50%) translate3d(-75px, 6px, -10px) rotateZ(-7deg); }
+      .card-motion-core { transform: translate(-50%, -50%) translate3d(0px, -10px, 15px) rotateZ(0deg); }
+      .card-ai { transform: translate(-50%, -50%) translate3d(75px, 6px, -10px) rotateZ(7deg); }
+      .metric-pill-top, .metric-pill-bottom { display: none; }
       .hero-pillars { grid-template-columns: 1fr; gap: 20px; padding-top: 32px; margin-top: 32px; }
       .services-grid,
       .diff-grid,
@@ -1495,12 +1364,8 @@
     @media (max-width: 375px) {
       .container { padding: 0 16px; }
       .hero { padding: 100px 0 48px; }
-      .hero-visual { min-height: 320px; }
-      .saas-stack-container { max-width: 280px; height: 320px; }
-      .saas-card { width: 190px; height: 260px; padding: 14px; border-radius: 16px; }
-      .card-big-metric { font-size: 32px; }
-      .card-code-body { font-size: 10px; margin: 10px 0; }
-      .card-code-body .indent { padding-left: 8px; }
+      .hero-visual { min-height: 350px; }
+      .tech-deck-container { max-width: 310px; height: 360px; transform: scale(0.7); }
       .btn { padding: 13px 20px; font-size: 14px; }
       .section { padding: 70px 0; }
       .hero-badge { font-size: 12px; padding: 6px 14px; }
@@ -1657,100 +1522,104 @@
       </div>
 
       <div class="hero-visual reveal delay-2" id="hero3dVisual">
-        <!-- Interactive 3D SaaS Stack Container -->
-        <div class="saas-stack-container" id="saasStack">
-          <!-- Ambient Radial Lime Glow behind cards -->
-          <div class="stack-glow-ambient"></div>
+        <!-- 3D Fanned Tech Deck (inspired by Pinterest reference) -->
+        <div class="tech-deck-container" id="techDeck">
+          <!-- Ambient Backdrop Volumetric Lime Glow -->
+          <div class="deck-ambient-glow"></div>
 
-          <!-- Card 3: Back - Radiant Lime Card -->
-          <div class="saas-card card-back" id="cardBack">
-            <div class="card-chip-badge">
-              <span class="card-pulse-dark"></span>
-              <span>Escalabilidade</span>
-            </div>
-            <div class="card-content-back">
-              <div class="card-brand-tag">Motion Core</div>
-              <div class="card-big-metric">99.9%</div>
-              <div class="card-metric-label">Uptime Garantido em Produção</div>
-            </div>
-            <div class="card-footer-strip">
-              <span>Arquitetura de Alta Performance</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
-            </div>
-          </div>
-
-          <!-- Card 2: Middle - Titanium Obsidian Terminal Card -->
-          <div class="saas-card card-middle" id="cardMiddle">
-            <div class="card-header-bar">
-              <div class="card-dots">
-                <span class="dot-red"></span>
-                <span class="dot-yellow"></span>
-                <span class="dot-green"></span>
-              </div>
-              <span class="card-file-name">server.config.ts</span>
-              <span class="card-badge-lime">PROD</span>
-            </div>
-            <div class="card-code-body">
-              <div class="code-line"><span class="c-kw">const</span> engine = <span class="c-fn">build</span>({</div>
-              <div class="code-line indent"><span class="c-prop">stack:</span> [<span class="c-str">"Node"</span>, <span class="c-str">"React"</span>, <span class="c-str">"TS"</span>],</div>
-              <div class="code-line indent"><span class="c-prop">throughput:</span> <span class="c-num">"50k req/s"</span></div>
-              <div class="code-line">});</div>
-            </div>
-            <div class="card-footer-middle">
-              <span class="pulse-dot-green"></span>
-              <span>Build passing • v2.4</span>
-            </div>
-          </div>
-
-          <!-- Card 1: Front - Translucent Frosted Glass Card -->
-          <div class="saas-card card-front" id="cardFront">
-            <div class="card-glass-specular"></div>
-            <div class="card-front-top">
-              <div class="card-front-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-              </div>
-              <div class="card-front-status">
-                <span class="pulse-lime-small"></span>
-                <span>SaaS Platform</span>
+          <!-- Card 1: React & Next.js (Cyan Glow) -->
+          <div class="tech-deck-card card-react" id="deckCard1" data-index="0">
+            <div class="card-rim-highlight"></div>
+            <div class="card-emblem-wrap">
+              <div class="card-emblem-halo"></div>
+              <div class="card-emblem-img">
+                <img src="assets/layers/tech-react.png" alt="React & Next.js 3D" width="66" height="63" />
               </div>
             </div>
-            <div class="card-front-body">
-              <div class="card-front-title">Dashboard Analytics</div>
-              <div class="card-front-bars">
-                <div class="bar bar-1"></div>
-                <div class="bar bar-2"></div>
-                <div class="bar bar-3"></div>
-                <div class="bar bar-4"></div>
+            <div class="card-info">
+              <h3 class="card-title">React & UI</h3>
+              <span class="card-tag">Frontend Moderno</span>
+              <p class="card-desc">Interfaces reativas, SSR e performance extrema.</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Node.js & APIs (Emerald-Lime Glow) -->
+          <div class="tech-deck-card card-node" id="deckCard2" data-index="1">
+            <div class="card-rim-highlight"></div>
+            <div class="card-emblem-wrap">
+              <div class="card-emblem-halo"></div>
+              <div class="card-emblem-img">
+                <img src="assets/layers/tech-node.png" alt="Node.js 3D" width="62" height="71" />
               </div>
             </div>
-            <div class="card-front-footer">
-              <span class="card-client-name">Motion Studio</span>
-              <span class="card-client-tag">Full-Stack Dev</span>
+            <div class="card-info">
+              <h3 class="card-title">Node.js Engine</h3>
+              <span class="card-tag">APIs & Backend</span>
+              <p class="card-desc">Microsserviços de alta vazão e baixa latência.</p>
             </div>
           </div>
 
-          <!-- Floating 3D Tech Logos -->
-          <div class="floating-tech-logo tech-node" id="techNode" title="Node.js 3D">
-            <img src="assets/layers/tech-node.png" alt="Node.js 3D Logo" width="82" height="94" />
+          <!-- Card 3: Motion Core (CENTER / HERO - Signature Lime #d4e157) -->
+          <div class="tech-deck-card card-motion-core card-featured" id="deckCard3" data-index="2">
+            <div class="card-rim-highlight"></div>
+            <div class="card-featured-badge">
+              <span class="badge-dot-live"></span>
+              <span>PROD READY</span>
+            </div>
+            <div class="card-emblem-wrap">
+              <div class="card-emblem-halo"></div>
+              <div class="card-emblem-img">
+                <img src="assets/layers/code-cube.png" alt="Motion Core 3D" width="70" height="78" />
+              </div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">Motion Core</h3>
+              <span class="card-tag text-lime">Software Sob Medida</span>
+              <p class="card-desc">Arquitetura proprietária e 99.9% de SLA em produção.</p>
+            </div>
           </div>
 
-          <div class="floating-tech-logo tech-react" id="techReact" title="React 3D">
-            <img src="assets/layers/tech-react.png" alt="React 3D Logo" width="90" height="86" />
+          <!-- Card 4: IA & Workflows (Amber Glow) -->
+          <div class="tech-deck-card card-ai" id="deckCard4" data-index="3">
+            <div class="card-rim-highlight"></div>
+            <div class="card-emblem-wrap">
+              <div class="card-emblem-halo"></div>
+              <div class="card-emblem-img">
+                <img src="assets/layers/tech-ai.png" alt="IA & Automação 3D" width="66" height="65" />
+              </div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">IA & Agentes</h3>
+              <span class="card-tag">Automação Inteligente</span>
+              <p class="card-desc">Integrações LLM e workflows autônomos.</p>
+            </div>
           </div>
 
-          <div class="floating-tech-logo tech-ts" id="techTs" title="TypeScript 3D">
-            <img src="assets/layers/tech-ts.png" alt="TypeScript 3D Logo" width="80" height="89" />
+          <!-- Card 5: TypeScript & Cloud (Electric Blue-Lime Glow) -->
+          <div class="tech-deck-card card-ts" id="deckCard5" data-index="4">
+            <div class="card-rim-highlight"></div>
+            <div class="card-emblem-wrap">
+              <div class="card-emblem-halo"></div>
+              <div class="card-emblem-img">
+                <img src="assets/layers/tech-ts.png" alt="TypeScript & Cloud 3D" width="62" height="70" />
+              </div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">Cloud & TS</h3>
+              <span class="card-tag">Infraestrutura</span>
+              <p class="card-desc">Deploy contínuo e infraestrutura elástica em nuvem.</p>
+            </div>
           </div>
 
-          <!-- Metric Badges (from reference right side) -->
-          <div class="stack-metric-badge metric-top" id="metricTop">
-            <div class="metric-value">10x</div>
-            <div class="metric-desc">Velocidade e escala em produção</div>
+          <!-- Floating Metric Pills alongside deck -->
+          <div class="deck-metric-pill metric-pill-top">
+            <span class="metric-num">10x</span>
+            <span class="metric-lbl">Velocidade e escala</span>
           </div>
 
-          <div class="stack-metric-badge metric-bottom" id="metricBottom">
-            <div class="metric-value">99.9%</div>
-            <div class="metric-desc">Estabilidade e SLA garantidos</div>
+          <div class="deck-metric-pill metric-pill-bottom">
+            <span class="metric-num">99.9%</span>
+            <span class="metric-lbl">SLA em produção</span>
           </div>
         </div>
       </div>
@@ -2079,31 +1948,35 @@
       header.classList.toggle('scrolled', window.scrollY > 40);
     });
 
-    // GSAP 3D Interactive Card Stack & Floating Tech Elements
+    // GSAP 3D Interactive Tech Deck (inspired by Pinterest reference)
     if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const visualContainer = document.getElementById('hero3dVisual');
-      const stack = document.getElementById('saasStack');
-      const cardFront = document.getElementById('cardFront');
-      const cardMiddle = document.getElementById('cardMiddle');
-      const cardBack = document.getElementById('cardBack');
-      const techNode = document.getElementById('techNode');
-      const techReact = document.getElementById('techReact');
-      const techTs = document.getElementById('techTs');
-      const metricTop = document.getElementById('metricTop');
-      const metricBottom = document.getElementById('metricBottom');
+      const deck = document.getElementById('techDeck');
+      const cards = [
+        { el: document.getElementById('deckCard1'), baseRot: -16, baseX: -250, baseY: 28, zIndex: 1 },
+        { el: document.getElementById('deckCard2'), baseRot: -8, baseX: -130, baseY: 10, zIndex: 2 },
+        { el: document.getElementById('deckCard3'), baseRot: 0, baseX: 0, baseY: -14, zIndex: 3 },
+        { el: document.getElementById('deckCard4'), baseRot: 8, baseX: 130, baseY: 10, zIndex: 2 },
+        { el: document.getElementById('deckCard5'), baseRot: 16, baseX: 250, baseY: 28, zIndex: 1 },
+      ];
+      const metricTop = document.querySelector('.metric-pill-top');
+      const metricBottom = document.querySelector('.metric-pill-bottom');
 
-      // Continuous subtle ambient float for cards
-      gsap.to(cardFront, { y: "-=8", duration: 3.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
-      gsap.to(cardMiddle, { y: "+=6", duration: 4.0, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.4 });
-      gsap.to(cardBack, { y: "-=5", duration: 4.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.8 });
+      // Subtle ambient floating drift for cards
+      cards.forEach((card, i) => {
+        if (!card.el) return;
+        gsap.to(card.el, {
+          y: "-=6",
+          duration: 3.2 + i * 0.4,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: i * 0.2
+        });
+      });
 
-      // Floating ambient motion for tech badges
-      if (techNode) gsap.to(techNode, { y: "-=12", rotation: 3, duration: 3.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
-      if (techReact) gsap.to(techReact, { y: "+=10", rotation: -5, duration: 4.2, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.3 });
-      if (techTs) gsap.to(techTs, { y: "-=9", rotation: 4, duration: 3.0, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.6 });
-
-      // Interactive mouse parallax
-      if (visualContainer && stack) {
+      // Interactive mouse parallax & fan breathing
+      if (visualContainer && deck) {
         let rect;
         function updateRect() {
           rect = visualContainer.getBoundingClientRect();
@@ -2118,73 +1991,73 @@
           const relY = (e.clientY - rect.top) / rect.height - 0.5;
 
           // Main stage rotation in 3D
-          gsap.to(stack, {
-            rotationY: relX * 22,
+          gsap.to(deck, {
+            rotationY: relX * 24,
             rotationX: -relY * 20,
             duration: 0.5,
             ease: "power2.out"
           });
 
-          // Cards dynamic fan-out
-          if (cardFront) {
-            gsap.to(cardFront, {
-              x: -35 + relX * -24,
-              y: -20 + relY * -18,
-              rotationZ: -20 + relX * 6,
+          // Dynamic card fan-out breathing
+          cards.forEach((card) => {
+            if (!card.el || card.el.dataset.hovered === 'true') return;
+            const spreadFactor = 1 + Math.abs(relX) * 0.25;
+            gsap.to(card.el, {
+              x: `calc(-50% + ${card.baseX * spreadFactor + relX * 16}px)`,
+              y: `calc(-50% + ${card.baseY + relY * 14}px)`,
+              rotationZ: card.baseRot + relX * 6,
               duration: 0.6,
               ease: "power2.out"
             });
-          }
+          });
 
-          if (cardMiddle) {
-            gsap.to(cardMiddle, {
-              x: 10 + relX * 12,
-              y: 8 + relY * 10,
-              rotationZ: -16 + relX * 4,
-              duration: 0.7,
-              ease: "power2.out"
-            });
-          }
-
-          if (cardBack) {
-            gsap.to(cardBack, {
-              x: 55 + relX * 28,
-              y: 35 + relY * 22,
-              rotationZ: -12 + relX * 2,
-              duration: 0.8,
-              ease: "power2.out"
-            });
-          }
-
-          // Tech logos depth parallax
-          if (techNode) gsap.to(techNode, { x: relX * -38, y: relY * -30, duration: 0.45, ease: "power2.out" });
-          if (techReact) gsap.to(techReact, { x: relX * 36, y: relY * 28, duration: 0.55, ease: "power2.out" });
-          if (techTs) gsap.to(techTs, { x: relX * -28, y: relY * 24, duration: 0.5, ease: "power2.out" });
-
-          // Metric badges parallax
-          if (metricTop) gsap.to(metricTop, { x: relX * 18, y: relY * -12, duration: 0.6, ease: "power2.out" });
-          if (metricBottom) gsap.to(metricBottom, { x: relX * 22, y: relY * 14, duration: 0.65, ease: "power2.out" });
+          // Parallax for metric pills
+          if (metricTop) gsap.to(metricTop, { x: relX * 22, y: relY * -16, duration: 0.6, ease: "power2.out" });
+          if (metricBottom) gsap.to(metricBottom, { x: relX * 26, y: relY * 14, duration: 0.65, ease: "power2.out" });
         });
 
         visualContainer.addEventListener('mouseleave', () => {
-          gsap.to(stack, { rotationY: 0, rotationX: 0, duration: 1.0, ease: "power2.out" });
-          if (cardFront) gsap.to(cardFront, { x: -35, y: -20, rotationZ: -20, duration: 1.0, ease: "power2.out" });
-          if (cardMiddle) gsap.to(cardMiddle, { x: 10, y: 8, rotationZ: -16, duration: 1.0, ease: "power2.out" });
-          if (cardBack) gsap.to(cardBack, { x: 55, y: 35, rotationZ: -12, duration: 1.0, ease: "power2.out" });
-          const items = [techNode, techReact, techTs, metricTop, metricBottom].filter(Boolean);
-          if (items.length) gsap.to(items, { x: 0, y: 0, duration: 1.0, ease: "power2.out" });
+          gsap.to(deck, { rotationY: 0, rotationX: 0, duration: 0.9, ease: "power2.out" });
+          cards.forEach((card) => {
+            if (!card.el) return;
+            card.el.dataset.hovered = 'false';
+            gsap.to(card.el, {
+              x: `calc(-50% + ${card.baseX}px)`,
+              y: `calc(-50% + ${card.baseY}px)`,
+              rotationZ: card.baseRot,
+              scale: 1,
+              zIndex: card.zIndex,
+              duration: 0.9,
+              ease: "power2.out"
+            });
+          });
+          if (metricTop) gsap.to(metricTop, { x: 0, y: 0, duration: 0.9, ease: "power2.out" });
+          if (metricBottom) gsap.to(metricBottom, { x: 0, y: 0, duration: 0.9, ease: "power2.out" });
         });
       }
 
-      // Card hover focus
-      [cardFront, cardMiddle, cardBack].forEach(card => {
-        if (!card) return;
-        card.addEventListener('mouseenter', () => {
-          gsap.to(card, { scale: 1.04, zIndex: 10, duration: 0.3, ease: "power2.out" });
+      // Card hover focus & lift
+      cards.forEach((card) => {
+        if (!card.el) return;
+        card.el.addEventListener('mouseenter', () => {
+          card.el.dataset.hovered = 'true';
+          gsap.to(card.el, {
+            y: `calc(-50% + ${card.baseY - 32}px)`,
+            scale: 1.08,
+            zIndex: 20,
+            duration: 0.35,
+            ease: "power2.out"
+          });
         });
-        card.addEventListener('mouseleave', () => {
-          const originalZ = card === cardFront ? 3 : card === cardMiddle ? 2 : 1;
-          gsap.to(card, { scale: 1.0, zIndex: originalZ, duration: 0.3, ease: "power2.out" });
+        card.el.addEventListener('mouseleave', () => {
+          card.el.dataset.hovered = 'false';
+          gsap.to(card.el, {
+            y: `calc(-50% + ${card.baseY}px)`,
+            scale: 1,
+            zIndex: card.zIndex,
+            duration: 0.35,
+            ease: "power2.out"
+          });
         });
       });
     }
