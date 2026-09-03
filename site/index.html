@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
     :root {
       --black: #06070a;
@@ -34,6 +35,7 @@
     html {
       scroll-behavior: smooth;
       scroll-padding-top: 88px;
+      overflow-x: hidden;
     }
 
     body {
@@ -541,6 +543,10 @@
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
+    .tech-deck-card * {
+      pointer-events: none;
+    }
+
     /* Subtle Blueprint / Grid Texture (as seen in shiny icon reference tutorial) */
     .card-grid-texture {
       position: absolute;
@@ -611,6 +617,7 @@
       justify-content: center;
       margin-top: 10px;
       z-index: 2;
+      pointer-events: none;
     }
 
     .card-ambient-aura {
@@ -632,8 +639,9 @@
       height: 82px;
       object-fit: contain;
       filter: drop-shadow(0 0 18px var(--glow)) drop-shadow(0 8px 22px rgba(0,0,0,0.65));
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: block;
+      pointer-events: none;
+      will-change: transform;
     }
 
     /* Typography & Metadata (exact Pinterest card layout) */
@@ -641,6 +649,7 @@
       position: relative;
       z-index: 2;
       padding: 0 2px 2px;
+      pointer-events: none;
     }
 
     .card-title-row {
@@ -729,9 +738,6 @@
     /* Hover elevation */
     .tech-deck-card:hover {
       box-shadow: 0 40px 90px rgba(0, 0, 0, 0.95), 0 0 50px var(--glow);
-    }
-    .tech-deck-card:hover .card-shiny-icon {
-      transform: scale(1.14);
     }
 
     /* Floating Metric Pills alongside deck */
@@ -1972,146 +1978,293 @@
       header.classList.toggle('scrolled', window.scrollY > 40);
     });
 
-    // GSAP 3D Interactive Tech Deck (inspired by Pinterest reference)
-    if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // GSAP 3D Interactive Tech Deck & ScrollTrigger Choreography
+    if (typeof gsap !== 'undefined') {
+      if (typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+      }
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const heroSection = document.querySelector('.hero');
       const visualContainer = document.getElementById('hero3dVisual');
       const deck = document.getElementById('techDeck');
-      const cards = [
-        { el: document.getElementById('deckCard1'), baseRot: -14, baseX: -290, baseY: 26, baseZ: -35, zIndex: 1 },
-        { el: document.getElementById('deckCard2'), baseRot: -7, baseX: -145, baseY: 9, baseZ: -12, zIndex: 2 },
-        { el: document.getElementById('deckCard3'), baseRot: 0, baseX: 0, baseY: -14, baseZ: 22, zIndex: 3 },
-        { el: document.getElementById('deckCard4'), baseRot: 7, baseX: 145, baseY: 9, baseZ: -12, zIndex: 2 },
-        { el: document.getElementById('deckCard5'), baseRot: 14, baseX: 295, baseY: 26, baseZ: -35, zIndex: 1 },
-      ];
       const metricTop = document.querySelector('.metric-pill-top');
       const metricBottom = document.querySelector('.metric-pill-bottom');
 
-      // Initialize cards with precise 3D transforms
-      cards.forEach((card) => {
-        if (!card.el) return;
-        gsap.set(card.el, {
-          xPercent: -50,
-          yPercent: -50,
-          x: card.baseX,
-          y: card.baseY,
-          z: card.baseZ,
-          rotationZ: card.baseRot,
-          zIndex: card.zIndex
-        });
-      });
+      const cards = [
+        { id: 'deckCard1', el: document.getElementById('deckCard1'), baseRot: -14, baseX: -290, baseY: 26, baseZ: -35, zIndex: 1 },
+        { id: 'deckCard2', el: document.getElementById('deckCard2'), baseRot: -7, baseX: -145, baseY: 9, baseZ: -12, zIndex: 2 },
+        { id: 'deckCard3', el: document.getElementById('deckCard3'), baseRot: 0, baseX: 0, baseY: -14, baseZ: 22, zIndex: 3 },
+        { id: 'deckCard4', el: document.getElementById('deckCard4'), baseRot: 7, baseX: 145, baseY: 9, baseZ: -12, zIndex: 2 },
+        { id: 'deckCard5', el: document.getElementById('deckCard5'), baseRot: 14, baseX: 295, baseY: 26, baseZ: -35, zIndex: 1 },
+      ];
 
-      // Ambient floating drift for the 3D shiny icons directly
-      cards.forEach((card, i) => {
-        if (!card.el) return;
-        const icon = card.el.querySelector('.card-shiny-icon');
-        if (icon) {
-          gsap.to(icon, {
-            y: -8,
-            duration: 2.6 + i * 0.35,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            delay: i * 0.15
-          });
-        }
-      });
-
-      // Interactive mouse parallax & fan breathing
-      if (visualContainer && deck) {
-        let rect;
-        function updateRect() {
-          rect = visualContainer.getBoundingClientRect();
-        }
-        window.addEventListener('resize', updateRect);
-        window.addEventListener('scroll', updateRect, { passive: true });
-        updateRect();
-
-        visualContainer.addEventListener('mousemove', (e) => {
-          if (!rect) return;
-          const relX = (e.clientX - rect.left) / rect.width - 0.5;
-          const relY = (e.clientY - rect.top) / rect.height - 0.5;
-
-          // Main stage rotation in 3D
-          gsap.to(deck, {
-            rotationY: relX * 22,
-            rotationX: -relY * 18,
-            duration: 0.5,
-            ease: "power2.out"
-          });
-
-          // Dynamic card fan-out breathing
-          cards.forEach((card) => {
-            if (!card.el || card.el.dataset.hovered === 'true') return;
-            const spreadFactor = 1 + Math.abs(relX) * 0.22;
-            gsap.to(card.el, {
-              xPercent: -50,
-              yPercent: -50,
-              x: card.baseX * spreadFactor + relX * 16,
-              y: card.baseY + relY * 12,
-              rotationZ: card.baseRot + relX * 6,
-              duration: 0.6,
-              ease: "power2.out",
-              overwrite: "auto"
-            });
-          });
-
-          // Parallax for metric pills
-          if (metricTop) gsap.to(metricTop, { x: relX * 22, y: relY * -16, duration: 0.6, ease: "power2.out" });
-          if (metricBottom) gsap.to(metricBottom, { x: relX * 26, y: relY * 14, duration: 0.65, ease: "power2.out" });
-        });
-
-        visualContainer.addEventListener('mouseleave', () => {
-          gsap.to(deck, { rotationY: 0, rotationX: 0, duration: 0.9, ease: "power2.out" });
-          cards.forEach((card) => {
-            if (!card.el) return;
-            card.el.dataset.hovered = 'false';
-            gsap.to(card.el, {
-              xPercent: -50,
-              yPercent: -50,
-              x: card.baseX,
-              y: card.baseY,
-              z: card.baseZ,
-              rotationZ: card.baseRot,
-              scale: 1,
-              zIndex: card.zIndex,
-              duration: 0.9,
-              ease: "power2.out",
-              overwrite: "auto"
-            });
-          });
-          if (metricTop) gsap.to(metricTop, { x: 0, y: 0, duration: 0.9, ease: "power2.out" });
-          if (metricBottom) gsap.to(metricBottom, { x: 0, y: 0, duration: 0.9, ease: "power2.out" });
-        });
-      }
-
-      // Card hover focus & lift
-      cards.forEach((card) => {
-        if (!card.el) return;
-        card.el.addEventListener('mouseenter', () => {
-          card.el.dataset.hovered = 'true';
-          gsap.to(card.el, {
-            y: card.baseY - 32,
-            z: 90,
-            scale: 1.08,
-            zIndex: 25,
-            duration: 0.35,
-            ease: "power2.out",
-            overwrite: "auto"
-          });
-        });
-        card.el.addEventListener('mouseleave', () => {
-          card.el.dataset.hovered = 'false';
-          gsap.to(card.el, {
+      if (prefersReducedMotion) {
+        // Static clean setup for users with prefers-reduced-motion
+        cards.forEach((card) => {
+          if (!card.el) return;
+          gsap.set(card.el, {
+            xPercent: -50,
+            yPercent: -50,
+            x: card.baseX,
             y: card.baseY,
             z: card.baseZ,
-            scale: 1,
-            zIndex: card.zIndex,
-            duration: 0.35,
-            ease: "power2.out",
-            overwrite: "auto"
+            rotationZ: card.baseRot,
+            zIndex: card.zIndex
           });
         });
-      });
+      } else {
+        // 1. Fluid Page Load Entrance (Cards fan out dynamically)
+        cards.forEach((card) => {
+          if (!card.el) return;
+          gsap.set(card.el, {
+            xPercent: -50,
+            yPercent: -50,
+            x: card.baseX * 0.22,
+            y: card.baseY + 45,
+            z: card.baseZ - 50,
+            rotationZ: card.baseRot * 0.2,
+            opacity: 0,
+            scale: 0.88,
+            zIndex: card.zIndex
+          });
+        });
+
+        // Entrance timeline
+        const introTl = gsap.timeline({ delay: 0.15 });
+        introTl.to(cards.map(c => c.el).filter(Boolean), {
+          opacity: 1,
+          scale: 1,
+          x: (i) => cards[i].baseX,
+          y: (i) => cards[i].baseY,
+          z: (i) => cards[i].baseZ,
+          rotationZ: (i) => cards[i].baseRot,
+          duration: 1.15,
+          stagger: 0.08,
+          ease: "back.out(1.35)"
+        });
+
+        if (metricTop) {
+          introTl.from(metricTop, { opacity: 0, y: -20, x: 20, duration: 0.6, ease: "power2.out" }, "-=0.6");
+        }
+        if (metricBottom) {
+          introTl.from(metricBottom, { opacity: 0, y: 20, x: 20, duration: 0.6, ease: "power2.out" }, "-=0.5");
+        }
+
+        // 2. Ambient Continuous Floating Life on Icons
+        cards.forEach((card, i) => {
+          if (!card.el) return;
+          const icon = card.el.querySelector('.card-shiny-icon');
+          if (icon) {
+            gsap.to(icon, {
+              y: -7,
+              duration: 2.5 + i * 0.35,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              delay: 0.8 + i * 0.15
+            });
+          }
+        });
+
+        // 3. Card Item Interaction (Spotlight Focus without Jitter)
+        let activeCard = null;
+        let restoreTimer = null;
+
+        cards.forEach((card) => {
+          if (!card.el) return;
+          const icon = card.el.querySelector('.card-shiny-icon');
+
+          card.el.addEventListener('pointerenter', () => {
+            if (restoreTimer) {
+              clearTimeout(restoreTimer);
+              restoreTimer = null;
+            }
+            activeCard = card;
+
+            // Elevate active card into spotlight:
+            // Straightens up to face user (rotationZ: 0), comes forward (z: 90), lifts upward (y: baseY - 40)
+            gsap.to(card.el, {
+              x: card.baseX,
+              y: card.baseY - 40,
+              z: 90,
+              rotationZ: 0,
+              scale: 1.08,
+              opacity: 1,
+              filter: "brightness(1.08)",
+              zIndex: 35,
+              duration: 0.38,
+              ease: "power2.out",
+              overwrite: "auto"
+            });
+
+            if (icon) {
+              gsap.to(icon, {
+                scale: 1.18,
+                duration: 0.38,
+                ease: "back.out(2)",
+                overwrite: "auto"
+              });
+            }
+
+            // Non-hovered siblings gently dim and step back to focus attention on active card
+            cards.forEach((other) => {
+              if (other === card || !other.el) return;
+              const otherIcon = other.el.querySelector('.card-shiny-icon');
+              if (otherIcon) {
+                gsap.to(otherIcon, { scale: 1, duration: 0.38, ease: "power2.out", overwrite: "auto" });
+              }
+              gsap.to(other.el, {
+                x: other.baseX,
+                y: other.baseY,
+                z: other.baseZ,
+                rotationZ: other.baseRot,
+                opacity: 0.38,
+                scale: 0.94,
+                filter: "brightness(0.75) blur(0.6px)",
+                zIndex: other.zIndex,
+                duration: 0.38,
+                ease: "power2.out",
+                overwrite: "auto"
+              });
+            });
+          });
+
+          card.el.addEventListener('pointerleave', () => {
+            if (activeCard === card) {
+              activeCard = null;
+              restoreTimer = setTimeout(() => {
+                if (!activeCard) {
+                  cards.forEach((c) => {
+                    if (!c.el) return;
+                    const cIcon = c.el.querySelector('.card-shiny-icon');
+                    if (cIcon) {
+                      gsap.to(cIcon, { scale: 1, duration: 0.45, ease: "power2.out", overwrite: "auto" });
+                    }
+                    gsap.to(c.el, {
+                      x: c.baseX,
+                      y: c.baseY,
+                      z: c.baseZ,
+                      rotationZ: c.baseRot,
+                      scale: 1,
+                      opacity: 1,
+                      filter: "none",
+                      zIndex: c.zIndex,
+                      duration: 0.45,
+                      ease: "power2.out",
+                      overwrite: "auto"
+                    });
+                  });
+                }
+              }, 40);
+            }
+          });
+        });
+
+        // 4. Smooth Ambient Tilt with Mouse Movement Across the Hero
+        if (heroSection && deck) {
+          heroSection.addEventListener('pointermove', (e) => {
+            if (window.scrollY > 200) return;
+            const rect = heroSection.getBoundingClientRect();
+            const relX = (e.clientX - rect.left) / rect.width - 0.5;
+            const relY = (e.clientY - rect.top) / rect.height - 0.5;
+
+            gsap.to(deck, {
+              rotationY: relX * 16,
+              rotationX: -relY * 12,
+              duration: 0.8,
+              ease: "power2.out",
+              overwrite: "auto"
+            });
+
+            if (metricTop) {
+              gsap.to(metricTop, { x: relX * 24, y: relY * -16, duration: 0.8, ease: "power2.out", overwrite: "auto" });
+            }
+            if (metricBottom) {
+              gsap.to(metricBottom, { x: relX * 28, y: relY * 14, duration: 0.8, ease: "power2.out", overwrite: "auto" });
+            }
+          });
+
+          heroSection.addEventListener('pointerleave', () => {
+            if (window.scrollY > 200) return;
+            gsap.to(deck, { rotationY: 0, rotationX: 0, duration: 1, ease: "power2.out", overwrite: "auto" });
+            if (metricTop) gsap.to(metricTop, { x: 0, y: 0, duration: 1, ease: "power2.out", overwrite: "auto" });
+            if (metricBottom) gsap.to(metricBottom, { x: 0, y: 0, duration: 1, ease: "power2.out", overwrite: "auto" });
+          });
+        }
+
+        // 5. ScrollTrigger Choreography ("de acordo com que a gente desce a página")
+        if (typeof ScrollTrigger !== 'undefined' && heroSection && deck) {
+          const scrollTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top top",
+              end: "60% top",
+              scrub: 0.8,
+              invalidateOnRefresh: true
+            }
+          });
+
+          // As you scroll down from hero:
+          // Deck recedes into deep 3D perspective, tilts back, and fades out cleanly before pillars
+          scrollTl.to(deck, {
+            rotationX: 22,
+            z: -180,
+            y: -50,
+            opacity: 0,
+            ease: "power1.in"
+          }, 0);
+
+          // Card 1 & Card 5 fan out wider into the distance
+          if (cards[0].el && cards[4].el) {
+            scrollTl.to([cards[0].el, cards[4].el], {
+              x: (i) => i === 0 ? cards[0].baseX * 1.45 : cards[4].baseX * 1.45,
+              z: -160,
+              rotationZ: (i) => i === 0 ? -28 : 28,
+              opacity: 0,
+              ease: "power1.in"
+            }, 0);
+          }
+
+          // Card 2 & Card 4 expand into distance
+          if (cards[1].el && cards[3].el) {
+            scrollTl.to([cards[1].el, cards[3].el], {
+              x: (i) => i === 0 ? cards[1].baseX * 1.28 : cards[3].baseX * 1.28,
+              z: -120,
+              rotationZ: (i) => i === 0 ? -16 : 16,
+              opacity: 0,
+              ease: "power1.in"
+            }, 0);
+          }
+
+          // Center Card 3 (Motion Core) stays in depth and fades
+          if (cards[2].el) {
+            scrollTl.to(cards[2].el, {
+              z: -80,
+              opacity: 0,
+              ease: "power1.in"
+            }, 0);
+          }
+
+          // Background ambient glow fades out
+          const ambientGlow = document.querySelector('.deck-ambient-glow');
+          if (ambientGlow) {
+            scrollTl.to(ambientGlow, {
+              opacity: 0,
+              scale: 0.8,
+              ease: "power1.in"
+            }, 0);
+          }
+
+          // Metric pills drift and fade
+          if (metricTop) {
+            scrollTl.to(metricTop, { y: -80, opacity: 0, ease: "power1.in" }, 0);
+          }
+          if (metricBottom) {
+            scrollTl.to(metricBottom, { y: -50, opacity: 0, ease: "power1.in" }, 0);
+          }
+        }
+      }
     }
 
 
