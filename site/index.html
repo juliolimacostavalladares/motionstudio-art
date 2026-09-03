@@ -6,8 +6,8 @@
   <meta name="description" content="Motion Studio — Software house especializada em transformar desafios de negócio em soluções digitais sob medida." />
   <title>Motion Studio — Software House</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     :root {
       --black: #06070a;
@@ -110,31 +110,19 @@
       padding: 16px 30px;
     }
 
-    .btn-glow-blue {
-      background: linear-gradient(135deg, #0e5eff 0%, #00b4d8 100%);
-      color: #ffffff;
-      box-shadow: 0 8px 28px rgba(14, 94, 255, 0.42);
-    }
-
-    .btn-glow-blue:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 36px rgba(14, 94, 255, 0.65);
-      filter: brightness(1.08);
-      color: #ffffff;
-    }
-
     .btn-glass {
       background: rgba(255, 255, 255, 0.04);
       color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1.5px solid var(--gray-700);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
 
     .btn-glass:hover {
-      border-color: rgba(0, 229, 255, 0.45);
-      color: var(--white);
-      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--lime);
+      color: var(--lime);
+      background: rgba(212, 225, 87, 0.06);
+      box-shadow: 0 0 20px rgba(212, 225, 87, 0.18);
       transform: translateY(-2px);
     }
 
@@ -325,15 +313,17 @@
     }
 
     .btn-nav-primary {
-      background: linear-gradient(135deg, #0e5eff 0%, #00b4d8 100%);
-      color: #ffffff;
-      box-shadow: 0 4px 18px rgba(14, 94, 255, 0.38);
+      background: var(--lime);
+      color: var(--black-2);
+      box-shadow: 0 4px 18px rgba(212, 225, 87, 0.28);
+      font-weight: 700;
     }
 
     .btn-nav-primary:hover {
+      background: #e2ee6a;
       transform: translateY(-1px);
-      box-shadow: 0 6px 26px rgba(14, 94, 255, 0.55);
-      filter: brightness(1.08);
+      box-shadow: 0 6px 26px rgba(212, 225, 87, 0.45);
+      color: var(--black);
     }
 
     .menu-toggle {
@@ -365,7 +355,7 @@
       overflow: hidden;
     }
 
-    /* Radiant Electric Blue glow on left - inspired by reference screenshot */
+    /* Radiant Lime atmospheric glow on left */
     .hero-glow-left {
       position: absolute;
       top: 2%;
@@ -375,13 +365,13 @@
       max-width: 850px;
       max-height: 850px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(14, 94, 255, 0.42) 0%, rgba(2, 54, 180, 0.22) 38%, rgba(0, 20, 60, 0.05) 65%, transparent 78%);
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.22) 0%, rgba(181, 198, 62, 0.08) 38%, rgba(20, 25, 10, 0.02) 65%, transparent 75%);
       filter: blur(80px);
       opacity: 0.95;
       animation: pulseGlow 10s ease-in-out infinite alternate;
     }
 
-    /* Glowing Purple & Cyan Atmosphere on right behind 3D elements */
+    /* Ambient dark depth & subtle lime on right behind 3D element */
     .hero-glow-right {
       position: absolute;
       top: 5%;
@@ -391,7 +381,7 @@
       max-width: 800px;
       max-height: 800px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(147, 51, 234, 0.26) 0%, rgba(0, 229, 255, 0.15) 35%, transparent 70%);
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.16) 0%, rgba(181, 198, 62, 0.05) 35%, transparent 70%);
       filter: blur(85px);
       opacity: 0.88;
       animation: pulseGlow 12s ease-in-out 1.5s infinite alternate;
@@ -405,7 +395,7 @@
       width: 480px;
       height: 480px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(212, 225, 87, 0.07) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.12) 0%, transparent 68%);
       filter: blur(75px);
       pointer-events: none;
     }
@@ -490,147 +480,413 @@
       align-items: center;
     }
 
-    /* 3D Visual Section */
+    /* 3D Interactive SaaS Stack Section (inspired by reference with 3D cards & floating tech) */
     .hero-visual {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1200px;
+      perspective: 1600px;
       transform-style: preserve-3d;
+      min-height: 520px;
     }
 
-    .hero-3d-wrapper {
+    .saas-stack-container {
       position: relative;
       width: 100%;
-      max-width: 490px;
-      aspect-ratio: 1 / 1;
+      max-width: 500px;
+      height: 480px;
       display: flex;
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform;
     }
 
-    .hero-3d-glow-under {
+    .stack-glow-ambient {
       position: absolute;
-      bottom: 0;
-      width: 82%;
-      height: 42%;
-      background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.24) 0%, rgba(147, 51, 234, 0.2) 35%, transparent 70%);
-      filter: blur(45px);
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 225, 87, 0.28) 0%, rgba(181, 198, 62, 0.08) 45%, transparent 70%);
+      filter: blur(60px);
       pointer-events: none;
       z-index: 0;
-      transform: translateZ(-30px);
+      transform: translateZ(-60px);
     }
 
-    .hero-3d-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.85));
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
+    /* Common Card Styling */
+    .saas-card {
+      position: absolute;
+      width: 310px;
+      height: 400px;
       border-radius: 28px;
-      transform: translateZ(10px);
-      transition: opacity 400ms ease;
-    }
-
-    .hero-3d-img.hidden {
-      display: none;
-      opacity: 0;
-    }
-
-    /* Floating badges */
-    .floating-badge {
-      position: absolute;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      background: rgba(14, 16, 24, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-full);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--white);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      z-index: 2;
-      pointer-events: none;
-      animation: floatBadge 5s ease-in-out infinite;
-    }
-
-    .badge-icon {
+      padding: 26px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(212, 225, 87, 0.15);
-      color: var(--lime);
-      flex-shrink: 0;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      will-change: transform, box-shadow;
+      user-select: none;
     }
 
-    .badge-icon.blue {
-      background: rgba(14, 94, 255, 0.18);
-      color: #38bdf8;
+    /* Card 3 (Back) - Radiant Lime Card */
+    .card-back {
+      background: linear-gradient(145deg, #d4e157 0%, #a8b82e 100%);
+      color: #0e1017;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(212, 225, 87, 0.35);
+      z-index: 1;
+      transform: translate3d(80px, 60px, -45px) rotateZ(-10deg) rotateY(14deg) rotateX(15deg);
     }
 
-    .badge-1 {
-      top: 6%;
-      right: -2%;
-      animation-delay: 0s;
-      transform: translateZ(35px);
-    }
-
-    .badge-2 {
-      bottom: 12%;
-      left: -6%;
-      animation-delay: 2.5s;
-      transform: translateZ(40px);
-    }
-
-    @keyframes floatBadge {
-      0%, 100% { transform: translateY(0) translateZ(35px); }
-      50% { transform: translateY(-10px) translateZ(35px); }
-    }
-
-    .palette-toggle {
-      position: absolute;
-      top: -24px;
-      right: 10px;
+    .card-chip-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
-      border-radius: var(--radius-full);
+      background: rgba(0, 0, 0, 0.12);
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .card-pulse-dark {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0e1017;
+      box-shadow: 0 0 6px #0e1017;
+    }
+
+    .card-content-back {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .card-brand-tag {
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .card-big-metric {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .card-metric-label {
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+
+    .card-footer-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      padding-top: 14px;
+    }
+
+    /* Card 2 (Middle) - Titanium Obsidian Card */
+    .card-middle {
+      background: linear-gradient(155deg, #181b24 0%, #0c0e14 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      z-index: 2;
+      transform: translate3d(20px, 20px, 0px) rotateZ(-15deg) rotateY(16deg) rotateX(17deg);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 12px;
+    }
+
+    .card-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .card-file-name {
+      font-family: 'Space Mono', 'SF Mono', monospace;
+      font-size: 11px;
+      color: var(--gray-400);
+    }
+
+    .card-badge-lime {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(212, 225, 87, 0.15);
+      color: var(--lime);
+      border: 1px solid rgba(212, 225, 87, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .card-code-body {
+      font-family: 'Space Mono', 'SF Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--gray-300);
+      margin: 18px 0;
+    }
+
+    .card-code-body .c-kw { color: var(--lime); }
+    .card-code-body .c-fn { color: #82aaff; }
+    .card-code-body .c-prop { color: #c792ea; }
+    .card-code-body .c-str { color: #ecc48d; }
+    .card-code-body .c-num { color: #f78c6c; }
+    .card-code-body .indent { padding-left: 14px; }
+
+    .card-footer-middle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--gray-400);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 14px;
+    }
+
+    .pulse-dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #28c840;
+      box-shadow: 0 0 8px #28c840;
+      animation: pulse 2s infinite;
+    }
+
+    /* Card 1 (Front) - Frosted Glass Card */
+    .card-front {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 40px 90px rgba(0, 0, 0, 0.75), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+      z-index: 3;
+      transform: translate3d(-40px, -25px, 50px) rotateZ(-22deg) rotateY(20deg) rotateX(20deg);
+      overflow: hidden;
+    }
+
+    .card-glass-specular {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 45%, rgba(212,225,87,0.08) 75%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .card-front-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-front-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(212, 225, 87, 0.15);
+      border: 1px solid rgba(212, 225, 87, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--lime);
+    }
+
+    .card-front-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
       font-weight: 600;
-      color: var(--gray-300);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: all var(--transition);
-      z-index: 3;
-    }
-
-    .palette-toggle:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--white);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .palette-toggle svg {
-      width: 13px;
-      height: 13px;
       color: var(--lime);
+      background: rgba(212, 225, 87, 0.1);
+      border: 1px solid rgba(212, 225, 87, 0.2);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .pulse-lime-small {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 6px var(--lime);
+      animation: pulse 2s infinite;
+    }
+
+    .card-front-body {
+      position: relative;
+      z-index: 1;
+      margin: auto 0;
+    }
+
+    .card-front-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-front-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 48px;
+      padding-top: 8px;
+    }
+
+    .card-front-bars .bar {
+      flex: 1;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      transition: height 0.3s ease;
+    }
+
+    .card-front-bars .bar-1 { height: 45%; }
+    .card-front-bars .bar-2 { height: 75%; background: rgba(212, 225, 87, 0.35); }
+    .card-front-bars .bar-3 { height: 60%; }
+    .card-front-bars .bar-4 { height: 100%; background: var(--lime); box-shadow: 0 0 12px rgba(212, 225, 87, 0.5); }
+
+    .card-front-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+    }
+
+    .card-client-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .card-client-tag {
+      font-size: 11px;
+      color: var(--gray-400);
+      letter-spacing: 0.02em;
+    }
+
+    /* Floating 3D Tech Logos */
+    .floating-tech-logo {
+      position: absolute;
+      pointer-events: none;
+      z-index: 4;
+      will-change: transform;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(212, 225, 87, 0.25));
+    }
+
+    .tech-node {
+      top: -35px;
+      right: 60px;
+      width: 82px;
+      height: auto;
+      transform: translateZ(80px);
+    }
+
+    .tech-react {
+      bottom: -30px;
+      right: 40px;
+      width: 90px;
+      height: auto;
+      transform: translateZ(100px);
+    }
+
+    .tech-ts {
+      bottom: 15px;
+      left: -60px;
+      width: 80px;
+      height: auto;
+      transform: translateZ(90px);
+    }
+
+    .floating-tech-logo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Metric Badges (from reference right side) */
+    .stack-metric-badge {
+      position: absolute;
+      padding: 16px 20px;
+      background: rgba(14, 16, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      z-index: 4;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .metric-top {
+      top: 15px;
+      right: -105px;
+      width: 145px;
+      transform: translateZ(50px);
+    }
+
+    .metric-bottom {
+      bottom: 50px;
+      right: -100px;
+      width: 145px;
+      transform: translateZ(60px);
+    }
+
+    .metric-value {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .metric-desc {
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.4;
     }
 
     /* Pillars from reference screenshot */
@@ -656,20 +912,21 @@
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(212, 225, 87, 0.08);
+      border: 1px solid rgba(212, 225, 87, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #38bdf8;
+      color: var(--lime);
       flex-shrink: 0;
       transition: all var(--transition);
     }
 
     .pillar-item:hover .pillar-icon {
-      border-color: rgba(0, 229, 255, 0.3);
-      background: rgba(0, 229, 255, 0.08);
-      color: #00e5ff;
+      border-color: var(--lime);
+      background: rgba(212, 225, 87, 0.16);
+      color: var(--lime);
+      box-shadow: 0 0 20px rgba(212, 225, 87, 0.28);
       transform: translateY(-2px);
     }
 
@@ -1191,14 +1448,16 @@
     /* Responsive */
     @media (min-width: 1440px) {
       .container { max-width: 1320px; }
-      .hero-3d-wrapper { max-width: 480px; }
+      .saas-stack-container { max-width: 520px; }
       .section-title { font-size: 56px; }
     }
 
     @media (max-width: 1024px) {
       .hero-content { grid-template-columns: 1fr; gap: 40px; }
-      .hero-visual { order: -1; }
-      .hero-3d-wrapper { max-width: 420px; }
+      .hero-visual { order: -1; min-height: 440px; }
+      .saas-stack-container { max-width: 440px; height: 420px; }
+      .saas-card { width: 270px; height: 350px; padding: 20px; }
+      .metric-top, .metric-bottom { display: none; }
       .hero-pillars { grid-template-columns: repeat(3, 1fr); padding-top: 36px; margin-top: 36px; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .process-steps { grid-template-columns: repeat(2, 1fr); }
@@ -1212,9 +1471,15 @@
       .hero { padding: 120px 0 60px; }
       .hero-actions { flex-direction: column; }
       .hero-actions .btn { width: 100%; }
-      .hero-3d-wrapper { max-width: 320px; }
-      .badge-1 { top: -6px; right: 0; }
-      .badge-2 { bottom: -6px; left: 0; }
+      .hero-visual { min-height: 380px; }
+      .saas-stack-container { max-width: 320px; height: 360px; }
+      .saas-card { width: 220px; height: 300px; padding: 16px; border-radius: 20px; }
+      .card-big-metric { font-size: 40px; }
+      .card-front-title { font-size: 18px; }
+      .tech-node { width: 56px; top: -10px; right: 10px; }
+      .tech-react { width: 60px; bottom: 10px; right: -10px; }
+      .tech-ts { width: 52px; bottom: 15px; left: -20px; }
+      .metric-top, .metric-bottom { display: none; }
       .hero-pillars { grid-template-columns: 1fr; gap: 20px; padding-top: 32px; margin-top: 32px; }
       .services-grid,
       .diff-grid,
@@ -1230,11 +1495,12 @@
     @media (max-width: 375px) {
       .container { padding: 0 16px; }
       .hero { padding: 100px 0 48px; }
-      .hero-3d-wrapper { max-width: 270px; }
-      .floating-badge { padding: 8px 12px; font-size: 11px; }
-      .badge-1 { top: -12px; right: -8px; }
-      .badge-2 { bottom: -12px; left: -8px; }
-      .palette-toggle { top: -32px; right: 0; font-size: 10px; padding: 4px 10px; }
+      .hero-visual { min-height: 320px; }
+      .saas-stack-container { max-width: 280px; height: 320px; }
+      .saas-card { width: 190px; height: 260px; padding: 14px; border-radius: 16px; }
+      .card-big-metric { font-size: 32px; }
+      .card-code-body { font-size: 10px; margin: 10px 0; }
+      .card-code-body .indent { padding-left: 8px; }
       .btn { padding: 13px 20px; font-size: 14px; }
       .section { padding: 70px 0; }
       .hero-badge { font-size: 12px; padding: 6px 14px; }
@@ -1382,7 +1648,7 @@
           Movimentamos negócios com tecnologia sob medida. Software house especializada em entregar soluções digitais com excelência técnica, transparência e alto impacto comercial.
         </p>
         <div class="hero-actions reveal delay-3">
-          <a href="#contato" class="btn btn-pill btn-glow-blue">
+          <a href="#contato" class="btn btn-pill btn-primary">
             <span>Começar um projeto</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>
@@ -1390,29 +1656,101 @@
         </div>
       </div>
 
-      <div class="hero-visual reveal delay-2">
-        <button id="paletteToggle" class="palette-toggle" title="Alternar estilo 3D">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg>
-          <span id="paletteLabel">Paleta: Motion Studio</span>
-        </button>
+      <div class="hero-visual reveal delay-2" id="hero3dVisual">
+        <!-- Interactive 3D SaaS Stack Container -->
+        <div class="saas-stack-container" id="saasStack">
+          <!-- Ambient Radial Lime Glow behind cards -->
+          <div class="stack-glow-ambient"></div>
 
-        <div class="hero-3d-wrapper" id="hero3dStage">
-          <div class="hero-3d-glow-under"></div>
-          <img src="assets/hero-3d.jpg" alt="Composição 3D Motion Studio - Tecnologia e Software sob medida" class="hero-3d-img" id="imgMotion" width="1024" height="1024" />
-          <img src="assets/hero-3d-purple.jpg" alt="Composição 3D Cyber Neon - Tecnologia e Software sob medida" class="hero-3d-img hidden" id="imgPurple" width="1024" height="1024" />
-
-          <div class="floating-badge badge-1">
-            <span class="badge-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-            </span>
-            <span>+120% eficiência</span>
+          <!-- Card 3: Back - Radiant Lime Card -->
+          <div class="saas-card card-back" id="cardBack">
+            <div class="card-chip-badge">
+              <span class="card-pulse-dark"></span>
+              <span>Escalabilidade</span>
+            </div>
+            <div class="card-content-back">
+              <div class="card-brand-tag">Motion Core</div>
+              <div class="card-big-metric">99.9%</div>
+              <div class="card-metric-label">Uptime Garantido em Produção</div>
+            </div>
+            <div class="card-footer-strip">
+              <span>Arquitetura de Alta Performance</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+            </div>
           </div>
 
-          <div class="floating-badge badge-2">
-            <span class="badge-icon blue">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </span>
-            <span>SLA 99.9%</span>
+          <!-- Card 2: Middle - Titanium Obsidian Terminal Card -->
+          <div class="saas-card card-middle" id="cardMiddle">
+            <div class="card-header-bar">
+              <div class="card-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <span class="card-file-name">server.config.ts</span>
+              <span class="card-badge-lime">PROD</span>
+            </div>
+            <div class="card-code-body">
+              <div class="code-line"><span class="c-kw">const</span> engine = <span class="c-fn">build</span>({</div>
+              <div class="code-line indent"><span class="c-prop">stack:</span> [<span class="c-str">"Node"</span>, <span class="c-str">"React"</span>, <span class="c-str">"TS"</span>],</div>
+              <div class="code-line indent"><span class="c-prop">throughput:</span> <span class="c-num">"50k req/s"</span></div>
+              <div class="code-line">});</div>
+            </div>
+            <div class="card-footer-middle">
+              <span class="pulse-dot-green"></span>
+              <span>Build passing • v2.4</span>
+            </div>
+          </div>
+
+          <!-- Card 1: Front - Translucent Frosted Glass Card -->
+          <div class="saas-card card-front" id="cardFront">
+            <div class="card-glass-specular"></div>
+            <div class="card-front-top">
+              <div class="card-front-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+              </div>
+              <div class="card-front-status">
+                <span class="pulse-lime-small"></span>
+                <span>SaaS Platform</span>
+              </div>
+            </div>
+            <div class="card-front-body">
+              <div class="card-front-title">Dashboard Analytics</div>
+              <div class="card-front-bars">
+                <div class="bar bar-1"></div>
+                <div class="bar bar-2"></div>
+                <div class="bar bar-3"></div>
+                <div class="bar bar-4"></div>
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="card-client-name">Motion Studio</span>
+              <span class="card-client-tag">Full-Stack Dev</span>
+            </div>
+          </div>
+
+          <!-- Floating 3D Tech Logos -->
+          <div class="floating-tech-logo tech-node" id="techNode" title="Node.js 3D">
+            <img src="assets/layers/tech-node.png" alt="Node.js 3D Logo" width="82" height="94" />
+          </div>
+
+          <div class="floating-tech-logo tech-react" id="techReact" title="React 3D">
+            <img src="assets/layers/tech-react.png" alt="React 3D Logo" width="90" height="86" />
+          </div>
+
+          <div class="floating-tech-logo tech-ts" id="techTs" title="TypeScript 3D">
+            <img src="assets/layers/tech-ts.png" alt="TypeScript 3D Logo" width="80" height="89" />
+          </div>
+
+          <!-- Metric Badges (from reference right side) -->
+          <div class="stack-metric-badge metric-top" id="metricTop">
+            <div class="metric-value">10x</div>
+            <div class="metric-desc">Velocidade e escala em produção</div>
+          </div>
+
+          <div class="stack-metric-badge metric-bottom" id="metricBottom">
+            <div class="metric-value">99.9%</div>
+            <div class="metric-desc">Estabilidade e SLA garantidos</div>
           </div>
         </div>
       </div>
@@ -1741,73 +2079,116 @@
       header.classList.toggle('scrolled', window.scrollY > 40);
     });
 
-    // 3D Hero tilt effect with smooth spring physics
-    const heroVisual = document.querySelector('.hero-visual');
-    const stage3d = document.getElementById('hero3dStage');
+    // GSAP 3D Interactive Card Stack & Floating Tech Elements
+    if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const visualContainer = document.getElementById('hero3dVisual');
+      const stack = document.getElementById('saasStack');
+      const cardFront = document.getElementById('cardFront');
+      const cardMiddle = document.getElementById('cardMiddle');
+      const cardBack = document.getElementById('cardBack');
+      const techNode = document.getElementById('techNode');
+      const techReact = document.getElementById('techReact');
+      const techTs = document.getElementById('techTs');
+      const metricTop = document.getElementById('metricTop');
+      const metricBottom = document.getElementById('metricBottom');
 
-    if (heroVisual && stage3d && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let bounds;
-      let mouseX = 0;
-      let mouseY = 0;
-      let currentX = 0;
-      let currentY = 0;
+      // Continuous subtle ambient float for cards
+      gsap.to(cardFront, { y: "-=8", duration: 3.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+      gsap.to(cardMiddle, { y: "+=6", duration: 4.0, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.4 });
+      gsap.to(cardBack, { y: "-=5", duration: 4.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.8 });
 
-      function updateBounds() {
-        bounds = heroVisual.getBoundingClientRect();
-      }
+      // Floating ambient motion for tech badges
+      if (techNode) gsap.to(techNode, { y: "-=12", rotation: 3, duration: 3.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+      if (techReact) gsap.to(techReact, { y: "+=10", rotation: -5, duration: 4.2, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.3 });
+      if (techTs) gsap.to(techTs, { y: "-=9", rotation: 4, duration: 3.0, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.6 });
 
-      window.addEventListener('resize', updateBounds);
-      window.addEventListener('scroll', updateBounds, { passive: true });
-      updateBounds();
-
-      heroVisual.addEventListener('mousemove', (e) => {
-        if (!bounds) return;
-        const x = (e.clientX - bounds.left) / bounds.width - 0.5;
-        const y = (e.clientY - bounds.top) / bounds.height - 0.5;
-        mouseX = x;
-        mouseY = y;
-      });
-
-      heroVisual.addEventListener('mouseleave', () => {
-        mouseX = 0;
-        mouseY = 0;
-      });
-
-      function renderTilt() {
-        currentX += (mouseX - currentX) * 0.08;
-        currentY += (mouseY - currentY) * 0.08;
-
-        const rotY = currentX * 24;
-        const rotX = -currentY * 20;
-
-        stage3d.style.transform = `rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg)`;
-        requestAnimationFrame(renderTilt);
-      }
-
-      requestAnimationFrame(renderTilt);
-    }
-
-    // Palette toggle between Motion Studio (Lime & Cyan) and Cyber Neon (Purple & Blue)
-    const paletteToggle = document.getElementById('paletteToggle');
-    const imgMotion = document.getElementById('imgMotion');
-    const imgPurple = document.getElementById('imgPurple');
-    const paletteLabel = document.getElementById('paletteLabel');
-
-    if (paletteToggle && imgMotion && imgPurple && paletteLabel) {
-      let isDefault = true;
-      paletteToggle.addEventListener('click', () => {
-        isDefault = !isDefault;
-        if (isDefault) {
-          imgMotion.classList.remove('hidden');
-          imgPurple.classList.add('hidden');
-          paletteLabel.textContent = 'Paleta: Motion Studio';
-        } else {
-          imgMotion.classList.add('hidden');
-          imgPurple.classList.remove('hidden');
-          paletteLabel.textContent = 'Paleta: Cyber Neon';
+      // Interactive mouse parallax
+      if (visualContainer && stack) {
+        let rect;
+        function updateRect() {
+          rect = visualContainer.getBoundingClientRect();
         }
+        window.addEventListener('resize', updateRect);
+        window.addEventListener('scroll', updateRect, { passive: true });
+        updateRect();
+
+        visualContainer.addEventListener('mousemove', (e) => {
+          if (!rect) return;
+          const relX = (e.clientX - rect.left) / rect.width - 0.5;
+          const relY = (e.clientY - rect.top) / rect.height - 0.5;
+
+          // Main stage rotation in 3D
+          gsap.to(stack, {
+            rotationY: relX * 22,
+            rotationX: -relY * 20,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+
+          // Cards dynamic fan-out
+          if (cardFront) {
+            gsap.to(cardFront, {
+              x: -35 + relX * -24,
+              y: -20 + relY * -18,
+              rotationZ: -20 + relX * 6,
+              duration: 0.6,
+              ease: "power2.out"
+            });
+          }
+
+          if (cardMiddle) {
+            gsap.to(cardMiddle, {
+              x: 10 + relX * 12,
+              y: 8 + relY * 10,
+              rotationZ: -16 + relX * 4,
+              duration: 0.7,
+              ease: "power2.out"
+            });
+          }
+
+          if (cardBack) {
+            gsap.to(cardBack, {
+              x: 55 + relX * 28,
+              y: 35 + relY * 22,
+              rotationZ: -12 + relX * 2,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          }
+
+          // Tech logos depth parallax
+          if (techNode) gsap.to(techNode, { x: relX * -38, y: relY * -30, duration: 0.45, ease: "power2.out" });
+          if (techReact) gsap.to(techReact, { x: relX * 36, y: relY * 28, duration: 0.55, ease: "power2.out" });
+          if (techTs) gsap.to(techTs, { x: relX * -28, y: relY * 24, duration: 0.5, ease: "power2.out" });
+
+          // Metric badges parallax
+          if (metricTop) gsap.to(metricTop, { x: relX * 18, y: relY * -12, duration: 0.6, ease: "power2.out" });
+          if (metricBottom) gsap.to(metricBottom, { x: relX * 22, y: relY * 14, duration: 0.65, ease: "power2.out" });
+        });
+
+        visualContainer.addEventListener('mouseleave', () => {
+          gsap.to(stack, { rotationY: 0, rotationX: 0, duration: 1.0, ease: "power2.out" });
+          if (cardFront) gsap.to(cardFront, { x: -35, y: -20, rotationZ: -20, duration: 1.0, ease: "power2.out" });
+          if (cardMiddle) gsap.to(cardMiddle, { x: 10, y: 8, rotationZ: -16, duration: 1.0, ease: "power2.out" });
+          if (cardBack) gsap.to(cardBack, { x: 55, y: 35, rotationZ: -12, duration: 1.0, ease: "power2.out" });
+          const items = [techNode, techReact, techTs, metricTop, metricBottom].filter(Boolean);
+          if (items.length) gsap.to(items, { x: 0, y: 0, duration: 1.0, ease: "power2.out" });
+        });
+      }
+
+      // Card hover focus
+      [cardFront, cardMiddle, cardBack].forEach(card => {
+        if (!card) return;
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, { scale: 1.04, zIndex: 10, duration: 0.3, ease: "power2.out" });
+        });
+        card.addEventListener('mouseleave', () => {
+          const originalZ = card === cardFront ? 3 : card === cardMiddle ? 2 : 1;
+          gsap.to(card, { scale: 1.0, zIndex: originalZ, duration: 0.3, ease: "power2.out" });
+        });
       });
     }
+
 
     // Mobile menu
     const menuToggle = document.getElementById('menuToggle');
