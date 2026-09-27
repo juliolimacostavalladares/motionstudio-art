@@ -41,3 +41,29 @@ Foram produzidas sequências mais densas para separar deslocamento, abertura e t
 Implementação em `../motion.js`, com GSAP 3.13.0 e ScrollTrigger locais em `../vendor/`. O movimento antigo via CSS e o loop manual foram substituídos. ScrollTrigger usa a rolagem nativa, sem travar a página. A galeria para fora da tela e quando a aba fica oculta. A pausa conclui entradas para preservar o acesso ao conteúdo e congela o movimento contínuo. `gsap.matchMedia` restaura o layout estático ao ativar movimento reduzido.
 
 Referência técnica: [documentação oficial do ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
+
+## Referência 852728510715519281 — movimento a serviço da decisão
+
+Vídeo de 30 s, 1280 × 960, 24 fps. [Visão geral: 24 frames](client-journey-overview.jpg), [transformação de tela: 7–12 s, 3 fps](client-journey-transform.jpg) e [curva: 12–20 s, 2 fps](client-journey-path.jpg).
+
+### Observações
+
+- 0–3 s: mosaico diagonal em movimento dá uma visão do universo do produto.
+- Aproximadamente 3–9 s: uma cena grande recebe uma mensagem curta; palavras-chave ganham realce.
+- Aproximadamente 9–12 s: a cena encolhe até caber em um celular, mantendo continuidade visual.
+- Aproximadamente 12–20 s: linhas são desenhadas progressivamente e marcadores contextualizam a comparação comercial.
+- 20–30 s: a chamada final conecta o que foi demonstrado ao próximo passo.
+
+### Adaptação para a Motion Studio
+
+A vitrine existente continua apresentando os tipos de produto. Uma seção de soluções conecta essa visão à situação do cliente: organizar a operação, validar uma ideia ou atender no celular. A escolha muda o problema, a proposta de solução e o conteúdo de uma demonstração web/mobile. A cena se reorganiza na rolagem para mostrar que o que acontece na operação também chega ao cliente. É uma ilustração, não um sistema real conectado.
+
+A curva foi adaptada para um caminho de entregas, sem representar receita, ROI ou cronograma estimado. Cada marco é acionável e explica o que o cliente recebe e como participa: descoberta, planejamento, desenvolvimento, entrega e evolução. GSAP move o marcador pelo caminho real do SVG ao selecionar uma etapa.
+
+A chamada contextual só preenche o campo de mensagem se ele estiver vazio; rascunhos existentes são preservados. Não há envio automático. A faixa de textos e o botão de pausa removidos a pedido do usuário continuam ausentes. Movimento reduzido mantém a composição final e a seleção de cenários e etapas continua funcional.
+
+Arquivos desta adaptação: `experience.css`, `experience.js` e marcação em `index.html`. As transições são feitas com GSAP e ScrollTrigger locais; seleção por botões nativos, estados aria-pressed e atualizações em regiões aria-live.
+
+### Ajuste: sequência horizontal de soluções
+
+A pedido do usuário, o painel agora fica fixo temporariamente enquanto a rolagem vertical percorre três cenas horizontalmente. Botões e rolagem controlam a mesma timeline; a explicação e a chamada de contato acompanham o cenário ativo. O título entra por máscaras de linha com realce progressivo. Foram removidos os textos “Mesma informação. Onde ela precisa estar.” e “Exemplo de fluxo · interfaces ilustrativas”. Com movimento reduzido, não há fixação nem deslocamento animado; os botões continuam funcionando.
