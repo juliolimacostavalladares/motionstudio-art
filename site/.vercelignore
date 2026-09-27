@@ -1,0 +1,4 @@
+# Exclude reference videos and analysis assets from Vercel deployment
+web-site-videos-ref/
+reference-analysis/
+*.mp4
