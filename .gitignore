@@ -41,3 +41,7 @@ __pycache__/
 # Local preview assets
 site/landing-preview.png
 scripts/screenshot-banners.js
+
+# Reference videos (exclude from git & vercel)
+site/web-site-videos-ref/
+web-site-videos-ref/
