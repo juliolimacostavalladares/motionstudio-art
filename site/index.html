@@ -10,10 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="experience.css" />
   <script src="site.js" defer></script>
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script src="motion.js" defer></script>
+  <script src="experience.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -127,6 +129,58 @@
     </div>
   </section>
 
+
+  <section class="solution-section" id="solucoes" aria-labelledby="solution-title">
+    <div class="container">
+      <div class="solution-heading">
+        <span class="section-label">Tecnologia no seu contexto</span>
+        <h2 id="solution-title"><span class="solution-title-mask"><span class="solution-title-line">Seu negócio funciona</span></span> <span class="solution-title-mask"><span class="solution-title-line">em conjunto.</span></span> <span class="solution-title-mask"><span class="solution-title-line word-highlight">Seu software também.</span></span></h2>
+        <p>Da operação ao contato com o cliente, conectamos as partes que precisam trabalhar juntas.</p>
+      </div>
+      <div class="solution-viewer">
+      <div class="solution-selector" role="group" aria-label="Qual é o seu desafio?">
+        <span>O que você quer resolver?</span>
+        <div class="solution-options">
+          <button type="button" data-solution="operations" aria-pressed="true">Organizar a operação</button>
+          <button type="button" data-solution="validate" aria-pressed="false">Validar uma ideia</button>
+          <button type="button" data-solution="mobile" aria-pressed="false">Atender no celular</button>
+        </div>
+      </div>
+      <div class="solution-stage" aria-hidden="true">
+        <div class="stage-grid"></div><span class="stage-caption">UMA BASE. EXPERIÊNCIAS CONECTADAS.</span>
+        <div class="solution-desktop">
+          <div class="solution-toolbar"><b>motion <span>/ operação</span></b><span class="solution-view-label">Visão da equipe</span><i>•••</i></div>
+          <div class="solution-workspace">
+            <aside><strong>m.</strong><span class="workspace-active">Visão geral</span><span>Atividades</span><span>Clientes</span><span>Relatórios</span></aside>
+            <div class="solution-workspace-main">
+              <span class="workspace-eyebrow">TUDO NO MESMO LUGAR</span><h3 class="demo-heading">Da solicitação à entrega.</h3>
+              <div class="workflow-labels"><span>Recebido</span><span>Em andamento</span><span>Concluído</span></div>
+              <div class="workflow-board">
+                <div><article class="workflow-card"><small class="demo-kind">SOLICITAÇÃO</small><b class="demo-task">Novo pedido</b><span class="demo-task-note">Informações organizadas</span><i>Equipe comercial</i></article></div>
+                <div><article class="workflow-card workflow-featured"><small>EM ANDAMENTO</small><b class="demo-active">Atendimento em curso</b><span>Responsável definido</span><div class="workflow-progress"></div><i class="demo-owner">Equipe de operação</i></article></div>
+                <div><article class="workflow-card workflow-complete"><small>CONCLUÍDO</small><b class="demo-complete">Entrega confirmada</b><span>Histórico atualizado</span><i>✓ Tudo registrado</i></article></div>
+              </div>
+              <div class="workspace-bottom"><span class="demo-bottom">Cada pedido com status e responsável.</span><span>WEB APP</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="solution-phone">
+          <div class="solution-phone-island"></div><div class="solution-phone-status">9:41 <span>••• ▰</span></div>
+          <span class="phone-app-name">motion / meu espaço</span><h3 class="demo-phone-title">Seu pedido,<br>sem incerteza.</h3><p class="demo-phone-description">Acompanhe cada etapa.</p>
+          <div class="phone-order"><span class="demo-phone-label">SEU PEDIDO</span><strong class="demo-phone-main">Tudo em movimento.</strong><div class="phone-order-progress"><i></i><i></i><i></i></div><p class="demo-phone-status">Em andamento</p></div>
+          <div class="phone-notification"><span>✓</span><div><b class="demo-notification">Status atualizado</b><small class="demo-notification-note">A equipe já está cuidando de tudo.</small></div></div>
+          <div class="solution-phone-bottom">Início <span>Atividades</span> Perfil</div>
+        </div>
+      </div>
+      <div class="solution-insight" aria-live="polite" aria-atomic="true">
+        <div><span class="insight-label">O DESAFIO</span><p id="solution-problem">Pedidos espalhados entre planilhas e conversas dificultam saber o que está acontecendo.</p></div>
+        <div><span class="insight-label">O QUE CONSTRUÍMOS</span><p id="solution-value">Um sistema que reúne solicitações, responsáveis e status. Sua equipe acompanha a operação; seu cliente acompanha o pedido.</p></div>
+        <a href="#contato" class="solution-cta">Conversar sobre meu cenário <span aria-hidden="true">↗</span></a>
+      </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section differentials" id="diferenciais">
     <div class="container">
       <div class="section-header reveal">
@@ -166,30 +220,35 @@
     </div>
   </section>
 
-  <section class="section" id="processo">
+
+  <section class="section" id="processo" aria-labelledby="process-title">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-label">Como trabalhamos</span>
-        <h2 class="section-title">Da primeira conversa<br>ao próximo lançamento.</h2>
+        <h2 class="section-title" id="process-title">Você acompanha o caminho.<br>E sabe o que recebe.</h2>
+        <p class="section-subtitle">Explore cada etapa para entender o que construímos juntos, da primeira conversa à evolução do produto.</p>
       </div>
-      <div class="process-steps">
-        <article class="process-step reveal delay-1">
-          <h3>Descoberta</h3>
-          <p>Entendemos seu negócio, público e objetivos para definir o escopo certo.</p>
-        </article>
-        <article class="process-step reveal delay-2">
-          <h3>Planejamento</h3>
-          <p>Arquitetura, wireframes e cronograma detalhado alinhados antes de codar.</p>
-        </article>
-        <article class="process-step reveal delay-3">
-          <h3>Desenvolvimento</h3>
-          <p>Sprints ágeis com entregas parciais, feedback contínuo e qualidade técnica.</p>
-        </article>
-        <article class="process-step reveal delay-4">
-          <h3>Entrega & Evolução</h3>
-          <p>Lançamento, acompanhamento de métricas e melhorias iterativas contínuas.</p>
-        </article>
+      <div class="delivery-map" aria-hidden="true">
+        <span class="delivery-map-label">DA DESCOBERTA AO PRODUTO EM USO</span>
+        <svg viewBox="0 0 1000 220" fill="none">
+          <path class="delivery-base" d="M40 175 C190 175 200 145 340 145 S510 75 620 75 S810 35 960 35"/>
+          <path class="delivery-path" d="M40 175 C190 175 200 145 340 145 S510 75 620 75 S810 35 960 35"/>
+          <g class="delivery-nodes"><circle r="7"/><circle r="7"/><circle r="7"/><circle r="7"/></g><circle class="delivery-marker" r="12"/>
+        </svg>
+        <span class="delivery-map-note">Etapas do trabalho · sem escala de prazo</span>
       </div>
+      <div class="process-steps" role="group" aria-label="Explore as etapas do projeto">
+        <button type="button" class="process-step" data-step="0" aria-pressed="true" aria-controls="delivery-detail"><span class="process-step-title">Descoberta</span><span class="process-step-description">Entender antes de construir.</span></button>
+        <button type="button" class="process-step" data-step="1" aria-pressed="false" aria-controls="delivery-detail"><span class="process-step-title">Planejamento</span><span class="process-step-description">Dar forma ao caminho.</span></button>
+        <button type="button" class="process-step" data-step="2" aria-pressed="false" aria-controls="delivery-detail"><span class="process-step-title">Desenvolvimento</span><span class="process-step-description">Ver o produto acontecer.</span></button>
+        <button type="button" class="process-step" data-step="3" aria-pressed="false" aria-controls="delivery-detail"><span class="process-step-title">Entrega & evolução</span><span class="process-step-description">Lançar, aprender, melhorar.</span></button>
+      </div>
+      <div class="delivery-detail" id="delivery-detail" aria-live="polite" aria-atomic="true">
+        <div class="delivery-intro"><span id="delivery-number">01 / DESCOBERTA</span><h3 id="delivery-title">O problema certo.<br>Antes da primeira linha.</h3></div>
+        <div><span class="delivery-detail-label">Você recebe</span><p id="delivery-output">Objetivos, prioridades e um escopo inicial alinhado ao desafio do seu negócio.</p></div>
+        <div><span class="delivery-detail-label">Construímos juntos</span><p id="delivery-participation">Você compartilha a rotina, os gargalos e o que precisa mudar. Nós ajudamos a transformar isso em direção.</p></div>
+      </div>
+      <a class="process-contact" href="#contato">Vamos começar pela primeira conversa <span aria-hidden="true">↗</span></a>
     </div>
   </section>
 

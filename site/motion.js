@@ -104,7 +104,7 @@
       reveal([...header.querySelectorAll('.title-line')], header, { y: 0, yPercent: 110, autoAlpha: 1, stagger: .11 });
       reveal([...header.querySelectorAll('.section-label,.section-subtitle')], header, { stagger: .12 });
     });
-    ['.trust-logos','.services-grid','.diff-grid','.process-steps','.testimonials-grid'].forEach(selector => {
+    ['.trust-logos','.services-grid','.diff-grid','.testimonials-grid'].forEach(selector => {
       const group = document.querySelector(selector);
       reveal([...group.children], group);
     });
@@ -118,19 +118,6 @@
       scrollAnimations.push(animation);
       triggers.push(animation.scrollTrigger);
       reveal([card.querySelector('.case-body')], card.querySelector('.case-body'));
-    });
-    document.querySelectorAll('.process-step').forEach(step => {
-      const line = document.createElement('span');
-      line.className = 'step-progress';
-      line.setAttribute('aria-hidden', 'true');
-      step.append(line);
-      progressLines.push(line);
-      const animation = gsap.from(line, {
-        scaleX: 0, ease: 'none',
-        scrollTrigger: { trigger: step, start: 'top 85%', end: 'top 40%', scrub: .4 },
-      });
-      scrollAnimations.push(animation);
-      triggers.push(animation.scrollTrigger);
     });
 
     function syncPause() {
